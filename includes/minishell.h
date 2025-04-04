@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/04 15:00:49 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/04/04 17:13:30 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,9 @@ int prompt_for_quotes(char **str);
 int check_pipe(char *str, int i);
 int check_redirection(char *str, int *i);
 int check_mismatched_quotes(char *str);
+
+//Echo
+void	ft_echo(char *str, char **envp);
 
 // Exec
 void exec_cmd(t_com_list *command);
