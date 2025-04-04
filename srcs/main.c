@@ -6,10 +6,10 @@
 // 4. Detection des pipes et redirections
 // 5. Detection des fichier d'entres et sortie (fd)
 
-void	exec_commandes(t_com_list *list, t_minishell *mini)
+/*void	exec_commandes(t_com_list *list, t_minishell *mini)
 {
 
-}
+}*/
 
 int main(void)
 {

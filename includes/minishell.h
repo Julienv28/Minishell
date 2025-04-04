@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/04 14:04:03 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/04/04 15:00:49 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ typedef struct s_com_list
     char				*infile;
     char				*errfile;
     int					flag_in; // 1 si redirection >>, 0 sinon
-    int					sflag_out;
+    int					flag_out;
 	struct s_com_list	*next;
 }	t_com_list;
 
