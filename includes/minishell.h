@@ -3,70 +3,71 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/04 11:39:51 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/04/04 14:04:03 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
-#define MINISHELL_H
+# define MINISHELL_H
 
 // Définition des codes de couleur ANSI
-#define RESET "\x1b[0m"
-#define RED "\x1b[31m"
-#define GREEN "\x1b[32m"
-#define YELLOW "\x1b[33m"
-#define BLUE "\x1b[34m"
-#define MAGENTA "\x1b[35m"
-#define CYAN "\x1b[36m"
+# define RESET "\x1b[0m"
+# define RED "\x1b[31m"
+# define GREEN "\x1b[32m"
+# define YELLOW "\x1b[33m"
+# define BLUE "\x1b[34m"
+# define MAGENTA "\x1b[35m"
+# define CYAN "\x1b[36m"
 
-#include <unistd.h>
-#include "../libft/libft.h"
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <stdio.h>
-#include <sys/wait.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
+// Declaration des packages
+# include <unistd.h>
+# include "../libft/libft.h"
+# include <readline/readline.h>
+# include <readline/history.h>
+# include <stdio.h>
+# include <sys/wait.h>
+# include <sys/types.h>
+# include <sys/stat.h>
+# include <fcntl.h>
 
-#define TIMEOUT_ITERATIONS 10000
+# define TIMEOUT_ITERATIONS 10000
 
 // Définition des types de tokens
-#define INPUT 1
-#define HEREDOC 2
-#define TRUNC 3
-#define APPEND 4
-#define PIPE 5
-#define CMD 6
-#define ARG 7
+# define INPUT 1
+# define HEREDOC 2
+# define TRUNC 3
+# define APPEND 4
+# define PIPE 5
+# define CMD 6
+# define ARG 7
 
 typedef struct s_com_list
 {
-    char *command;
-    int is_pipe;
-    char *outfile;
-    char *infile;
-    char *errfile;
-    int flag_in; // 1 si redirection >>, 0 sinon
-    int flag_out;
-    struct s_com_list *next;
-} t_com_list;
+	char				*command;
+	int					is_pipe;
+    char				*outfile;
+    char				*infile;
+    char				*errfile;
+    int					flag_in; // 1 si redirection >>, 0 sinon
+    int					sflag_out;
+	struct s_com_list	*next;
+}	t_com_list;
 
 typedef struct s_minishell
 {
-    char **token;
-    int have_pipes;
-} t_minishell;
+	char	**token;
+	int		have_pipes;
+}	t_minishell;
 
 typedef struct s_token
 {
-    char *value;
-    int type;
-    struct s_token *next;
-} t_token;
+	char			*value;
+	int				type;
+	struct s_token	*next;
+}	t_token;
 
 // Message prompt + history (Oceane) ==> a ameliorer
 
