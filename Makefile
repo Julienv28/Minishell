@@ -5,7 +5,7 @@ LIBFT_DIR   = ./libft
 INC_DIR     = ./includes
 
 LIBFT       = $(LIBFT_DIR)/libft.a
-SRCS        = $(SRC_DIR)/main.c $(SRC_DIR)/parse_args.c $(SRC_DIR)/initialisation_args.c \
+SRCS        = $(SRC_DIR)/main.c $(SRC_DIR)/parse_args.c $(SRC_DIR)/initialisation_args.c $(SRC_DIR)/split_args.c \
               $(SRC_DIR)/error_handler.c $(SRC_DIR)/tokenization/tokens.c $(SRC_DIR)/tokenization/utils.c \
 			  $(SRC_DIR)/tokenization/command.c $(SRC_DIR)/tokenization/redirection.c $(SRC_DIR)/tokenization/open_file.c\
 			  $(SRC_DIR)/tokenization/check_cmd.c $(SRC_DIR)/tokenization/arguments.c \

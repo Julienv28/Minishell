@@ -1,0 +1,4 @@
+Redirection de sortie vers fichier u
+Commande : echo hello , Pipe : 0
+hello
+[?2004h[32mminishell$ [0m^C[?2004l

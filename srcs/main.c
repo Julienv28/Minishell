@@ -6,10 +6,6 @@
 // 4. Detection des pipes et redirections
 // 5. Detection des fichier d'entres et sortie (fd)
 
-/*void	exec_commandes(t_com_list *list, t_minishell *mini)
-{
-
-}*/
 
 // EXPORT
 // Sans argument → affiche toutes les variables d’environnement triées par ordre alpha (à la declare -x VAR="val").
@@ -42,7 +38,7 @@ int main(int ac, char **av, char **envp)
         while (command)
         {
             printf("Commande : %s, Pipe : %d\n", command->command, command->is_pipe);
-            args = ft_split(command->command, ' ');
+            args = split_args(command->command, ' ');
             if (args && is_builting(args[0]) == 0)
                 exec_builting(args, envp);
             else

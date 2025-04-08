@@ -8,7 +8,7 @@ int open_file_cmd(char *infile)
     fd = open(infile, O_RDONLY);
     if (fd == -1)
     {
-        perror("Erreur d'ouverture du fichier d'entrée");
+        perror("Erreur d'ouverture cmd du fichier d'entrée");
         return (-1); // Retourner -1 en cas d'erreur
     }
     return (fd);

@@ -1,21 +1,21 @@
 #include "../includes/minishell.h"
 
-int check_redirection(char *str, int *i)
+int	check_redirection(char *str, int *i)
 {
     // Récupérer le fichier qui suit la redirection
-    while (str[*i] == ' ') // Ignorer les espaces après la redirection
-        (*i)++;
+	while (str[*i] == ' ') // Ignorer les espaces après la redirection
+		(*i)++;
 
     // Vérifier si un fichier suit bien la redirection
-    if (!str[*i] || str[*i] == '|' || str[*i] == '<' || str[*i] == '>')
-    {
-        if (!str[*i])
-            printf("Erreur : syntax error near unexpected token `newline'\n");
-        else
-            printf("Erreur : syntax error near unexpected token `%c'\n", str[*i]);
-        return (-1);
-    }
-    return (0);
+	if (!str[*i] || str[*i] == '|' || str[*i] == '<' || str[*i] == '>')
+	{
+		if (!str[*i])
+			printf("Erreur : syntax error near unexpected token `newline'\n");
+		else
+			printf("Erreur : syntax error near unexpected token `%c'\n", str[*i]);
+		return (-1);
+	}
+	return (0);
 }
 int check_pipe(char *str, int i)
 {
