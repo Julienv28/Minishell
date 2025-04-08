@@ -107,32 +107,24 @@ t_com_list *tokens_to_cmds(t_token *tokens)
     while (cmd)
     {
         ft_redirection(cmd); // Applique la redirection à chaque commande
-        // exec_cmd(cmd);
         cmd = cmd->next;
     }
     return (cmd_list);
 }
 
-/*
-void exec_cmd(t_com_list *command)
+int is_builting(char *cmd)
 {
-    pid_t pid;
-    while (command->command)
-    {
-        pid = fork();
-        if (pid == 0) // child
-        {
-            execvp(command);
-        }
-        else if (pid < 0)
-        {
-            perror("error fork\n");
-            return;
-        }
-        else // parent
-        {
-            wait(pid);
-        }
-        command = command->next;
-    }
-}*/
+    if (ft_strncmp(cmd, "exit", 5) == 0)
+        return (0);
+    else if (ft_strncmp(cmd, "cd", 2) == 0)
+        return (0);
+    else if (ft_strncmp(cmd, "pwd", 3) == 0)
+        return (0);
+    else if (ft_strncmp(cmd, "echo", 4) == 0)
+        return (0);
+    else if (ft_strncmp(cmd, "export", 5) == 0)
+         return (0);
+    // else if (ft_strncmp(cmd, "unset", 5) == 0)
+    //     return (0);
+    return (1);
+}

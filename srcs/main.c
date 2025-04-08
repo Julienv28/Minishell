@@ -11,11 +11,20 @@
 
 }*/
 
-int main(void)
+// EXPORT
+// Sans argument → affiche toutes les variables d’environnement triées par ordre alpha (à la declare -x VAR="val").
+// Avec VAR=value → ajoute/modifie la variable d’environnement.
+// Avec VAR seul → crée une var avec valeur vide si elle n’existe pas.
+
+int main(int ac, char **av, char **envp)
 {
     char *input;
+    char **args = NULL;
     t_token *tokens;
     t_com_list *command;
+    (void)ac;
+    (void)av;
+    (void)envp;
 
     while (1)
     {
@@ -26,18 +35,19 @@ int main(void)
             exit_error(); // Quitter proprement en cas d'erreur
             break;
         }
-        add_history(input); // Ajouter l'entrée dans l'historique
-        if (ft_strncmp(input, "exit", 4) == 0)
-        {
-            free(input);
-            break;
-        }
+        add_history(input);               // Ajouter l'entrée dans l'historique
         tokens = create_tokens(&input);   // Créer les tokens
         free(input);                      // Libérer input après la création des tokens
         command = tokens_to_cmds(tokens); // Convertir les tokens en commandes
         while (command)
         {
             printf("Commande : %s, Pipe : %d\n", command->command, command->is_pipe);
+            args = ft_split(command->command, ' ');
+            if (args && is_builting(args[0]) == 0)
+                exec_builting(args, envp);
+            else
+                exec_cmd(command, envp);
+            free_tab(args);
             command = command->next;
         }
         free_tokens(tokens); // Libérer les tokens
