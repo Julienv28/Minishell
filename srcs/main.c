@@ -20,7 +20,6 @@ int main(int ac, char **av, char **envp)
     t_com_list *command;
     (void)ac;
     (void)av;
-    (void)envp;
 
     while (1)
     {
@@ -33,17 +32,27 @@ int main(int ac, char **av, char **envp)
         }
         add_history(input);               // Ajouter l'entrée dans l'historique
         tokens = create_tokens(&input);   // Créer les tokens
-        free(input);                      // Libérer input après la création des tokens
+        free(input); // Libérer input après la création des tokenss
         command = tokens_to_cmds(tokens); // Convertir les tokens en commandes
         while (command)
         {
             printf("Commande : %s, Pipe : %d\n", command->command, command->is_pipe);
             args = split_args(command->command, ' ');
+            // Appliquer redirection avant execution
+            if (command->infile || command->outfile || command->errfile)
+            {
+                printf("Application redirection cmd: %s\n", command->command);
+                ft_redirection(command);
+            }
+            printf("execution\n");
+            // execution commandes
             if (args && is_builting(args[0]) == 0)
                 exec_builting(args, envp);
             else
                 exec_cmd(command, envp);
             free_tab(args);
+            if (command->next == NULL)
+                printf("fin de la liste des commandes\n");
             command = command->next;
         }
         free_tokens(tokens); // Libérer les tokens

@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 16:32:32 by juvitry           #+#    #+#             */
-/*   Updated: 2025/03/28 13:16:53 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/04/09 11:11:54 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char *ft_strdup(const char *src)
+char *ft_strdup(char *src)
 {
     char *str;
     char *p;

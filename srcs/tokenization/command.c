@@ -38,13 +38,13 @@ t_com_list *tokens_to_cmds(t_token *tokens)
     t_com_list *current_cmd;
     t_com_list *new_cmd;
     t_token *tmp;
-    t_com_list *cmd;
 
     cmd_list = NULL;
     current_cmd = NULL;
     tmp = tokens;
     while (tmp)
     {
+        printf("Traitement du token : %s (type %d)\n", tmp->value, tmp->type);
         if (tmp->type == CMD) // Si CMD, on crée une nouvelle commande.
         {
             new_cmd = list_new(tmp->value);
@@ -92,22 +92,11 @@ t_com_list *tokens_to_cmds(t_token *tokens)
                     current_cmd->flag_out = 1;
                     printf("Redirection de sortie (>>) détectée: %s\n", current_cmd->outfile);
                 }
-                else
-                {
-                    printf("Erreur : Redirection sans fichier specifié\n");
-                    return (NULL);
-                }
             }
         }
-        tmp = tmp->next; // Avance `tmp` une deuxième fois après avoir traité l'argument
-    }
-
-    // Appliquer les redirections pour chaque commande
-    cmd = cmd_list;
-    while (cmd)
-    {
-        ft_redirection(cmd); // Applique la redirection à chaque commande
-        cmd = cmd->next;
+        if (!tmp->next) // Si tmp->next est NULL, sortir de la boucle.
+            break;
+        tmp = tmp->next; // Avance tmp une deuxième fois après avoir traité l'argument
     }
     return (cmd_list);
 }

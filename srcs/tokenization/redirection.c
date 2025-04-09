@@ -18,7 +18,6 @@ int handle_redirection(char *str, int *i, t_token **tokens)
         free(symbol);
         if (check_redirection(str, i) == -1)
             return (-1);
-
         // Récupérer le fichier de redirection
         start = *i;
         while (str[*i] && str[*i] != ' ' && str[*i] != '|' && str[*i] != '<' && str[*i] != '>')
@@ -82,6 +81,7 @@ char *add_symbol(int type)
     return (NULL);
 }
 
+
 // Rediriger les entrées et sortie d'une commande
 void ft_redirection(t_com_list *command)
 {
@@ -89,6 +89,7 @@ void ft_redirection(t_com_list *command)
     // Gestion de l'entrée (STDIN)
     if (command->infile)
     {
+        printf("Redirection d'entrée vers fichier: %s\n", command->infile);  // Débogage
         fd = open_file_cmd(command->infile);
         if (fd != -1)
         {
@@ -100,12 +101,12 @@ void ft_redirection(t_com_list *command)
             }
             close(fd);
         }
-        printf("Redirection d'entrée vers fichier %s\n", command->infile);
     }
 
     // Gestion de la sortie (STDOUT)
     if (command->outfile)
     {
+        printf("Redirection de sortie vers fichier %s\n", command->outfile);
         fd = open_outfile(command->outfile, command->flag_in);
         if (fd != -1)
         {
@@ -117,12 +118,12 @@ void ft_redirection(t_com_list *command)
             }
             close(fd);
         }
-        printf("Redirection de sortie vers fichier %s\n", command->outfile);
     }
 
     // Gestion des erreurs (STDERR)
     if (command->errfile)
     {
+        printf("Redirection d'erreur vers fichier: %s\n", command->errfile);  // Débogage
         fd = open_errfile(command->errfile);
         if (fd != -1)
         {
@@ -134,6 +135,5 @@ void ft_redirection(t_com_list *command)
             }
             close(fd);
         }
-        printf("Redirection d'erreur vers fichier %s\n", command->errfile);
     }
 }

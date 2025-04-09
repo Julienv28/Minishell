@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 19:37:56 by juvitry           #+#    #+#             */
-/*   Updated: 2025/03/28 13:18:58 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/04/09 11:12:34 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void ft_putnbr_fd(int n, int fd);
 char *ft_itoa(int n);
 char **ft_split(char const *s, char c);
 char *ft_strndup(char *src, size_t n);
-char *ft_strdup(const char *src);
+char *ft_strdup(char *src);
 void *ft_calloc(size_t nmemb, size_t size);
 char *ft_strchr(const char *s, int c);
 char *ft_strrchr(const char *s, int c);

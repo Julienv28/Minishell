@@ -34,6 +34,7 @@ t_token *create_tokens(char **str)
     int i;
     int expect_cmd; // Flag pour savoir si on attend une CMD (1) ou un ARG
     t_token *tokens;
+    int redirection_status;
 
     i = 0;
     tokens = NULL;
@@ -56,7 +57,10 @@ t_token *create_tokens(char **str)
         }
         else
         {
-            handle_redirection(*str, &i, &tokens); // Ne modifie pas str, donc OK
+            redirection_status = handle_redirection(*str, &i, &tokens); // Ne modifie pas str, donc OK
+            if (redirection_status == -1)
+                return (NULL);
+            //handle_redirection(*str, &i, &tokens); // Ne modifie pas str, donc OK
             handle_word(str, &i, &tokens, &expect_cmd);
         }
     }

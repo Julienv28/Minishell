@@ -33,6 +33,7 @@ int open_outfile(char *outfile, int append)
         perror("Erreur d'ouverture du fichier de sortie");
         return (-1); // Retourner -1 en cas d'erreur
     }
+    printf("fichier %s ouvert\n", outfile);
     return (fd);
 }
 

@@ -10,9 +10,9 @@ int	check_redirection(char *str, int *i)
 	if (!str[*i] || str[*i] == '|' || str[*i] == '<' || str[*i] == '>')
 	{
 		if (!str[*i])
-			printf("Erreur : syntax error near unexpected token `newline'\n");
+			printf("Erreur : syntax error near unexpected token newline'\n");
 		else
-			printf("Erreur : syntax error near unexpected token `%c'\n", str[*i]);
+			printf("Erreur : syntax error near unexpected token %c'\n", str[*i]);
 		return (-1);
 	}
 	return (0);
