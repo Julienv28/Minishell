@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/08 15:35:42 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/04/09 17:43:27 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,8 @@ char *concat_command(char *current_command, char *new_part);
 int parse_redirection(char *str, int *i);
 char *add_symbol(int type);
 char *handle_word(char **str, int *i, t_token **tokens, int *expect_cmd);
-void ft_redirection(t_com_list *command);
+int ft_redirection(t_com_list *command);
+void putback_direction(t_com_list *command, int mem_fd);
 int open_file_cmd(char *infile);
 int open_outfile(char *outfile, int append);
 int open_errfile(char *errfile);
@@ -107,7 +108,7 @@ void ft_echo(char *str, char **envp);
 void ft_cd(char **args);
 void ft_pwd(void);
 void ft_exit(char **args);
-void    ft_export(char **args, char **envp);
+void ft_export(char **args, char **envp);
 int is_valid_name(char *name);
 
 // Exec
@@ -128,6 +129,6 @@ void exit_error(void);
 int open_file(char *av, int i);
 void ft_exec(char *av, char **envp);
 void free_tab(char **tab);
-char	**split_args(const char *s, char sep);
+char **split_args(const char *s, char sep);
 
 #endif

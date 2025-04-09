@@ -1,13 +1,13 @@
 #include "../includes/minishell.h"
 
-int	count_ags(char **args)
+int count_ags(char **args)
 {
-	int	i;
+    int i;
 
-	i = 0;
-	while (args[i])
-		i++;
-	return (i);
+    i = 0;
+    while (args[i])
+        i++;
+    return (i);
 }
 
 void exec_builting(char **args, char **envp)
@@ -24,17 +24,17 @@ void exec_builting(char **args, char **envp)
     {
         i = 1;
         if (count_ags(args) == 2)
-        	ft_echo(args[1], envp);
-		else if (count_ags(args) > 2)
-		{
-			while (args[i])
-			{
-				ft_echo(args[i], envp);
-				ft_putchar_fd(' ', 1);
-				i++;
-			}
-		}
-		ft_putchar_fd('\n', 1);
+            ft_echo(args[1], envp);
+        else if (count_ags(args) > 2)
+        {
+            while (args[i])
+            {
+                ft_echo(args[i], envp);
+                ft_putchar_fd(' ', 1);
+                i++;
+            }
+        }
+        ft_putchar_fd('\n', 1);
     }
     else if (ft_strncmp(args[0], "export", 5) == 0)
         ft_export(args, envp);

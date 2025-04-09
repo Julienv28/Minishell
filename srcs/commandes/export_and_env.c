@@ -21,13 +21,6 @@
 // 5. La rendre accessible aux sous processus. Utilisation setenv() pour modifier l'environnement processus
 // 6. Si utilisaeur tape juste EXPORT sans arg, afficher toutes les variables d'environnement exportes.
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 // Fonction pour vérifier la validité du nom de la variable
 int is_valid_name(char *name)
@@ -49,23 +42,19 @@ int is_valid_name(char *name)
     return (1);
 }
 
-// Fonction pour effectuer l'exportation d'une variable d'environnement
 void ft_export(char **args, char **envp)
 {
-    int i;
-    char *var_env;   // variable d'environnement
-    char *value;     // Valeur de la variable
-    char *name;      // Nom de la variable
-    char *egal_sign; // Chercher signe = pour définir nom et valeur
-    char **new_envp;
-    int env_count = 0;
+    int i = 0;
+    char *var_env;    // variable d'environnement
+    char *value;      // Valeur de la variable
+    char *name;       // Nom de la variable
+    char *egal_sign;  // Chercher signe = pour définir nom et valeur
 
-    i = 0;
-    if (args[1] == NULL) // Si juste EXPORT afficher
+    if (args[1] == NULL)
     {
         while (envp[i])
         {
-            printf("%s\n", envp[i]); // Afficher chaque variable d'environnement
+            printf("%s\n", envp[i]);
             i++;
         }
     }
@@ -73,18 +62,19 @@ void ft_export(char **args, char **envp)
     {
         var_env = args[1];
         printf("variable env = %s\n", var_env);
-        egal_sign = ft_strchr(var_env, '='); // Chercher signe '=' pour définir la valeur et le nom
+        egal_sign = ft_strchr(var_env, '=');  // Chercher signe '=' pour définir la valeur et le nom
         if (egal_sign == NULL)
         {
             ft_putstr_fd("Erreur: Variable d'environnement invalide (pas de '=')", STDERR_FILENO);
             return;
         }
-        *egal_sign = '\0'; // Remplacer '=' par '\0' pour séparer le nom et la valeur
-        name = var_env; // Le nom de la variable
-        value = egal_sign + 1; // La valeur après '='
-        
+        *egal_sign = '\0';  // Remplacer '=' par '\0' pour séparer le nom et la valeur
+        name = var_env;     // Le nom de la variable
+        value = egal_sign + 1;  // La valeur après '='
+
         printf("name = %s\n", name);
         printf("value = %s\n", value);
+
         // Vérifier que le nom de la variable est valide
         if (!is_valid_name(name))
         {
@@ -92,39 +82,15 @@ void ft_export(char **args, char **envp)
             return;
         }
 
-        // Ajouter ou modifier la variable d'environnement
+        // Ajouter ou modifier la variable d'environnement avec setenv
         if (setenv(name, value, 1) == 0)
             printf("variable %s=%s exportée avec succès\n", name, value);
         else
             perror("Erreur lors de l'exportation");
-        
-        while (envp[env_count])  // Calculer la taille de envp
-            env_count++;
-
-        // Réallouer de l'espace pour le nouveau tableau avec la nouvelle variable
-        new_envp = malloc(sizeof(char *) * (env_count + 2)); // +2 pour la nouvelle variable et le NULL final
-        if (new_envp == NULL)
-            return;
-        
-        // Copier les anciennes variables dans le nouveau tableau
-        i = 0;
-        while (i < env_count)
-        {
-            new_envp[i] = ft_strdup(envp[i]); // Copier la chaîne entière
-            i++;
-        }
-
-        // Ajouter la nouvelle variable
-        new_envp[env_count] = ft_strdup(args[1]); // Copier la nouvelle variable
-
-        // Assurez-vous que le tableau est terminé par NULL
-        new_envp[env_count + 1] = NULL;
-
-        // Libérer l'ancien tableau et mettre à jour envp
-        free(*envp);  // Libérer l'ancien tableau
-        *envp = new_envp;  // Mettre à jour *envp pour pointer vers le nouveau tableau
     }
 }
+
+
 
 // ENV
 // Affiche mon environnement et permet de manipuler l'environnemet pour lancer une commande.

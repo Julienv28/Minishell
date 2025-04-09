@@ -6,7 +6,6 @@
 // 4. Detection des pipes et redirections
 // 5. Detection des fichier d'entres et sortie (fd)
 
-
 // EXPORT
 // Sans argument → affiche toutes les variables d’environnement triées par ordre alpha (à la declare -x VAR="val").
 // Avec VAR=value → ajoute/modifie la variable d’environnement.
@@ -20,6 +19,7 @@ int main(int ac, char **av, char **envp)
     t_com_list *command;
     (void)ac;
     (void)av;
+    int mem_fd;
 
     while (1)
     {
@@ -32,7 +32,7 @@ int main(int ac, char **av, char **envp)
         }
         add_history(input);               // Ajouter l'entrée dans l'historique
         tokens = create_tokens(&input);   // Créer les tokens
-        free(input); // Libérer input après la création des tokenss
+        free(input);                      // Libérer input après la création des tokenss
         command = tokens_to_cmds(tokens); // Convertir les tokens en commandes
         while (command)
         {
@@ -42,17 +42,20 @@ int main(int ac, char **av, char **envp)
             if (command->infile || command->outfile || command->errfile)
             {
                 printf("Application redirection cmd: %s\n", command->command);
-                ft_redirection(command);
+                printf("Flag out: %d\n", command->flag_out);
+                mem_fd = ft_redirection(command);
             }
-            printf("execution\n");
-            // execution commandes
+            // Exécuter la commande
             if (args && is_builting(args[0]) == 0)
                 exec_builting(args, envp);
             else
                 exec_cmd(command, envp);
+            // Rétablir les redirections
+            if (command->infile || command->outfile || command->errfile)
+                putback_direction(command, mem_fd);
             free_tab(args);
             if (command->next == NULL)
-                printf("fin de la liste des commandes\n");
+                printf("Fin de la liste des commandes\n");
             command = command->next;
         }
         free_tokens(tokens); // Libérer les tokens

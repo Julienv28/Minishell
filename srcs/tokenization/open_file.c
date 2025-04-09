@@ -21,7 +21,7 @@ int open_outfile(char *outfile, int append)
 
     if (!outfile || !*outfile) // Vérifier si le fichier est valide
     {
-        fprintf(stderr, "Erreur : Le fichier de sortie est invalide.\n");
+        ft_putstr_fd("Erreur : Le fichier de sortie est invalide.\n", STDERR_FILENO);
         return (-1);
     }
     if (append)

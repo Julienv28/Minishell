@@ -81,59 +81,59 @@ char *add_symbol(int type)
     return (NULL);
 }
 
-
 // Rediriger les entrées et sortie d'une commande
-void ft_redirection(t_com_list *command)
+int ft_redirection(t_com_list *command)
 {
     int fd;
+    int mem_fd;
+    int constante;
+
+    fd = -1;
+    mem_fd = -1;
+    constante = -1;
     // Gestion de l'entrée (STDIN)
     if (command->infile)
     {
-        printf("Redirection d'entrée vers fichier: %s\n", command->infile);  // Débogage
+        constante = STDIN_FILENO;
+        mem_fd = dup(STDIN_FILENO);
+        printf("Redirection d'entrée vers fichier: %s\n", command->infile); // Débogage
         fd = open_file_cmd(command->infile);
-        if (fd != -1)
-        {
-            if (dup2(fd, STDIN_FILENO) == -1)
-            {
-                perror("Erreur avec dup2 pour l'entrée");
-                close(fd);
-                return;
-            }
-            close(fd);
-        }
     }
-
     // Gestion de la sortie (STDOUT)
-    if (command->outfile)
+    else if (command->outfile)
     {
+        constante = STDOUT_FILENO;
+        mem_fd = dup(STDOUT_FILENO);
         printf("Redirection de sortie vers fichier %s\n", command->outfile);
-        fd = open_outfile(command->outfile, command->flag_in);
-        if (fd != -1)
-        {
-            if (dup2(fd, STDOUT_FILENO) == -1)
-            {
-                perror("Erreur avec dup2 pour la sortie");
-                close(fd);
-                return;
-            }
-            close(fd);
-        }
+        fd = open_outfile(command->outfile, command->flag_out);
     }
-
     // Gestion des erreurs (STDERR)
-    if (command->errfile)
+    else if (command->errfile)
     {
-        printf("Redirection d'erreur vers fichier: %s\n", command->errfile);  // Débogage
+        constante = STDERR_FILENO;
+        mem_fd = dup(STDERR_FILENO);
+        printf("Redirection d'erreur vers fichier: %s\n", command->errfile); // Débogage
         fd = open_errfile(command->errfile);
-        if (fd != -1)
-        {
-            if (dup2(fd, STDERR_FILENO) == -1)
-            {
-                perror("Erreur avec dup2 pour les erreurs");
-                close(fd);
-                return;
-            }
-            close(fd);
-        }
     }
+    if (fd != -1)
+    {
+        if (dup2(fd, constante) == -1) // transforme fd en une copie de la sortie
+        {
+            perror("Erreur avec dup2 pour l'entrée");
+            close(fd);
+            return (-1);
+        }
+        close(fd);
+    }
+    return (mem_fd);
+}
+
+void putback_direction(t_com_list *command, int mem_fd)
+{
+    if (command->infile)
+        dup2(mem_fd, STDIN_FILENO);
+    else if (command->outfile)
+        dup2(mem_fd, STDOUT_FILENO);
+    else if (command->errfile)
+        dup2(mem_fd, STDERR_FILENO);
 }
