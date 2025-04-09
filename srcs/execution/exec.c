@@ -26,34 +26,34 @@ void exec_builting(char **args, char **envp)
         {
             i = 1;
             if (count_ags(args) == 2)
-                ft_echo(args[1], envp);
-            else if (count_ags(args) > 2)
-            {
-                while (args[i])
-                {
-                    ft_echo(args[i], envp);
-                    if (args[i + 1] != NULL)
+        	    ft_echo(args[1], envp);
+		    else if (count_ags(args) > 2)
+		    {
+			    while (args[i])
+			    {
+				    ft_echo(args[i], envp);
+                    if(args[i + 1] != NULL)
                         ft_putchar_fd(' ', 1);
-                    i++;
-                }
-            }
-            ft_putchar_fd('\n', 1);
+				    i++;
+			    }
+		    }
+		    ft_putchar_fd('\n', 1);
         }
         else
         {
             i = 2;
             if (count_ags(args) == 3)
-                ft_echo(args[2], envp);
-            else if (count_ags(args) > 3)
-            {
-                while (args[i])
-                {
-                    ft_echo(args[i], envp);
+        	    ft_echo(args[2], envp);
+		    else if (count_ags(args) > 3)
+		    {
+			    while (args[i])
+			    {
+				    ft_echo(args[i], envp);
                     if (args[i + 1] != NULL)
-                        ft_putchar_fd(' ', 1);
-                    i++;
-                }
-            }
+				        ft_putchar_fd(' ', 1);
+				    i++;
+			    }
+		    }
         }
     }
     else if (ft_strncmp(args[0], "export", 5) == 0)

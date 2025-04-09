@@ -20,6 +20,8 @@
 // 5. La rendre accessible aux sous processus. Utilisation setenv() pour modifier l'environnement processus
 // 6. Si utilisaeur tape juste EXPORT sans arg, afficher toutes les variables d'environnement exportes.
 
+
+
 // Fonction pour vérifier la validité du nom de la variable
 int is_valid_name(char *name)
 {
@@ -74,6 +76,8 @@ int is_valid_name(char *name)
 //         name = var_env; // Le nom de la variable
 //         value = egal_sign + 1; // La valeur après '='
 
+        
+
 //         printf("name = %s\n", name);
 //         printf("value = %s\n", value);
 //         // Vérifier que le nom de la variable est valide
@@ -89,6 +93,8 @@ int is_valid_name(char *name)
 //         else
 //             perror("Erreur lors de l'exportation");
 
+        
+
 //         while (envp[env_count])  // Calculer la taille de envp
 //             env_count++;
 
@@ -96,6 +102,8 @@ int is_valid_name(char *name)
 //         new_envp = malloc(sizeof(char *) * (env_count + 2)); // +2 pour la nouvelle variable et le NULL final
 //         if (new_envp == NULL)
 //             return;
+
+        
 
 //         // Copier les anciennes variables dans le nouveau tableau
 //         i = 0;
@@ -117,13 +125,15 @@ int is_valid_name(char *name)
 //     }
 // }
 
-void ft_export(char **args, char **envp)
+
+void    ft_export(char **args, char **envp)
 {
     int i;
-    char *var_env;   // variable d'environnemet
-    char *value;     // Valeur de la variable
-    char *name;      // Nom de la variable
-    char *egal_sign; // chercher signe = pour definir nom et valeur
+    char    *var_env;   // variable d'environnemet
+    char    *value;     // Valeur de la variable
+    char    *name;      // Nom de la variable
+    char    *egal_sign; // chercher signe = pour definir nom et valeur
+
 
     i = 0;
     if (args[1] == NULL) // Si juste EXPORT afficher
@@ -132,7 +142,7 @@ void ft_export(char **args, char **envp)
         {
             printf("%s\n", envp[i]);
             i++;
-        }
+        } 
     }
     else
     {
