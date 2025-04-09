@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:42:01 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/09 14:03:13 by opique           ###   ########.fr       */
+/*   Updated: 2025/04/09 18:53:57 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,9 +83,11 @@ void ft_echo(char *str, char **envp)
 {
     int i = 0;
 
+    if (str[i] == '\'' || str[i] == '\"')
+        i++;
     while (str[i])
     {
-        if (str[i] == '$' && ft_strchr(str, '\'') == 0)
+        if ((str[i] == '$' && str[0] != '\"') || (str[i] == '$' && str[0] == '\''))
         {
             i++;
             int start = i;
@@ -104,6 +106,8 @@ void ft_echo(char *str, char **envp)
                 ft_putstr_fd(val, 1);
             free(var);
         }
+        else if (str[i] == '\'' || str[i] == '\"')
+            i++;
         else
         {
             ft_putchar_fd(str[i], 1);
