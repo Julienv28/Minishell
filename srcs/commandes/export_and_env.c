@@ -4,12 +4,11 @@
 
 // EXPORT
 // Un environnement est un ensemble de variables qui=e l'on peut modifer pour personnalise l'espace de travail
-// Permet d'afficher l'environnement, de le creer mais aussi de l'exporter dans un autre fichierfichier 
+// Permet d'afficher l'environnement, de le creer mais aussi de l'exporter dans un autre fichierfichier
 // Permet d'ajouter ou de modifier une variable d'environnement et de la rendre disponible dans tous les processus fils du shell (zsh, sh ..)
 
 // Afficher l'environnement (export)
 // Creer une variable aui sera traitee dans l'environnement (export MA_VARIABLE)
-
 
 // export VAR=value : pour definir une variable d'environnement
 // export : pour afficher toutes les variables exportees
@@ -20,6 +19,7 @@
 // 4. Si elle existe deja la mettre a jour
 // 5. La rendre accessible aux sous processus. Utilisation setenv() pour modifier l'environnement processus
 // 6. Si utilisaeur tape juste EXPORT sans arg, afficher toutes les variables d'environnement exportes.
+
 
 
 // Fonction pour vérifier la validité du nom de la variable
@@ -75,7 +75,9 @@ int is_valid_name(char *name)
 //         *egal_sign = '\0'; // Remplacer '=' par '\0' pour séparer le nom et la valeur
 //         name = var_env; // Le nom de la variable
 //         value = egal_sign + 1; // La valeur après '='
+
         
+
 //         printf("name = %s\n", name);
 //         printf("value = %s\n", value);
 //         // Vérifier que le nom de la variable est valide
@@ -90,7 +92,9 @@ int is_valid_name(char *name)
 //             printf("variable %s=%s exportée avec succès\n", name, value);
 //         else
 //             perror("Erreur lors de l'exportation");
+
         
+
 //         while (envp[env_count])  // Calculer la taille de envp
 //             env_count++;
 
@@ -98,7 +102,9 @@ int is_valid_name(char *name)
 //         new_envp = malloc(sizeof(char *) * (env_count + 2)); // +2 pour la nouvelle variable et le NULL final
 //         if (new_envp == NULL)
 //             return;
+
         
+
 //         // Copier les anciennes variables dans le nouveau tableau
 //         i = 0;
 //         while (i < env_count)
@@ -119,6 +125,7 @@ int is_valid_name(char *name)
 //     }
 // }
 
+
 void    ft_export(char **args, char **envp)
 {
     int i;
@@ -126,6 +133,7 @@ void    ft_export(char **args, char **envp)
     char    *value;     // Valeur de la variable
     char    *name;      // Nom de la variable
     char    *egal_sign; // chercher signe = pour definir nom et valeur
+
 
     i = 0;
     if (args[1] == NULL) // Si juste EXPORT afficher
@@ -146,10 +154,10 @@ void    ft_export(char **args, char **envp)
             ft_putstr_fd("Erreur: Variable d'environnement invalide (pas de '=')", STDERR_FILENO);
             return;
         }
-        *egal_sign = '\0'; // Remplacer '=' par '\0' pour séparer le nom et la valeur
-        name = var_env; // Le nom de la variable
+        *egal_sign = '\0';     // Remplacer '=' par '\0' pour séparer le nom et la valeur
+        name = var_env;        // Le nom de la variable
         value = egal_sign + 1; // La valeur après '='
-        
+
         printf("name = %s\n", name);
         printf("value = %s\n", value);
         // Vérifier que le nom de la variable est valide
@@ -175,4 +183,4 @@ void    ft_export(char **args, char **envp)
 // 2. Si elle est suivie d'une variable modifie et d'une cmd :
 // 3. Creer un environnement temporaire avec les nouvelles variables specifiees dans la cmd modifees
 // 4. Lancer la cmd specifiee avec cet environnement temporaire. Donc cree un new processus (fork() et exec())
-// 5. Pour exécuter une commande avec un environnement modifié, utiliser setenv() pour modifer l'environnement 
+// 5. Pour exécuter une commande avec un environnement modifié, utiliser setenv() pour modifer l'environnement

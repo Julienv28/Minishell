@@ -111,7 +111,7 @@ int is_builting(char *cmd)
         return (0);
     else if (ft_strncmp(cmd, "echo", 4) == 0)
         return (0);
-    else if (ft_strncmp(cmd, "export", 5) == 0)
+    else if (ft_strncmp(cmd, "export", 6) == 0)
          return (0);
     // else if (ft_strncmp(cmd, "unset", 5) == 0)
     //     return (0);

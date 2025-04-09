@@ -1,13 +1,13 @@
 #include "../includes/minishell.h"
 
-int	count_ags(char **args)
+int count_ags(char **args)
 {
-	int	i;
+    int i;
 
-	i = 0;
-	while (args[i])
-		i++;
-	return (i);
+    i = 0;
+    while (args[i])
+        i++;
+    return (i);
 }
 
 void exec_builting(char **args, char **envp)
