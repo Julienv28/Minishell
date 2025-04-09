@@ -6,18 +6,18 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:42:01 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/08 14:57:07 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/04/09 13:36:53 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static int ft_isupper(int c)
+static int	ft_isupper(int c)
 {
-    if (c >= 65 && c <= 90)
-        return (1);
-    else
-        return (0);
+	if (c >= 65 && c <= 90)
+		return (1);
+	else
+		return (0);
 }
 
 // void ft_echo(char *str, char **envp)
@@ -83,33 +83,37 @@ void ft_echo(char *str, char **envp)
 {
     int i = 0;
 
+	if (str[i] == '\'' || str[i] == '\"')
+		i++;
     while (str[i])
-    {
-        if (str[i] == '$' && ft_strchr(str, '\'') == 0)
-        {
+	{
+        if ((str[i] == '$' && str[0] != '\"') || (str[i] == '$' && str[0] == '\''))
+		{
             i++;
             int start = i;
             while (str[i] && (ft_isupper(str[i]) || str[i] == '_'))
                 i++;
             int len = i - start;
             char *var = malloc(len + 1);
-            if (!var)
-                return;
+			if (!var)
+				return ;
             for (int j = 0; j < len; j++)
                 var[j] = str[start + j];
-            var[len] = '\0';
+			var[len] = '\0';
 
             char *val = get_env_value(var, envp);
             if (val)
                 ft_putstr_fd(val, 1);
             free(var);
-        }
-        else
-        {
-            ft_putchar_fd(str[i], 1);
-            i++;
-        }
-    }
+		}
+		else if (str[i] == '\'' || str[i] == '\"')
+			i++;
+		else
+		{
+			ft_putchar_fd(str[i], 1);
+			i++;
+		}
+	}
 }
 
 /*

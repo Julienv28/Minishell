@@ -110,7 +110,7 @@ char *get_path(char *cmd, char **envp)
         write(2, "command not found: ", 19);
         write(2, cmd, ft_strlen(cmd));
         write(2, "\n", 1);
-        exit(0);
+        return (NULL);
     }
     free_tab(paths);
     return (path);
