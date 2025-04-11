@@ -53,7 +53,7 @@ void ft_cd(char **args)
     if (current_pwd != NULL)
         free(current_pwd);
     current_pwd = ft_strdup(path);
-    printf("repertoire actuel: %s\n", path);
+    // printf("repertoire actuel: %s\n", path);
 }
 
 // PWD

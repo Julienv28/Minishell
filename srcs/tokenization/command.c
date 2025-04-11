@@ -44,7 +44,7 @@ t_com_list *tokens_to_cmds(t_token *tokens)
     tmp = tokens;
     while (tmp)
     {
-        printf("Traitement du token : %s (type %d)\n", tmp->value, tmp->type);
+        // printf("Traitement du token : %s (type %d)\n", tmp->value, tmp->type);
         if (tmp->type == CMD) // Si CMD, on crée une nouvelle commande.
         {
             new_cmd = list_new(tmp->value);
@@ -62,35 +62,35 @@ t_com_list *tokens_to_cmds(t_token *tokens)
         {
             if (tmp->next != NULL && tmp->next->type == ARG)
             {
-                printf("type = %d\n", tmp->type);
-                printf("valeur type = %s\n", tmp->value);
+                // printf("type = %d\n", tmp->type);
+                // printf("valeur type = %s\n", tmp->value);
                 if (tmp->type == INPUT)
                 {
                     tmp = tmp->next;
                     current_cmd->infile = tmp->value;
                     current_cmd->flag_in = 0;
-                    printf("Redirection d'entrée détectée : %s\n", current_cmd->infile);
+                    // printf("Redirection d'entrée détectée : %s\n", current_cmd->infile);
                 }
                 else if (tmp->type == HEREDOC)
                 {
                     tmp = tmp->next;
                     current_cmd->infile = tmp->value;
                     current_cmd->flag_in = 1;
-                    printf("Redirection d'entrée détectée : %s\n", current_cmd->infile);
+                    // printf("Redirection d'entrée détectée : %s\n", current_cmd->infile);
                 }
                 else if (tmp->type == TRUNC)
                 {
                     tmp = tmp->next;
                     current_cmd->outfile = tmp->value;
                     current_cmd->flag_out = 0;
-                    printf("Redirection de sortie détectée: fichier = %s\n", current_cmd->outfile);
+                    // printf("Redirection de sortie détectée: fichier = %s\n", current_cmd->outfile);
                 }
                 else if (tmp->type == APPEND)
                 {
                     tmp = tmp->next;
                     current_cmd->outfile = tmp->value;
                     current_cmd->flag_out = 1;
-                    printf("Redirection de sortie (>>) détectée: %s\n", current_cmd->outfile);
+                    // printf("Redirection de sortie (>>) détectée: %s\n", current_cmd->outfile);
                 }
             }
         }
@@ -112,7 +112,7 @@ int is_builting(char *cmd)
     else if (ft_strncmp(cmd, "echo", 4) == 0)
         return (0);
     else if (ft_strncmp(cmd, "export", 6) == 0)
-         return (0);
+        return (0);
     // else if (ft_strncmp(cmd, "unset", 5) == 0)
     //     return (0);
     return (1);

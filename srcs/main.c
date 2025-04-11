@@ -13,6 +13,7 @@
 
 int main(int ac, char **av, char **envp)
 {
+    g_exit_status = 0; // variable globale pour signaux initialisé a 0
     char *input;
     char **args = NULL;
     t_token *tokens;
@@ -21,14 +22,14 @@ int main(int ac, char **av, char **envp)
     (void)av;
     int mem_fd;
 
+    set_signal_action(); // gestion des signaux (SIGINT ET SIGQUIT)
     while (1)
     {
         input = readline(GREEN "minishell$ " RESET); // Demander une saisie
         if (!input)
         {
-            perror("readline");
-            exit_error(); // Quitter proprement en cas d'erreur
-            break;
+            ft_putstr_fd("exit\n", STDOUT_FILENO);
+            exit(g_exit_status);
         }
         add_history(input);               // Ajouter l'entrée dans l'historique
         tokens = create_tokens(&input);   // Créer les tokens
@@ -36,13 +37,13 @@ int main(int ac, char **av, char **envp)
         command = tokens_to_cmds(tokens); // Convertir les tokens en commandes
         while (command)
         {
-            printf("Commande : %s, Pipe : %d\n", command->command, command->is_pipe);
+            // printf("Commande : %s, Pipe : %d\n", command->command, command->is_pipe);
             args = split_args(command->command, ' ');
             // Appliquer redirection avant execution
             if (command->infile || command->outfile || command->errfile)
             {
-                printf("Application redirection cmd: %s\n", command->command);
-                printf("Flag out: %d\n", command->flag_out);
+                // printf("Application redirection cmd: %s\n", command->command);
+                // printf("Flag out: %d\n", command->flag_out);
                 mem_fd = ft_redirection(command);
             }
             // Exécuter la commande
@@ -54,11 +55,11 @@ int main(int ac, char **av, char **envp)
             if (command->infile || command->outfile || command->errfile)
                 putback_direction(command, mem_fd);
             free_tab(args);
-            if (command->next == NULL)
-                printf("Fin de la liste des commandes\n");
+            // if (command->next == NULL)
+            //     printf("Fin de la liste des commandes\n");
             command = command->next;
         }
         free_tokens(tokens); // Libérer les tokens
     }
-    return (0);
+    return (g_exit_status);
 }

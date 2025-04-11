@@ -6,7 +6,7 @@
 /*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/09 17:43:27 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/04/11 15:43:56 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <signal.h> // gerer les signaux
 
 #define TIMEOUT_ITERATIONS 10000
 
@@ -43,6 +44,8 @@
 #define PIPE 5
 #define CMD 6
 #define ARG 7
+
+int g_exit_status; // variable globale pour suivre l'état des erreurs
 
 typedef struct s_com_list
 {
@@ -72,6 +75,10 @@ typedef struct s_token
 
 // Message prompt + history (Oceane) ==> a ameliorer
 
+// Signaux
+void set_signal_action(void);
+void signal_handler(int sig);
+
 // Tokens
 t_token *add_token(t_token **head, char *str, int type);
 t_token *create_tokens(char **str);
@@ -99,6 +106,7 @@ int prompt_for_quotes(char **str);
 int check_pipe(char *str, int i);
 int check_redirection(char *str, int *i);
 int check_mismatched_quotes(char *str);
+int check_input(char *str, int i);
 
 // Exit
 int ft_isnumber(char *str);
