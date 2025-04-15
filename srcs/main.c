@@ -32,7 +32,7 @@ int main(int ac, char **av, char **envp)
             ft_putstr_fd("exit\n", STDOUT_FILENO);
             exit(g_exit_status);
         }
-        add_history(input);               // Ajouter l'entrée dans l'historique
+        add_history(input);  // Ajouter l'entrée dans l'historique      
         tokens = create_tokens(&input);   // Créer les tokens
         if (!tokens)
         {
@@ -47,11 +47,7 @@ int main(int ac, char **av, char **envp)
             args = split_args(command->command, ' ');
             // Appliquer redirection avant execution
             if (command->infile || command->outfile || command->errfile)
-            {
-                // printf("Application redirection cmd: %s\n", command->command);
-                // printf("Flag out: %d\n", command->flag_out);
                 mem_fd = ft_redirection(command);
-            }
             // Exécuter la commande
             if (args && is_builting(args[0]) == 0)
                 exec_builting(args, envp);

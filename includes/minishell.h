@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/15 10:37:43 by opique           ###   ########.fr       */
+/*   Updated: 2025/04/15 11:21:18 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,6 @@ typedef struct s_token
 } t_token;
 
 // Message prompt + history (Oceane) ==> a ameliorer
-
 
 // Signaux
 void set_signal_action(void);

@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:06:51 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/15 10:55:04 by opique           ###   ########.fr       */
+/*   Updated: 2025/04/15 13:26:10 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,26 +34,40 @@ int check_mismatched_quotes(char *str)
     return (0);
 }
 
-// Fonction pour gérer les guillemets ouvrir un prompt <
 int prompt_for_quotes(char **str)
 {
     char *input;
-    char *tmp;
+    char *tmp; 
+    char    *join;
 
     tmp = NULL;
+    // S'assurer que la première ligne se termine par \n
+    if ((*str)[ft_strlen(*str) - 1] != '\n')
+    {
+        tmp = ft_strjoin(*str, "\n");
+        free(*str);
+        *str = tmp;
+    }
     while (check_mismatched_quotes(*str) == 1)
     {
         input = readline("> ");
-        if (g_exit_status == 130 || !input || input[0] == '\0')
+        if (g_exit_status == 130 || !input)
         {
             g_exit_status = 0;
             free(input);
             return (-1);
         }
         tmp = ft_strjoin(*str, input);
+        if (check_mismatched_quotes(tmp) == 1)
+        {
+            // pas ferme donc \n
+            join = ft_strjoin(tmp, "\n");
+            free(tmp);
+        }
+        else
+            join = tmp;
         free(*str);
-        *str = ft_strjoin(tmp, "\n");
-        free(tmp);
+        *str = join;
         free(input);
     }
     return (g_exit_status);
