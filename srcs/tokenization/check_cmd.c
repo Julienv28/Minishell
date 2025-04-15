@@ -47,18 +47,13 @@ int check_pipe(char *str, int i)
 int check_input(char *str, int i)
 {
     // Vérifier si le caractère précédent est aussi un pipe
-    if (str[i] == '&' && str[i + 1] == '&')
+    if ((str[i] == '&' && str[i + 1] == '&') || (str[i] == ';' && str[i + 1] == ';'))
     {
         printf("Erreur : syntax error near unexpected token `%c%c'\n", str[i], str[i + 1]);
         return (-1);
     }
-    else if (str[i] == ':')
+    else if (str[i] == ':' || str[i] == '!' || str[i] == '#')
         return (-1);
-    else if (str[i] == '!')
-    {
-        printf("Erreur : syntax error near unexpected token `newline'\n");
-        return (-1);
-    }
     else
     {
         printf("Erreur : syntax error near unexpected token `%c'\n", str[i]);

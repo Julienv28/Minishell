@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/15 16:18:20 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/04/15 16:49:57 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,10 +141,10 @@ int open_file(char *av, int i);
 void ft_exec(char *av, char **envp);
 void free_tab(char **tab);
 char **split_args(const char *s, char sep);
+void    free_cmd(t_com_list *command);
 char	**ft_env_dup(char **envp);
 void	ft_freeenvp(char **envp);
 char	*ft_srjoin3(char *s1, char *s2, char *s3);
 char	**ft_realloc_env(char **envp, char *new_entry);
-
 
 #endif

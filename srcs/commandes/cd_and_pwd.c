@@ -67,5 +67,5 @@ void ft_pwd(void)
     if (getcwd(path, sizeof(path)) != NULL)
         printf("Répertoire actuel : %s\n", path);
     else
-        perror("getcwd");
+        perror("getcwd\n");
 }
