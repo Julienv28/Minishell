@@ -117,53 +117,53 @@ int is_valid_name(char *name)
 //     }
 // }
 
-void ft_export(char **args, char **envp)
-{
-    int i;
-    char *var_env;   // variable d'environnemet
-    char *value;     // Valeur de la variable
-    char *name;      // Nom de la variable
-    char *egal_sign; // chercher signe = pour definir nom et valeur
+// void ft_export(char **args, char **envp)
+// {
+//     int i;
+//     char *var_env;   // variable d'environnemet
+//     char *value;     // Valeur de la variable
+//     char *name;      // Nom de la variable
+//     char *egal_sign; // chercher signe = pour definir nom et valeur
 
-    i = 0;
-    if (args[1] == NULL) // Si juste EXPORT afficher
-    {
-        while (envp[i])
-        {
-            printf("%s\n", envp[i]);
-            i++;
-        }
-    }
-    else
-    {
-        var_env = args[1];
-        // printf("variable env = %s\n", var_env);
-        egal_sign = ft_strchr(var_env, '='); // Chercher signe = pour definir la valeur et le nom
-        if (egal_sign == NULL)
-        {
-            ft_putstr_fd("Erreur: Variable d'environnement invalide (pas de '=')", STDERR_FILENO);
-            return;
-        }
-        *egal_sign = '\0';     // Remplacer '=' par '\0' pour séparer le nom et la valeur
-        name = var_env;        // Le nom de la variable
-        value = egal_sign + 1; // La valeur après '='
+//     i = 0;
+//     if (args[1] == NULL) // Si juste EXPORT afficher
+//     {
+//         while (envp[i])
+//         {
+//             printf("%s\n", envp[i]);
+//             i++;
+//         }
+//     }
+//     else
+//     {
+//         var_env = args[1];
+//         // printf("variable env = %s\n", var_env);
+//         egal_sign = ft_strchr(var_env, '='); // Chercher signe = pour definir la valeur et le nom
+//         if (egal_sign == NULL)
+//         {
+//             ft_putstr_fd("Erreur: Variable d'environnement invalide (pas de '=')", STDERR_FILENO);
+//             return;
+//         }
+//         *egal_sign = '\0';     // Remplacer '=' par '\0' pour séparer le nom et la valeur
+//         name = var_env;        // Le nom de la variable
+//         value = egal_sign + 1; // La valeur après '='
 
-        // printf("name = %s\n", name);
-        // printf("value = %s\n", value);
-        // Vérifier que le nom de la variable est valide
-        if (!is_valid_name(name))
-        {
-            ft_putstr_fd("Erreur: nom_variable", STDERR_FILENO);
-            return;
-        }
+//         // printf("name = %s\n", name);
+//         // printf("value = %s\n", value);
+//         // Vérifier que le nom de la variable est valide
+//         if (!is_valid_name(name))
+//         {
+//             ft_putstr_fd("Erreur: nom_variable", STDERR_FILENO);
+//             return;
+//         }
 
-        // Ajouter ou modifier la variable d'environnement
-        if (setenv(name, value, 1) == 0)
-            printf("variable %s=%s exporte avec succes\n", name, value);
-        else
-            perror("Erreur lors de l'exportation");
-    }
-}
+//         // Ajouter ou modifier la variable d'environnement
+//         if (setenv(name, value, 1) == 0)
+//             printf("variable %s=%s exporte avec succes\n", name, value);
+//         else
+//             perror("Erreur lors de l'exportation");
+//     }
+// }
 
 // ENV
 // Affiche mon environnement et permet de manipuler l'environnemet pour lancer une commande.
@@ -174,3 +174,52 @@ void ft_export(char **args, char **envp)
 // 3. Creer un environnement temporaire avec les nouvelles variables specifiees dans la cmd modifees
 // 4. Lancer la cmd specifiee avec cet environnement temporaire. Donc cree un new processus (fork() et exec())
 // 5. Pour exécuter une commande avec un environnement modifié, utiliser setenv() pour modifer l'environnement
+
+static void	ft_set_env(char *key, char *value, char ***envp)
+{
+	int		i;
+	size_t	len;
+	char	*new_entry;
+
+	i = 0;
+	len = ft_strlen(key);
+	new_entry = ft_srjoin3(key, "=", value);
+	while ((*envp)[i])
+	{
+		if (ft_strncmp((*envp)[i], key, len) == 0 && (*envp)[i][len] == '=')
+		{
+			free((*envp)[i]);
+			(*envp)[i] = new_entry;
+			return ;
+		}
+		i++;
+	}
+	*envp = ft_realloc_env(*envp, new_entry);
+}
+
+void	ft_export(char *arg, char ***envp)
+{
+	char	*key;
+	char	*value;
+
+	if (!arg || !ft_strchr(arg, '='))
+		return ;
+	key = ft_substr((const char *)arg, 0, ft_strchr(arg, '=') - arg);
+	value = ft_strdup(ft_strchr(arg, '=') + 1);
+	if (is_valid_name(key))
+		ft_set_env(key, value, envp);
+	free(key);
+	free(value);
+}
+
+void	ft_env(char **envp)
+{
+	int	i;
+
+	i = 0;
+	while (envp[i])
+	{
+		printf("%s\n", envp[i]);
+		i++;
+	}
+}
