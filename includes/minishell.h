@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/15 11:21:18 by opique           ###   ########.fr       */
+/*   Updated: 2025/04/15 16:18:20 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,8 @@
 #define CMD 6
 #define ARG 7
 
-extern int g_exit_status; // variable globale pour suivre l'état des erreurs
+// variable globale pour suivre l'état des erreurs
+extern int g_exit_status;
 
 typedef struct s_com_list
 {
@@ -116,13 +117,15 @@ void ft_echo(char *str, char **envp);
 void ft_cd(char **args);
 void ft_pwd(void);
 void ft_exit(char **args);
-void ft_export(char **args, char **envp);
+void	ft_export(char *arg, char ***envp);
+void	ft_env(char **envp);
 int is_valid_name(char *name);
+void	ft_env(char **envp);
 
 // Exec
 void exec_cmd(t_com_list *command, char **envp);
 int is_builting(char *cmd);
-void exec_builting(char **args, char **envp);
+void exec_builting(char **args, char ***envp);
 char *get_path(char *cmd, char **envp);
 int find_line(char **envp, char *path);
 char *search_path(char **paths, char *cmd);
@@ -138,5 +141,10 @@ int open_file(char *av, int i);
 void ft_exec(char *av, char **envp);
 void free_tab(char **tab);
 char **split_args(const char *s, char sep);
+char	**ft_env_dup(char **envp);
+void	ft_freeenvp(char **envp);
+char	*ft_srjoin3(char *s1, char *s2, char *s3);
+char	**ft_realloc_env(char **envp, char *new_entry);
+
 
 #endif

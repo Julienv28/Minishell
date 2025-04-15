@@ -17,6 +17,7 @@ int main(int ac, char **av, char **envp)
 {
     char *input;
     char **args = NULL;
+    char    **envcp;
     t_token *tokens;
     t_com_list *command;
     (void)ac;
@@ -41,6 +42,7 @@ int main(int ac, char **av, char **envp)
         }
         free(input);                      // Libérer input après la création des tokenss
         command = tokens_to_cmds(tokens); // Convertir les tokens en commandes
+        envcp = ft_env_dup(envp);
         while (command)
         {
             // printf("Commande : %s, Pipe : %d\n", command->command, command->is_pipe);
@@ -50,9 +52,9 @@ int main(int ac, char **av, char **envp)
                 mem_fd = ft_redirection(command);
             // Exécuter la commande
             if (args && is_builting(args[0]) == 0)
-                exec_builting(args, envp);
+                exec_builting(args, &envcp);
             else
-                exec_cmd(command, envp);
+                exec_cmd(command, envcp);
             // Rétablir les redirections
             if (command->infile || command->outfile || command->errfile)
                 putback_direction(command, mem_fd);
@@ -62,6 +64,7 @@ int main(int ac, char **av, char **envp)
             command = command->next;
         }
         free_tokens(tokens); // Libérer les tokens
+        ft_freeenvp(envcp);
     }
     return (g_exit_status);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:42:01 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/09 13:36:53 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/04/15 16:39:58 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,10 +70,13 @@ char *get_env_value(char *name, char **envp)
     int i = 0;
     size_t len = ft_strlen(name);
 
+	if (!name || !envp)
+		return (NULL);
     while (envp[i])
     {
-        if (ft_strncmp(envp[i], name, len) == 0 && envp[i][len] == '=')
-            return (envp[i] + len + 1);
+		if (envp[i] && ft_strncmp(envp[i], name, len) == 0
+			&& envp[i][len] == '=')
+			return (envp[i] + len + 1);
         i++;
     }
     return (NULL);
@@ -83,6 +86,11 @@ void ft_echo(char *str, char **envp)
 {
     int i = 0;
 
+	if (!str || str[0] == '\0')
+	{
+		ft_putchar_fd('\n', 1);
+		return ;
+	}
 	if (str[i] == '\'' || str[i] == '\"')
 		i++;
     while (str[i])
@@ -106,7 +114,8 @@ void ft_echo(char *str, char **envp)
                 ft_putstr_fd(val, 1);
             free(var);
 		}
-		else if (str[i] == '\'' || str[i] == '\"')
+		else if ((str[i] == '\'' && str[0] != '\"') || (str[0] == '\"'
+			&& ((str[i] == '\'' || str[i] == '\"') && str[i + 1] == '\0')))
 			i++;
 		else
 		{
