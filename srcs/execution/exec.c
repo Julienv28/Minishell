@@ -14,15 +14,15 @@ void exec_builting(char **args, char **envp)
 {
     int i;
 
-    if (ft_strncmp(args[0], "exit", 5) == 0)
+    if (ft_strcmp(args[0], "exit") == 0)
         ft_exit(args);
-    else if (ft_strncmp(args[0], "cd", 2) == 0)
+    else if (ft_strcmp(args[0], "cd") == 0)
         ft_cd(args);
-    else if (ft_strncmp(args[0], "pwd", 3) == 0)
+    else if (ft_strcmp(args[0], "pwd") == 0)
         ft_pwd();
-    else if (ft_strncmp(args[0], "echo", 4) == 0)
+    else if (ft_strcmp(args[0], "echo") == 0)
     {
-        if (ft_strncmp(args[1], "-n", 2) != 0)
+        if (ft_strcmp(args[1], "-n") != 0)
         {
             i = 1;
             if (count_ags(args) == 2)
@@ -56,9 +56,9 @@ void exec_builting(char **args, char **envp)
             }
         }
     }
-    else if (ft_strncmp(args[0], "export", 6) == 0)
+    else if (ft_strcmp(args[0], "export") == 0)
         ft_export(args, envp);
-    //  else if (ft_strncmp(cmd, "unset", 5) == 0)
+    //  else if (ft_strcmp(cmd, "unset") == 0)
     //      return (0);
     else
         return;
@@ -130,7 +130,7 @@ char *get_path(char *cmd, char **envp)
     {
         ft_putstr_fd("command not found: ", STDERR_FILENO);
         ft_putstr_fd(cmd, STDERR_FILENO);
-        // ft_putstr_fd("\n", STDERR_FILENO);
+        ft_putstr_fd("\n", STDERR_FILENO);
     }
     free_tab(paths);
     return (path);
@@ -146,6 +146,7 @@ void exec_cmd(t_com_list *command, char **envp)
     path = get_path(args[0], envp);
     if (path == NULL)
     {
+        //ft_putstr_fd("\n", STDERR_FILENO);
         free_tab(args);
         return;
     }

@@ -54,7 +54,8 @@ t_token *create_tokens(char **str)
             i++;
             expect_cmd = 1;
         }
-        else if ((*str)[i] == '&' || (*str)[i] == ':' || (*str)[i] == '!')
+        else if ((*str)[i] == '&' || (*str)[i] == ':' || (*str)[i] == '!' 
+            || (*str)[i] == '#' || (*str)[i] == ';')
         {
             if (check_input(*str, i) == -1)
                 return (NULL);

@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:06:51 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/15 13:26:10 by opique           ###   ########.fr       */
+/*   Updated: 2025/04/15 14:53:50 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,12 +51,21 @@ int prompt_for_quotes(char **str)
     while (check_mismatched_quotes(*str) == 1)
     {
         input = readline("> ");
-        if (g_exit_status == 130 || !input)
+        if (!input)
         {
+            ft_putstr_fd("minishell: unexpected EOF while looking for matching `''\n", STDERR_FILENO);
+            ft_putstr_fd("syntax error: unexpected end of file\n", STDERR_FILENO);
+            free(input);
+            return (-1);
+        }
+        else if (g_exit_status == 130)
+        {
+            ft_putstr_fd("ctrl c propnt\n", STDERR_FILENO);
             g_exit_status = 0;
             free(input);
             return (-1);
         }
+
         tmp = ft_strjoin(*str, input);
         if (check_mismatched_quotes(tmp) == 1)
         {

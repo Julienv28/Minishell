@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/15 11:21:18 by opique           ###   ########.fr       */
+/*   Updated: 2025/04/15 16:49:57 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,5 +138,6 @@ int open_file(char *av, int i);
 void ft_exec(char *av, char **envp);
 void free_tab(char **tab);
 char **split_args(const char *s, char sep);
+void    free_cmd(t_com_list *command);
 
 #endif

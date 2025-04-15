@@ -27,3 +27,25 @@ void free_tokens(t_token *tokens)
         free(tmp);
     }
 }
+
+void    free_cmd(t_com_list *command)
+{
+    t_com_list *tmp;
+
+    while (command)
+    {
+        tmp = command->next;
+
+        if (command->command)
+            free(command->command);
+        if (command->infile)
+            free(command->infile);
+        if (command->outfile)
+            free(command->outfile);
+        if (command->errfile)
+            free(command->errfile);
+
+        free(command);
+        command = tmp;
+    }
+}

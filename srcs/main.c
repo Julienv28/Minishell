@@ -61,6 +61,7 @@ int main(int ac, char **av, char **envp)
             //     printf("Fin de la liste des commandes\n");
             command = command->next;
         }
+        free_cmd(command);
         free_tokens(tokens); // Libérer les tokens
     }
     return (g_exit_status);
