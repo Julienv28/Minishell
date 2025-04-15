@@ -11,6 +11,8 @@
 // Avec VAR=value → ajoute/modifie la variable d’environnement.
 // Avec VAR seul → crée une var avec valeur vide si elle n’existe pas.
 
+int g_exit_status = 0; // variable globale pour signaux initialisé a 0
+
 int main(int ac, char **av, char **envp)
 {
     char *input;
@@ -23,26 +25,31 @@ int main(int ac, char **av, char **envp)
 
     while (1)
     {
+        set_signal_action(); // gestion des signaux (SIGINT ET SIGQUIT)
         input = readline(GREEN "minishell$ " RESET); // Demander une saisie
         if (!input)
         {
-            perror("readline");
-            exit_error(); // Quitter proprement en cas d'erreur
-            break;
+            ft_putstr_fd("exit\n", STDOUT_FILENO);
+            exit(g_exit_status);
         }
         add_history(input);               // Ajouter l'entrée dans l'historique
         tokens = create_tokens(&input);   // Créer les tokens
+        if (!tokens)
+        {
+            free(tokens);
+            continue;           // retourne immédiatement au prompt principal
+        }
         free(input);                      // Libérer input après la création des tokenss
         command = tokens_to_cmds(tokens); // Convertir les tokens en commandes
         while (command)
         {
-            printf("Commande : %s, Pipe : %d\n", command->command, command->is_pipe);
+            // printf("Commande : %s, Pipe : %d\n", command->command, command->is_pipe);
             args = split_args(command->command, ' ');
             // Appliquer redirection avant execution
             if (command->infile || command->outfile || command->errfile)
             {
-                printf("Application redirection cmd: %s\n", command->command);
-                printf("Flag out: %d\n", command->flag_out);
+                // printf("Application redirection cmd: %s\n", command->command);
+                // printf("Flag out: %d\n", command->flag_out);
                 mem_fd = ft_redirection(command);
             }
             // Exécuter la commande
@@ -54,11 +61,11 @@ int main(int ac, char **av, char **envp)
             if (command->infile || command->outfile || command->errfile)
                 putback_direction(command, mem_fd);
             free_tab(args);
-            if (command->next == NULL)
-                printf("Fin de la liste des commandes\n");
+            // if (command->next == NULL)
+            //     printf("Fin de la liste des commandes\n");
             command = command->next;
         }
         free_tokens(tokens); // Libérer les tokens
     }
-    return (0);
+    return (g_exit_status);
 }

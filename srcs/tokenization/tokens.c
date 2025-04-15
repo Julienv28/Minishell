@@ -15,7 +15,7 @@ t_token *add_token(t_token **head, char *str, int type)
     new->type = type;            // Lui assigne un type
     new->next = NULL;
 
-    printf("Ajout token \"%s\" -> type: %d\n", str, type);
+    // printf("Ajout token \"%s\" -> type: %d\n", str, type);
     if (!*head)
         *head = new;
     else
@@ -45,23 +45,28 @@ t_token *create_tokens(char **str)
             i++;
         if (!(*str)[i])
             break;
-
         if ((*str)[i] == '|')
         {
             if (check_pipe(*str, i) == -1)
                 return (NULL);
             add_token(&tokens, "|", PIPE);
-            printf("Détection du pipe '|\n");
+            // printf("Détection du pipe '|\n");
             i++;
             expect_cmd = 1;
+        }
+        else if ((*str)[i] == '&' || (*str)[i] == ':' || (*str)[i] == '!')
+        {
+            if (check_input(*str, i) == -1)
+                return (NULL);
         }
         else
         {
             redirection_status = handle_redirection(*str, &i, &tokens); // Ne modifie pas str, donc OK
             if (redirection_status == -1)
                 return (NULL);
-            //handle_redirection(*str, &i, &tokens); // Ne modifie pas str, donc OK
-            handle_word(str, &i, &tokens, &expect_cmd);
+            // handle_redirection(*str, &i, &tokens); // Ne modifie pas str, donc OK
+            if (handle_word(str, &i, &tokens, &expect_cmd) == -1)
+                break;
         }
     }
     return (tokens);
