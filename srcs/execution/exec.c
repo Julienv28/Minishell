@@ -10,7 +10,7 @@ int count_ags(char **args)
     return (i);
 }
 
-void exec_builting(char **args, char **envp)
+void exec_builting(char **args, char ***envp)
 {
     int i;
 
@@ -22,16 +22,21 @@ void exec_builting(char **args, char **envp)
         ft_pwd();
     else if (ft_strncmp(args[0], "echo", 4) == 0)
     {
+		if (count_ags(args) == 1)
+		{
+			ft_putchar_fd('\n', 1);
+			return ;
+		}
         if (ft_strncmp(args[1], "-n", 2) != 0)
         {
             i = 1;
             if (count_ags(args) == 2)
-                ft_echo(args[1], envp);
+                ft_echo(args[1], *envp);
             else if (count_ags(args) > 2)
             {
                 while (args[i])
                 {
-                    ft_echo(args[i], envp);
+                    ft_echo(args[i], *envp);
                     if (args[i + 1] != NULL)
                         ft_putchar_fd(' ', 1);
                     i++;
@@ -43,12 +48,12 @@ void exec_builting(char **args, char **envp)
         {
             i = 2;
             if (count_ags(args) == 3)
-                ft_echo(args[2], envp);
+                ft_echo(args[2], *envp);
             else if (count_ags(args) > 3)
             {
                 while (args[i])
                 {
-                    ft_echo(args[i], envp);
+                    ft_echo(args[i], *envp);
                     if (args[i + 1] != NULL)
                         ft_putchar_fd(' ', 1);
                     i++;
@@ -57,7 +62,9 @@ void exec_builting(char **args, char **envp)
         }
     }
     else if (ft_strncmp(args[0], "export", 6) == 0)
-        ft_export(args, envp);
+        ft_export(args[1], envp);
+    else if (ft_strncmp(args[0], "env", 3) == 0)
+        ft_env(*envp);
     //  else if (ft_strncmp(cmd, "unset", 5) == 0)
     //      return (0);
     else
