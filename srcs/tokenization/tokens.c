@@ -45,7 +45,6 @@ t_token *create_tokens(char **str)
             i++;
         if (!(*str)[i])
             break;
-
         if ((*str)[i] == '|')
         {
             if (check_pipe(*str, i) == -1)
@@ -66,7 +65,8 @@ t_token *create_tokens(char **str)
             if (redirection_status == -1)
                 return (NULL);
             // handle_redirection(*str, &i, &tokens); // Ne modifie pas str, donc OK
-            handle_word(str, &i, &tokens, &expect_cmd);
+            if (handle_word(str, &i, &tokens, &expect_cmd) == -1)
+                break;
         }
     }
     return (tokens);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   arguments.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:06:51 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/11 16:57:44 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/04/15 10:55:04 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,13 @@ int prompt_for_quotes(char **str)
     char *tmp;
 
     tmp = NULL;
-    while (1)
+    while (check_mismatched_quotes(*str) == 1)
     {
         input = readline("> ");
-        if (!input)
+        if (g_exit_status == 130 || !input || input[0] == '\0')
         {
-            perror("readline");
+            g_exit_status = 0;
+            free(input);
             return (-1);
         }
         tmp = ft_strjoin(*str, input);
@@ -54,14 +55,12 @@ int prompt_for_quotes(char **str)
         *str = ft_strjoin(tmp, "\n");
         free(tmp);
         free(input);
-        if (check_mismatched_quotes(*str) == 0)
-            break;
     }
-    return (0);
+    return (g_exit_status);
 }
 
 // Fonction pour gérer la commande et les arguments
-char *handle_word(char **str, int *i, t_token **tokens, int *expect_cmd)
+int handle_word(char **str, int *i, t_token **tokens, int *expect_cmd)
 {
     int start;
     int type;
@@ -71,7 +70,7 @@ char *handle_word(char **str, int *i, t_token **tokens, int *expect_cmd)
     {
         // printf("Syntax error: mismatched quotes detected.\n");
         if (prompt_for_quotes(str) == -1)
-            return (NULL);
+            return (-1);
     }
     start = *i;
     while ((*str)[*i] && (*str)[*i] != ' ' && (*str)[*i] != '|' &&
@@ -102,5 +101,5 @@ char *handle_word(char **str, int *i, t_token **tokens, int *expect_cmd)
     add_token(tokens, word, type);
     free(word);
     *expect_cmd = 0;
-    return (NULL);
+    return (0);
 }

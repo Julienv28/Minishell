@@ -12,11 +12,10 @@ void signal_handler(int sig)
         ft_putstr_fd("\n", STDOUT_FILENO);
         rl_on_new_line();       // Dit à readline que tu es sur une nouvelle ligne. Donc création nouvelle ligne"
         rl_replace_line("", 0); // Remplace la ligne de commande courante par une chaîne vide (ou autre). Donc Vider la ligne en cours
-        rl_redisplay();         // Force le rafraîchissement du prompt.
+        rl_redisplay();         // Force le rafraîchissement du prompt.  
         g_exit_status = 130;    // Code de sortie pour une interruption par Ctrl+C
     }
     // Ajouter signal erreur quand prompt secondaire ouvert '>' et Ctrl+C
-
     else if (sig == SIGQUIT) // (Si Ctrl +\)
     {
         ft_putstr_fd("Quit: 3\n", STDOUT_FILENO); // message par defaut

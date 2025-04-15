@@ -11,9 +11,10 @@
 // Avec VAR=value → ajoute/modifie la variable d’environnement.
 // Avec VAR seul → crée une var avec valeur vide si elle n’existe pas.
 
+int g_exit_status = 0; // variable globale pour signaux initialisé a 0
+
 int main(int ac, char **av, char **envp)
 {
-    g_exit_status = 0; // variable globale pour signaux initialisé a 0
     char *input;
     char **args = NULL;
     t_token *tokens;
@@ -22,9 +23,9 @@ int main(int ac, char **av, char **envp)
     (void)av;
     int mem_fd;
 
-    set_signal_action(); // gestion des signaux (SIGINT ET SIGQUIT)
     while (1)
     {
+        set_signal_action(); // gestion des signaux (SIGINT ET SIGQUIT)
         input = readline(GREEN "minishell$ " RESET); // Demander une saisie
         if (!input)
         {
@@ -33,6 +34,11 @@ int main(int ac, char **av, char **envp)
         }
         add_history(input);               // Ajouter l'entrée dans l'historique
         tokens = create_tokens(&input);   // Créer les tokens
+        if (!tokens)
+        {
+            free(tokens);
+            continue;           // retourne immédiatement au prompt principal
+        }
         free(input);                      // Libérer input après la création des tokenss
         command = tokens_to_cmds(tokens); // Convertir les tokens en commandes
         while (command)
