@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/16 11:46:35 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/04/16 15:46:29 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,13 +114,14 @@ int ft_isnumber(char *str);
 
 // Commandes
 void ft_echo(char *str, char **envcp);
-void ft_cd(char **args);
+void ft_cd(char **args, char ***envp);
 void ft_pwd(void);
 void ft_exit(char **args);
 void	ft_export(char *arg, char ***envcp);
+char *get_env_value(char *name, char **envp);
+void	ft_set_env(char *key, char *value, char ***envp);
 void	ft_env(char **envp);
 int is_valid_name(char *name);
-void	ft_env(char **envp);
 void	ft_unset(char *key, char ***envcp);
 
 // Exec
@@ -142,6 +143,7 @@ int open_file(char *av, int i);
 void ft_exec(char *av, char **envp);
 void free_tab(char **tab);
 char **split_args(const char *s, char sep);
+char	*remove_quotes_or_slash(char *str);
 void    free_cmd(t_com_list *command);
 char	**ft_env_dup(char **envp);
 void	ft_freeenvp(char **envcp);

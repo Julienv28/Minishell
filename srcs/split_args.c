@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:06:45 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/15 11:46:09 by opique           ###   ########.fr       */
+/*   Updated: 2025/04/16 11:47:35 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ char	**split_args(const char *s, char sep)
 	int		i = 0, j = 0, start;
 	int		in_quote = 0;
 	char	**tab;
+	char	*raw_word;
 
 	tab = malloc(sizeof(char *) * (count_words(s, sep) + 1));
 	if (!tab)
@@ -73,8 +74,36 @@ char	**split_args(const char *s, char sep)
 				in_quote = !in_quote;
 			i++;
 		}
-		tab[j++] = word_dup(s, start, i);
+		raw_word = word_dup(s, start, i);
+		tab[j++] = remove_quotes_or_slash(raw_word);
+		free(raw_word);
 	}
 	tab[j] = NULL;
 	return (tab);
+}
+
+char	*remove_quotes_or_slash(char *str)
+{
+	int	i;
+	int	j;
+	char	*new_str;
+
+	i = 0;
+	j = 0;
+	if (!str)
+		return (NULL);
+	new_str = malloc(sizeof(char) * ft_strlen(str) + 1);
+	if (new_str == NULL)
+		return (NULL);
+	while (str[i])
+	{
+		if (str[i] != '\'' && str[i] != '"') // Supprime quotes
+		{
+			new_str[j] = str[i];
+			j++;
+		}
+		i++;
+	}
+	new_str[j] = '\0';
+	return (new_str);
 }

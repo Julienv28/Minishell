@@ -45,8 +45,19 @@ int main(int ac, char **av, char **envp)
         command = tokens_to_cmds(tokens); // Convertir les tokens en commandes
         while (command)
         {
-            // printf("Commande : %s, Pipe : %d\n", command->command, command->is_pipe);
+            //printf("Commande : %s, Pipe : %d\n", command->command, command->is_pipe);
             args = split_args(command->command, ' ');
+            //Affiche args
+            if (args)
+            {
+                int i = 0;
+                while (args[i])
+                {
+                    printf("args[%d] = %s\n", i, args[i]);
+                    i++;
+                }
+            }
+            
             // Appliquer redirection avant execution
             if (command->infile || command->outfile || command->errfile)
                 mem_fd = ft_redirection(command);

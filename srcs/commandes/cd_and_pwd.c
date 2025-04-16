@@ -1,41 +1,74 @@
 #include "../includes/minishell.h"
 
-// CD
-// change de repertoire courant
-// Ne prend qu’un chemin absolu ou relatif (cd .., cd /, cd ./folder, etc.).
-// Ne gère pas cd -, cd ~, etc., sauf si bonus.
-
-// Verifier le chemin passée en argument est valide (access)
-// si existe pas afficher un message d'erreur.
-// Une fois chemin est valide, chdir() pour changer de répertoire.
-// Si simple cd récupérer la valeur de HOME et l’utiliser pour faire le changement de répertoire.
-
-void ft_cd(char **args)
+void ft_cd(char **args, char ***envp)
 {
     char current_dir[1024];
+    char new_dir[1024];
     char *path;
-    char *current_pwd;
 
-    current_pwd = NULL;
-    // Sauvegarder l'ancien répertoire
-    if (getcwd(current_dir, sizeof(current_dir)) == NULL)
+    // Vérifie le répertoire courant actuel
+    if (!getcwd(current_dir, sizeof(current_dir)))
     {
-        perror("getcwd failed");
+        perror("cd: getcwd failed");
         return;
     }
-    // Si l'argument est vide, rediriger vers HOME
-    if (args[1] == NULL)
+
+    // Affiche la valeur actuelle de OLDPWD avant de le mettre à jour
+    char *oldpwd_before = get_env_value("OLDPWD", *envp);
+    if (oldpwd_before)
+        printf("OLDPWD avant mise à jour: %s\n", oldpwd_before);
+    else
+        printf("OLDPWD avant mise à jour: NULL\n");
+
+    // Gestion des arguments
+    if (args[1] && args[2])
     {
-        path = getenv("HOME");
-        if (path == NULL)
+        ft_putstr_fd("minishell: cd: too many arguments\n", STDERR_FILENO);
+        return;
+    }
+
+    // Cas de cd sans argument, ou cd --
+    if (!args[1] || ft_strcmp(args[1], "--") == 0)
+    {
+        path = get_env_value("HOME", *envp);
+        if (!path)
         {
             ft_putstr_fd("cd: HOME not set\n", STDERR_FILENO);
             return;
         }
     }
-    // Sinon, l'argument est un chemin donné par l'utilisateur
+    // Cas de cd - (pour revenir au répertoire précédent)
+    else if (ft_strcmp(args[1], "-") == 0)
+    {
+        // Récupère la valeur de OLDPWD
+        path = get_env_value("OLDPWD", *envp);
+
+        if (!path)
+        {
+            ft_putstr_fd("cd: OLDPWD not set\n", STDERR_FILENO);
+            return;
+        }
+
+        // Affiche le chemin complet de OLDPWD pour déboguer
+        printf("Chemin OLDPWD avant chdir: %s\n", path);
+
+        // Vérifie si le répertoire OLDPWD existe avant de changer
+        if (access(path, F_OK) == -1)
+        {
+            ft_putstr_fd("cd: no such file or directory: ", STDERR_FILENO);
+            ft_putstr_fd(path, STDERR_FILENO);
+            ft_putstr_fd("\n", STDERR_FILENO);
+            return;
+        }
+
+        // Affiche le répertoire de retour pour déboguer
+        printf("Reverting to OLDPWD: %s\n", path);
+    }
+    // Cas d'un répertoire spécifié
     else
         path = args[1];
+
+    // Vérifie si le dossier spécifié existe
     if (access(path, F_OK) == -1)
     {
         ft_putstr_fd("minishell: cd: no such file or directory: ", STDERR_FILENO);
@@ -43,18 +76,32 @@ void ft_cd(char **args)
         ft_putstr_fd("\n", STDERR_FILENO);
         return;
     }
-    // Changer de repertoire
+
+    // Avant de changer de répertoire, mets à jour OLDPWD avec le répertoire actuel
+    ft_set_env("OLDPWD", current_dir, envp);
+
+    // Change de répertoire
     if (chdir(path) == -1)
     {
         perror("cd failed");
         return;
     }
-    // Mettre à jour PWD
-    if (current_pwd != NULL)
-        free(current_pwd);
-    current_pwd = ft_strdup(path);
-    // printf("repertoire actuel: %s\n", path);
+
+    // Récupère le nouveau répertoire courant
+    if (!getcwd(new_dir, sizeof(new_dir)))
+    {
+        perror("cd: getcwd (after chdir) failed");
+        return;
+    }
+
+    // Met à jour PWD avec le nouveau répertoire
+    ft_set_env("PWD", new_dir, envp);
+
+    // Affiche les valeurs des variables d'environnement après la mise à jour
+    printf("PWD après mise à jour: %s\n", new_dir);
+    printf("OLDPWD après mise à jour: %s\n", get_env_value("OLDPWD", *envp));
 }
+
 
 // PWD
 // Affiche le chemin absolu du répertoire courant.

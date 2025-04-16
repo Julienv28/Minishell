@@ -17,7 +17,7 @@ void exec_builting(char **args, char ***envcp)
     if (ft_strcmp(args[0], "exit") == 0)
         ft_exit(args);
     else if (ft_strcmp(args[0], "cd") == 0)
-        ft_cd(args);
+        ft_cd(args, envp);
     else if (ft_strcmp(args[0], "pwd") == 0)
         ft_pwd();
     else if (ft_strcmp(args[0], "echo") == 0)
