@@ -1,16 +1,5 @@
 #include "../includes/minishell.h"
 
-// 1. Création de tokens a partir de la ligne de commande
-// 2. Identification des types de tokens (arg, cmd, pipe, redirection..)
-// 3. Creation des commandes avec le regroupement des tokens
-// 4. Detection des pipes et redirections
-// 5. Detection des fichier d'entres et sortie (fd)
-
-// EXPORT
-// Sans argument → affiche toutes les variables d’environnement triées par ordre alpha (à la declare -x VAR="val").
-// Avec VAR=value → ajoute/modifie la variable d’environnement.
-// Avec VAR seul → crée une var avec valeur vide si elle n’existe pas.
-
 int g_exit_status = 0; // variable globale pour signaux initialisé a 0
 
 int main(int ac, char **av, char **envp)

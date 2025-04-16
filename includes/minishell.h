@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/16 15:46:29 by opique           ###   ########.fr       */
+/*   Updated: 2025/04/16 15:57:37 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ int ft_isnumber(char *str);
 
 // Commandes
 void ft_echo(char *str, char **envcp);
-void ft_cd(char **args, char ***envp);
+void ft_cd(char **args, char ***envcp);
 void ft_pwd(void);
 void ft_exit(char **args);
 void	ft_export(char *arg, char ***envcp);

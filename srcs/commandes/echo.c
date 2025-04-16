@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:42:01 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/16 15:37:30 by opique           ###   ########.fr       */
+/*   Updated: 2025/04/16 16:25:23 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,51 +19,6 @@ static int	ft_isupper(int c)
 	else
 		return (0);
 }
-
-// void ft_echo(char *str, char **envp)
-// {
-//     int i;
-//     int j;
-//     int k;
-//     char *env_str;
-
-//     env_str = NULL;
-//     i = 0;
-//     while (str[i])
-//     {
-//         if (str[0] == '\"' && str[i] == '$' && ft_isupper(str[i + 1]) == 1)
-//         {
-//             j = 0;
-//             while (str[i] != ' ')
-//             {
-//                 str[i] = env_str[j];
-//                 i++;
-//                 j++;
-//             }
-//             j = 0;
-//             while (envp[j])
-//             {
-//                 if (ft_strncmp(env_str, envp[j], ft_strlen(env_str)) == 0)
-//                 {
-//                     k = ft_strlen(env_str);
-//                     if (envp[j][k] == 61)
-//                         k++;
-//                     while (envp[j][k])
-//                     {
-//                         ft_putchar_fd(envp[j][k], 1);
-//                         k++;
-//                     }
-//                     break;
-//                 }
-//                 j++;
-//             }
-//             ft_putstr_fd(env_str, 1);
-//         }
-//         else
-//             ft_putchar_fd(str[i], 1);
-//         i++;
-//     }
-//}
 
 char	*get_env_value(char *name, char **envp)
 {
@@ -126,10 +81,3 @@ void ft_echo(char *str, char **envp)
 		}
 	}
 }
-
-/*
-int main(int ac, char **av, char **envp)
-{
-    ft_echo(av[1], envp);
-    return (0);
-}*/
