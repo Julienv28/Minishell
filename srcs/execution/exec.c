@@ -17,7 +17,7 @@ void exec_builting(char **args, char ***envp)
     if (ft_strcmp(args[0], "exit") == 0)
         ft_exit(args);
     else if (ft_strcmp(args[0], "cd") == 0)
-        ft_cd(args);
+        ft_cd(args, envp);
     else if (ft_strcmp(args[0], "pwd") == 0)
         ft_pwd();
     else if (ft_strcmp(args[0], "echo") == 0)
@@ -27,7 +27,7 @@ void exec_builting(char **args, char ***envp)
 		  	ft_putchar_fd('\n', 1);
 		  	return ;
 		   }
-        if (ft_strcmp(args[1], "-n", 2) != 0)
+        if (ft_strcmp(args[1], "-n") != 0)
         {
             i = 1;
             if (count_ags(args) == 2)

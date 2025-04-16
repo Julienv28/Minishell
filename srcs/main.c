@@ -24,6 +24,7 @@ int main(int ac, char **av, char **envp)
     (void)av;
     int mem_fd;
 
+    envcp = ft_env_dup(envp);
     while (1)
     {
         set_signal_action(); // gestion des signaux (SIGINT ET SIGQUIT)
@@ -45,8 +46,19 @@ int main(int ac, char **av, char **envp)
         envcp = ft_env_dup(envp);
         while (command)
         {
-            // printf("Commande : %s, Pipe : %d\n", command->command, command->is_pipe);
+            //printf("Commande : %s, Pipe : %d\n", command->command, command->is_pipe);
             args = split_args(command->command, ' ');
+            //Affiche args
+            if (args)
+            {
+                int i = 0;
+                while (args[i])
+                {
+                    printf("args[%d] = %s\n", i, args[i]);
+                    i++;
+                }
+            }
+            
             // Appliquer redirection avant execution
             if (command->infile || command->outfile || command->errfile)
                 mem_fd = ft_redirection(command);
@@ -65,7 +77,7 @@ int main(int ac, char **av, char **envp)
         }
         free_cmd(command);
         free_tokens(tokens); // Libérer les tokens
-        ft_freeenvp(envcp);
     }
+    ft_freeenvp(envcp);
     return (g_exit_status);
 }

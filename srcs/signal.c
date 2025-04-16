@@ -13,8 +13,7 @@ void signal_handler(int sig)
         rl_replace_line("", 0); // Remplace la ligne de commande courante par une chaîne vide (ou autre). Donc Vider la ligne en cours
         write(1, "\n", 1);
         rl_on_new_line();       // Dit à readline que tu es sur une nouvelle ligne. Donc création nouvelle ligne"
-        //rl_redisplay();         // Force le rafraîchissement du prompt.  
-        rl_done = 1;
+        rl_redisplay();         // Force le rafraîchissement du prompt.  
     }
     // Ajouter signal erreur quand prompt secondaire ouvert '>' et Ctrl+C
     else if (sig == SIGQUIT) // (Si Ctrl +\)
@@ -26,7 +25,6 @@ void signal_handler(int sig)
 
 void set_signal_action(void)
 {
-    rl_catch_signals = 0;
     if (signal(SIGINT, signal_handler) == SIG_ERR)
         exit_error();
     else if (signal(SIGQUIT, signal_handler) == SIG_ERR)

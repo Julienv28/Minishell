@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:42:01 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/15 16:39:58 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/04/16 15:07:39 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,6 @@ char *get_env_value(char *name, char **envp)
     int i = 0;
     size_t len = ft_strlen(name);
 
-	if (!name || !envp)
-		return (NULL);
     while (envp[i])
     {
 		if (envp[i] && ft_strncmp(envp[i], name, len) == 0

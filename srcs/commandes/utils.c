@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 14:23:42 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/15 16:30:09 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/04/16 15:07:07 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,8 @@ char	*ft_srjoin3(char *s1, char *s2, char *s3)
 	char	*tmp;
 	char	*result;
 
+	//if (!s1 || !s2 || !s3)
+	//	return (NULL);
 	tmp = ft_strjoin(s1, s2);
 	if (!tmp)
 		return (NULL);
@@ -99,5 +101,6 @@ char	**ft_realloc_env(char **envp, char *new_entry)
 	}
 	new_env[i] = ft_strdup(new_entry);
 	new_env[i + 1] = NULL;
+	free_tab(envp);
 	return (new_env);
 }
