@@ -112,9 +112,11 @@ int is_builting(char *cmd)
         return (0);
     else if (ft_strcmp(cmd, "echo") == 0)
         return (0);
+    else if (ft_strcmp(cmd, "env") == 0)
+        return (0);
     else if (ft_strcmp(cmd, "export") == 0)
         return (0);
-    // else if (ft_strcmp(cmd, "unset") == 0)
-    //     return (0);
+    else if (ft_strcmp(cmd, "unset") == 0)
+        return (0);
     return (1);
 }

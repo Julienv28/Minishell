@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/16 11:04:43 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/04/16 11:46:35 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,7 @@ void	ft_export(char *arg, char ***envcp);
 void	ft_env(char **envp);
 int is_valid_name(char *name);
 void	ft_env(char **envp);
+void	ft_unset(char *key, char ***envcp);
 
 // Exec
 void exec_cmd(t_com_list *command, char **envcp);
