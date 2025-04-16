@@ -175,51 +175,68 @@ int is_valid_name(char *name)
 // 4. Lancer la cmd specifiee avec cet environnement temporaire. Donc cree un new processus (fork() et exec())
 // 5. Pour exécuter une commande avec un environnement modifié, utiliser setenv() pour modifer l'environnement
 
-static void	ft_set_env(char *key, char *value, char ***envp)
+static void	ft_set_env(char *key, char *value, char ***envcp)
 {
 	int		i;
-	size_t	len;
 	char	*new_entry;
+	char	*tmp;
+	char	**new_env;
 
+	new_entry = ft_strjoin(key, "=");
+	tmp = ft_strjoin(new_entry, value);
+	free(new_entry);
+	new_entry = tmp;
 	i = 0;
-	len = ft_strlen(key);
-	new_entry = ft_srjoin3(key, "=", value);
-	while ((*envp)[i])
+	while (*envcp && (*envcp)[i])
 	{
-		if (ft_strncmp((*envp)[i], key, len) == 0 && (*envp)[i][len] == '=')
+		if (ft_strncmp((*envcp)[i], key, ft_strlen(key)) == 0
+			&& (*envcp)[i][ft_strlen(key)] == '=')
 		{
-			free((*envp)[i]);
-			(*envp)[i] = new_entry;
+			free((*envcp)[i]);
+			(*envcp)[i] = new_entry;
 			return ;
 		}
 		i++;
 	}
-	*envp = ft_realloc_env(*envp, new_entry);
+	new_env = ft_realloc_env(*envcp, new_entry);
+	if (!new_env)
+	{
+		free(new_entry);
+		return ;
+	}
+	ft_freeenvp(*envcp);
+	*envcp = new_env;
 }
 
-void	ft_export(char *arg, char ***envp)
+
+void	ft_export(char *arg, char ***envcp)
 {
 	char	*key;
 	char	*value;
 
-	if (!arg || !ft_strchr(arg, '='))
+	if (!arg)
+	{
+		ft_env(*envcp);
+		return ;
+	}
+	else if (arg && !ft_strchr(arg, '='))
 		return ;
 	key = ft_substr((const char *)arg, 0, ft_strchr(arg, '=') - arg);
 	value = ft_strdup(ft_strchr(arg, '=') + 1);
 	if (is_valid_name(key))
-		ft_set_env(key, value, envp);
+		ft_set_env(key, value, envcp);
 	free(key);
 	free(value);
 }
 
-void	ft_env(char **envp)
+void	ft_env(char **envcp)
 {
 	int	i;
 
 	i = 0;
-	while (envp[i])
+	while (envcp[i])
 	{
-		printf("%s\n", envp[i]);
+		printf("%s\n", envcp[i]);
 		i++;
 	}
 }

@@ -24,6 +24,7 @@ int main(int ac, char **av, char **envp)
     (void)av;
     int mem_fd;
 
+    envcp = ft_env_dup(envp);
     while (1)
     {
         set_signal_action(); // gestion des signaux (SIGINT ET SIGQUIT)
@@ -42,7 +43,6 @@ int main(int ac, char **av, char **envp)
         }
         free(input);                      // Libérer input après la création des tokenss
         command = tokens_to_cmds(tokens); // Convertir les tokens en commandes
-        envcp = ft_env_dup(envp);
         while (command)
         {
             // printf("Commande : %s, Pipe : %d\n", command->command, command->is_pipe);
@@ -65,7 +65,7 @@ int main(int ac, char **av, char **envp)
         }
         free_cmd(command);
         free_tokens(tokens); // Libérer les tokens
-        ft_freeenvp(envcp);
     }
+    ft_freeenvp(envcp);
     return (g_exit_status);
 }

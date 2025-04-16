@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:42:01 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/15 16:39:58 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/04/16 10:36:07 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,11 +65,13 @@ static int	ft_isupper(int c)
 //     }
 //}
 
-char *get_env_value(char *name, char **envp)
+char	*get_env_value(char *name, char **envp)
 {
-    int i = 0;
-    size_t len = ft_strlen(name);
+	int i;
+    size_t len;
 
+	i = 0;
+	len = ft_strlen(name);
 	if (!name || !envp)
 		return (NULL);
     while (envp[i])
