@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 10:25:54 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/16 10:13:17 by opique           ###   ########.fr       */
+/*   Updated: 2025/04/16 15:48:00 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,4 +78,3 @@ void	init_cmds(t_com_list *command)
 	command->flag_in = 0;
 	command->flag_out = 0;
 }
-

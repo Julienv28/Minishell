@@ -43,7 +43,6 @@ int main(int ac, char **av, char **envp)
         }
         free(input);                      // Libérer input après la création des tokenss
         command = tokens_to_cmds(tokens); // Convertir les tokens en commandes
-        envcp = ft_env_dup(envp);
         while (command)
         {
             //printf("Commande : %s, Pipe : %d\n", command->command, command->is_pipe);

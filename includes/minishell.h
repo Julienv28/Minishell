@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/16 14:19:00 by opique           ###   ########.fr       */
+/*   Updated: 2025/04/16 15:46:29 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,20 +113,21 @@ int check_input(char *str, int i);
 int ft_isnumber(char *str);
 
 // Commandes
-void ft_echo(char *str, char **envp);
+void ft_echo(char *str, char **envcp);
 void ft_cd(char **args, char ***envp);
 void ft_pwd(void);
 void ft_exit(char **args);
-void	ft_export(char *arg, char ***envp);
+void	ft_export(char *arg, char ***envcp);
 char *get_env_value(char *name, char **envp);
 void	ft_set_env(char *key, char *value, char ***envp);
 void	ft_env(char **envp);
 int is_valid_name(char *name);
+void	ft_unset(char *key, char ***envcp);
 
 // Exec
-void exec_cmd(t_com_list *command, char **envp);
+void exec_cmd(t_com_list *command, char **envcp);
 int is_builting(char *cmd);
-void exec_builting(char **args, char ***envp);
+void exec_builting(char **args, char ***envcp);
 char *get_path(char *cmd, char **envp);
 int find_line(char **envp, char *path);
 char *search_path(char **paths, char *cmd);
@@ -145,9 +146,9 @@ char **split_args(const char *s, char sep);
 char	*remove_quotes_or_slash(char *str);
 void    free_cmd(t_com_list *command);
 char	**ft_env_dup(char **envp);
-void	ft_freeenvp(char **envp);
+void	ft_freeenvp(char **envcp);
 char	*ft_srjoin3(char *s1, char *s2, char *s3);
-char	**ft_realloc_env(char **envp, char *new_entry);
+char	**ft_realloc_env(char **envcp, char *new_entry);
 void	init_cmds(t_com_list *command);
 
 #endif

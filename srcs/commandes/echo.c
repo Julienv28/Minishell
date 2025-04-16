@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:42:01 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/16 15:07:39 by opique           ###   ########.fr       */
+/*   Updated: 2025/04/16 15:37:30 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,11 +65,15 @@ static int	ft_isupper(int c)
 //     }
 //}
 
-char *get_env_value(char *name, char **envp)
+char	*get_env_value(char *name, char **envp)
 {
-    int i = 0;
-    size_t len = ft_strlen(name);
+	int i;
+    size_t len;
 
+	i = 0;
+	len = ft_strlen(name);
+	if (!name || !envp)
+		return (NULL);
     while (envp[i])
     {
 		if (envp[i] && ft_strncmp(envp[i], name, len) == 0

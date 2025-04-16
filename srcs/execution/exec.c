@@ -1,16 +1,16 @@
 #include "../includes/minishell.h"
 
-int count_ags(char **args)
+int	count_ags(char **args)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    while (args[i])
-        i++;
-    return (i);
+	i = 0;
+	while (args[i])
+		i++;
+	return (i);
 }
 
-void exec_builting(char **args, char ***envp)
+void exec_builting(char **args, char ***envcp)
 {
     int i;
 
@@ -31,12 +31,12 @@ void exec_builting(char **args, char ***envp)
         {
             i = 1;
             if (count_ags(args) == 2)
-                ft_echo(args[1], *envp);
+                ft_echo(args[1], *envcp);
             else if (count_ags(args) > 2)
             {
                 while (args[i])
                 {
-                    ft_echo(args[i], *envp);
+                    ft_echo(args[i], *envcp);
                     if (args[i + 1] != NULL)
                         ft_putchar_fd(' ', 1);
                     i++;
@@ -48,12 +48,12 @@ void exec_builting(char **args, char ***envp)
         {
             i = 2;
             if (count_ags(args) == 3)
-                ft_echo(args[2], *envp);
+                ft_echo(args[2], *envcp);
             else if (count_ags(args) > 3)
             {
                 while (args[i])
                 {
-                    ft_echo(args[i], *envp);
+                    ft_echo(args[i], *envcp);
                     if (args[i + 1] != NULL)
                         ft_putchar_fd(' ', 1);
                     i++;
@@ -62,43 +62,43 @@ void exec_builting(char **args, char ***envp)
         }
     }
     else if (ft_strcmp(args[0], "export") == 0)
-        ft_export(args[1], envp);
+        ft_export(args[1], envcp);
     else if (ft_strcmp(args[0], "env") == 0)
-        ft_env(*envp);
-    //  else if (ft_strncmp(cmd, "unset", 5) == 0)
-    //      return (0);
+        ft_env(*envcp);
+	else if (ft_strcmp(args[0], "unset") == 0)
+	    ft_unset(args[1], envcp);
     else
         return;
 }
 
-char *search_path(char **paths, char *cmd)
+char	*search_path(char **paths, char *cmd)
 {
-    int i;
-    char *path;
-    char *part_path;
+	int		i;
+	char	*path;
+	char	*part_path;
 
-    i = 0;
-    while (paths[i])
-    {
-        part_path = ft_strjoin(paths[i], "/");
-        path = ft_strjoin(part_path, cmd);
-        free(part_path);
-        if (access(path, F_OK) == 0)
-            return (path);
-        free(path);
-        i++;
-    }
-    return (0);
+	i = 0;
+	while (paths[i])
+	{
+		part_path = ft_strjoin(paths[i], "/");
+		path = ft_strjoin(part_path, cmd);
+		free(part_path);
+		if (access(path, F_OK) == 0)
+			return (path);
+		free(path);
+		i++;
+	}
+	return (0);
 }
 
-int find_line(char **envp, char *path)
+int	find_line(char **envp, char *path)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    while (envp[i] && ft_strncmp(path, envp[i], ft_strlen(path)) != 0)
-        i++;
-    return (i);
+	i = 0;
+	while (envp[i] && ft_strncmp(path, envp[i], ft_strlen(path)) != 0)
+		i++;
+	return (i);
 }
 
 // determine si un chemin passé a path est un repertoire ou non
@@ -143,14 +143,14 @@ char *get_path(char *cmd, char **envp)
     return (path);
 }
 
-void exec_cmd(t_com_list *command, char **envp)
+void exec_cmd(t_com_list *command, char **envcp)
 {
     pid_t pid;
     char **args;
     char *path;
 
     args = ft_split(command->command, ' ');
-    path = get_path(args[0], envp);
+    path = get_path(args[0], envcp);
     if (path == NULL)
     {
         //ft_putstr_fd("\n", STDERR_FILENO);
@@ -160,7 +160,7 @@ void exec_cmd(t_com_list *command, char **envp)
     pid = fork();
     if (pid == 0) // Si on est dans le processus enfant
     {
-        if (execve(path, args, envp) == -1)
+        if (execve(path, args, envcp) == -1)
         {
             perror("execve failed");
             exit(1);

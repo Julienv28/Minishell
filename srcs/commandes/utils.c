@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 14:23:42 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/16 15:07:07 by opique           ###   ########.fr       */
+/*   Updated: 2025/04/16 15:47:44 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,19 +51,19 @@ char	**ft_env_dup(char **envp)
 	return (envcp);
 }
 
-void	ft_freeenvp(char **envp)
+void	ft_freeenvp(char **envcp)
 {
 	int	i;
 
 	i = 0;
-	if (!envp)
+	if (!envcp)
 		return ;
-	while (envp[i])
+	while (envcp[i])
 	{
-		free(envp[i]);
+		free(envcp[i]);
 		i++;
 	}
-	free (envp);
+	free (envcp);
 }
 
 char	*ft_srjoin3(char *s1, char *s2, char *s3)
@@ -71,8 +71,6 @@ char	*ft_srjoin3(char *s1, char *s2, char *s3)
 	char	*tmp;
 	char	*result;
 
-	//if (!s1 || !s2 || !s3)
-	//	return (NULL);
 	tmp = ft_strjoin(s1, s2);
 	if (!tmp)
 		return (NULL);
@@ -81,14 +79,14 @@ char	*ft_srjoin3(char *s1, char *s2, char *s3)
 	return (result);
 }
 
-char	**ft_realloc_env(char **envp, char *new_entry)
+char	**ft_realloc_env(char **envcp, char *new_entry)
 {
 	int		i;
 	int		j;
 	char	**new_env;
 
 	i = 0;
-	while (envp && envp[i])
+	while (envcp && envcp[i])
 		i++;
 	new_env = malloc(sizeof(char *) * (i + 2));
 	if (!new_env)
@@ -96,11 +94,24 @@ char	**ft_realloc_env(char **envp, char *new_entry)
 	j = 0;
 	while (j < i)
 	{
-		new_env[j] = ft_strdup(envp[j]);
+		new_env[j] = ft_strdup(envcp[j]);
+		if (!new_env[j])
+		{
+			while (--j >= 0)
+				free(new_env[j]);
+			free(new_env);
+			return (NULL);
+		}
 		j++;
 	}
 	new_env[i] = ft_strdup(new_entry);
+	if (!new_env[i])
+	{
+		while (--j >= 0)
+			free(new_env[j]);
+		free(new_env);
+		return (NULL);
+	}
 	new_env[i + 1] = NULL;
-	free_tab(envp);
 	return (new_env);
 }
