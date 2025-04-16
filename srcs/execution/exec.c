@@ -65,8 +65,8 @@ void exec_builting(char **args, char ***envcp)
         ft_export(args[1], envcp);
     else if (ft_strcmp(args[0], "env") == 0)
         ft_env(*envcp);
-    //  else if (ft_strncmp(cmd, "unset", 5) == 0)
-    //      return (0);
+	else if (ft_strcmp(args[0], "unset") == 0)
+	    ft_unset(args[1], envcp);
     else
         return;
 }
