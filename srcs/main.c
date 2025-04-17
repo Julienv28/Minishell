@@ -38,15 +38,7 @@ int main(int ac, char **av, char **envp)
             args = split_args(command->command, ' ');
             //Affiche args
             if (args)
-            {
-                int i = 0;
-                while (args[i])
-                {
-                    printf("args[%d] = %s\n", i, args[i]);
-                    i++;
-                }
-            }
-            
+                replace_exit_and_env_status(args); // Remplacer $ dans les arguments
             // Appliquer redirection avant execution
             if (command->infile || command->outfile || command->errfile)
                 mem_fd = ft_redirection(command);
