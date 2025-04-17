@@ -137,7 +137,7 @@ char *get_path(char *cmd, char **envp)
     {
         ft_putstr_fd("command not found: ", STDERR_FILENO);
         ft_putstr_fd(cmd, STDERR_FILENO);
-        ft_putstr_fd("\n", STDERR_FILENO);
+        //ft_putstr_fd("\n", STDERR_FILENO);
     }
     free_tab(paths);
     return (path);
@@ -148,12 +148,13 @@ void exec_cmd(t_com_list *command, char **envcp)
     pid_t pid;
     char **args;
     char *path;
+    int status;
 
     args = ft_split(command->command, ' ');
     path = get_path(args[0], envcp);
     if (path == NULL)
     {
-        //ft_putstr_fd("\n", STDERR_FILENO);
+        g_exit_status = 127; // Commande introuvable
         free_tab(args);
         return;
     }
@@ -167,8 +168,19 @@ void exec_cmd(t_com_list *command, char **envcp)
         }
     }
     else if (pid > 0)          // Si on est dans le processus parent
-        waitpid(pid, NULL, 0); // Attente de la fin de l'exécution du processus enfant
-    else                       // Gestion d'une erreur de fork
+    {
+        waitpid(pid, &status, 0); // Attente de la fin de l'exécution du processus enfant
+        // MAJ g_exit_status pour avoir la bonne valeur
+        if (WIFEXITED(status))
+            g_exit_status = WEXITSTATUS(status); // Code de sortie normal
+        else if (WIFSIGNALED(status))
+            g_exit_status = 128 + WTERMSIG(status); // Interrompu par signal 
+    }
+    else   
+    {                    // Gestion d'une erreur de fork
         perror("fork failed");
+        g_exit_status = 1;
+    }
     free(path);
+    free_tab(args);
 }

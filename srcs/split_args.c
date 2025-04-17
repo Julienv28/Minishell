@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split_args.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:06:45 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/16 11:47:35 by opique           ###   ########.fr       */
+/*   Updated: 2025/04/17 11:19:31 by pique            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,11 @@ char	*remove_quotes_or_slash(char *str)
 		return (NULL);
 	while (str[i])
 	{
+		if (str[i] == '\\' && str[i + 1])  // si on rencontre un \, on prend le caractère suivant
+        {
+            new_str[j++] = str[i + 1];
+            i += 2;
+        }
 		if (str[i] != '\'' && str[i] != '"') // Supprime quotes
 		{
 			new_str[j] = str[i];

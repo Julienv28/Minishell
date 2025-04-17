@@ -3,21 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:42:01 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/16 16:25:23 by opique           ###   ########.fr       */
+/*   Updated: 2025/04/17 14:09:53 by pique            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static int	ft_isupper(int c)
+void ft_echo(char *str, char **envp)
 {
-	if (c >= 65 && c <= 90)
-		return (1);
-	else
-		return (0);
+	(void)**envp;
+
+	ft_putstr_fd(str, 1);  // La chaîne est déjà traitée
 }
 
 char	*get_env_value(char *name, char **envp)
@@ -37,6 +36,15 @@ char	*get_env_value(char *name, char **envp)
         i++;
     }
     return (NULL);
+}
+
+/*
+static int	ft_isupper(int c)
+{
+	if (c >= 65 && c <= 90)
+		return (1);
+	else
+		return (0);
 }
 
 void ft_echo(char *str, char **envp)
@@ -80,4 +88,4 @@ void ft_echo(char *str, char **envp)
 			i++;
 		}
 	}
-}
+}*/
