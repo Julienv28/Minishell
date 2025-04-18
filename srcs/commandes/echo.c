@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:42:01 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/17 14:09:53 by pique            ###   ########.fr       */
+/*   Updated: 2025/04/18 18:29:38 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,41 @@ char	*get_env_value(char *name, char **envp)
         i++;
     }
     return (NULL);
+}
+
+int	parse_args_echo(char **args)
+{
+	int	i;
+
+	if (count_ags(args) == 1)
+	{
+		ft_putchar_fd('\n', 1);
+		return (1);
+	}
+	else if (ft_strncmp(args[1], "-n", 2) == 0 && ft_strlen(args[1]) != 2 && count_ags(args) == 2)
+	{
+		i = 2;
+		while (args[1][i])
+		{
+			if (args[1][i] != 'n')
+				return (0);
+			i++;
+		}
+		return (1);
+	}
+	else if (ft_strcmp(args[1], "-n") == 0 && count_ags(args) > 2)
+	{
+		i = 2;
+		while (args[i])
+		{
+			if (ft_strcmp(args[i], "-n") != 0)
+				return (0);
+			i++;			
+		}
+		return (1);
+	}
+	else
+		return (0);
 }
 
 /*

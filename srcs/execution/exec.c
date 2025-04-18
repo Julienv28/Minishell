@@ -22,9 +22,8 @@ void exec_builting(char **args, char ***envcp)
         ft_pwd();
     else if (ft_strcmp(args[0], "echo") == 0)
     {
-		  if (count_ags(args) == 1)
+		  if (parse_args_echo(args) == 1)
 	  	{
-		  	ft_putchar_fd('\n', 1);
 		  	return ;
 		   }
         if (ft_strcmp(args[1], "-n") != 0)

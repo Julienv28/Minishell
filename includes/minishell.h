@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/17 12:06:45 by pique            ###   ########.fr       */
+/*   Updated: 2025/04/18 18:30:40 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,5 +154,7 @@ void	ft_freeenvp(char **envcp);
 char	*ft_srjoin3(char *s1, char *s2, char *s3);
 char	**ft_realloc_env(char **envcp, char *new_entry);
 void	init_cmds(t_com_list *command);
+int	    parse_args_echo(char **args);
+int	    count_ags(char **args);
 
 #endif
