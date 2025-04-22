@@ -12,119 +12,6 @@ char *append_char(char *res, char c)
     free(res);
     return tmp;
 }
-/*
-// Gère les cas spéciaux après un '$' : $? ou $VAR_NAME
-char *replace_variable_or_special(char *str, int *i, char *res)
-{
-    char var_name[256];
-    int j;
-    char *tmp;
-    char *status;
-    char *env_value;
-
-    j = 0;
-    (*i)++;
-    if (!str[*i])
-        return (append_char(res, '$'));
-    if (str[*i] == '?')
-    {
-        // Si on rencontre $? (code de retour)
-        status = ft_itoa(g_exit_status);
-        if (!status)
-        {
-            free(res);
-            return NULL;
-        }
-        tmp = ft_strjoin(res, status);
-        free(res);
-        free(status);
-        res = tmp;
-        (*i)++; // Sauter le '?'        
-    }
-    // Si c'est un guillemet juste après $, ce n'est pas une variable
-    if (str[*i] == '"' || str[*i] == '\'')
-    {
-        res = append_char(res, '$');
-        return(res);
-    }
-    // variable classique ($VAR_NAME)
-    if (ft_isalpha(str[*i]) || str[*i] == '_')
-    {
-        // Si on rencontre une variable d'environnement
-        while (str[*i] && (ft_isalnum(str[*i]) || str[*i] == '_'))
-            var_name[j++] = str[(*i)++];
-        var_name[j] = '\0';
-
-        env_value = getenv(var_name);
-        if (!env_value)
-            env_value = "";  // Si la variable n'existe pas, utiliser une chaîne vide
-        tmp = ft_strjoin(res, env_value);
-        free(res);
-        res = tmp;
-    }
-    else
-    {
-        // Cas d'un $ seul ou suivi d'un caractère invalide : on garde juste le '$'
-        res = append_char(res, '$');
-        // Si un autre caractère suit le $, on l'ajoute à la chaîne
-        if (str[*i])
-        {
-            res = append_char(res, str[*i]);
-            (*i)++;
-        }
-    }
-    return (res);
-}
-// Fonction principale avec gestion des quotes
-char *replace_all_variables(char *str)
-{
-    int i;
-    char *res;
-
-    i = 0;
-    res = ft_strdup("");
-    if (!res || !str)
-        return (NULL);
-
-    while (str[i])
-    {
-        if (str[i] == '\'')
-        {
-            i++;
-            while (str[i] && str[i] != '\'')
-            {
-                res = append_char(res, str[i]);
-                i++;
-            }
-            if (str[i] == '\'')
-                i++;
-        }
-        else if (str[i] == '"')
-        {
-            i++;
-            while (str[i] && str[i] != '"')
-            {
-                if (str[i] == '$')
-                    res = replace_variable_or_special(str, &i, res);
-                else
-                {
-                    res = append_char(res, str[i]);
-                    i++;
-                }
-            }
-            if (str[i] == '"')
-                i++;
-        }
-        else if (str[i] == '$')
-            res = replace_variable_or_special(str, &i, res);
-        else
-        {
-            res = append_char(res, str[i]);
-            i++;
-        }
-    }
-    return (res);
-}*/
 
 char *replace_variable_or_special(char *str, int *i, char *res)
 {
@@ -133,14 +20,40 @@ char *replace_variable_or_special(char *str, int *i, char *res)
     char *tmp;
     char *status;
     char *env_value;
+    char    quote;
 
     (*i)++; // Skip the $
 
     // Fin de chaîne : juste un $
     if (!str[*i])
-        return append_char(res, '$');
+        return (append_char(res, '$'));
 
-    // $? exit status
+    //Si $ est suivi de ' ou ", c'est une chaîne spéciale : on ignore le $
+    if (str[*i] == '\'' || str[*i] == '"')
+    {
+        quote = str[*i];
+        (*i)++; // skip la quote
+        while (str[*i] && str[*i] != quote)
+            res = append_char(res, str[(*i)++]);
+        if (str[*i] == quote)
+            (*i)++; // skip la quote fermante
+        return (res);
+    }
+    if (str[*i] == '"' || str[*i] == '\'')
+    {
+        res = append_char(res, '$');
+        return res;
+    }
+
+    // Cas : caractère non valide après $
+    // Si ce n'est pas une lettre, underscore, chiffre ou ?, on garde le $
+    if (!str[*i] || (!ft_isalpha(str[*i]) && str[*i] != '_' && str[*i] != '?' && !ft_isdigit(str[*i])))
+    {
+        res = append_char(res, '$');
+        return res;
+    }
+
+    // Cas special $? exit status
     if (str[*i] == '?')
     {
         status = ft_itoa(g_exit_status);
@@ -151,19 +64,20 @@ char *replace_variable_or_special(char *str, int *i, char *res)
         }
         tmp = ft_strjoin(res, status);
         free(status);
-        //free(res);
         (*i)++;
         return (tmp);
     }
 
-    // Si guillemet directement après $, ne pas interpréter
-    if (str[*i] == '"' || str[*i] == '\'')
+    // Cas special: $ suivi d'un chiffre (ex: $9)
+    if (ft_isdigit(str[*i]))
     {
-        res = append_char(res, '$');
-        return (res);
+        (*i)++; // skip la quote
+        tmp = ft_strjoin(res, ""); // rien à ajouter
+        free(res);
+        return (tmp);
     }
 
-    // Sinon, lire un vrai nom de variable
+    // Cas nom de variable valide
     if (ft_isalpha(str[*i]) || str[*i] == '_')
     {
         while (str[*i] && (ft_isalnum(str[*i]) || str[*i] == '_'))
@@ -179,17 +93,15 @@ char *replace_variable_or_special(char *str, int *i, char *res)
         free(res);
         return (tmp);
     }
-    else
+
+    // Pardefault garder le $
+    res = append_char(res, '$');
+    if (str[*i])
     {
-        // Cas spécial : $ suivi d'un caractère non valide
-        res = append_char(res, '$');
-        if (str[*i])
-        {
-            res = append_char(res, str[*i]);
-            (*i)++;
-        }
-        return (res);
+        res = append_char(res, str[*i]);
+        (*i)++;
     }
+    return (res);
 }
 
 char *replace_all_variables(char *str)
@@ -197,56 +109,41 @@ char *replace_all_variables(char *str)
     int i = 0;
     char *res = ft_strdup("");
     if (!res || !str)
-        return (NULL);
+        return NULL;
 
     while (str[i])
     {
-        if (str[i] == '\'') // quote simple : tout est littéral
+        if (str[i] == '\'') // quotes simples : tout est littéral
         {
-            res = append_char(res, str[i++]); // ajoute '
+            res = append_char(res, str[i++]);
             while (str[i] && str[i] != '\'')
                 res = append_char(res, str[i++]);
-            if (str[i] == '\'') // ajoute la fin '
+            if (str[i] == '\'')
                 res = append_char(res, str[i++]);
         }
-        else if (str[i] == '"') // quote double : on autorise les $
+        else if (str[i] == '"') // quotes doubles : on autorise $
         {
-            res = append_char(res, str[i++]); // ajoute "
+            res = append_char(res, str[i++]);
             while (str[i] && str[i] != '"')
             {
                 if (str[i] == '$')
-                {
-                    // Ne pas interpréter $ suivi de quote
-                    if (str[i + 1] == '"' || str[i + 1] == '\'')
-                    {
-                        res = append_char(res, '$');
-                        i++;
-                    }
-                    else
-                        res = replace_variable_or_special(str, &i, res);
-                }
+                    res = replace_variable_or_special(str, &i, res);
                 else
                     res = append_char(res, str[i++]);
             }
             if (str[i] == '"')
-                res = append_char(res, str[i++]); // ajoute "
+                res = append_char(res, str[i++]);
         }
         else if (str[i] == '$')
         {
-            // Si $ est suivi d’un quote, ne pas interpréter
-            if (str[i + 1] == '"' || str[i + 1] == '\'')
-            {
-                res = append_char(res, '$');
-                i++;
-            }
-            else
-                res = replace_variable_or_special(str, &i, res);
+            res = replace_variable_or_special(str, &i, res);
         }
         else
             res = append_char(res, str[i++]);
     }
-    return (res);
+    return res;
 }
+
 
 // Fonction pour remplacer toutes les variables d'environnement dans un tableau d'arguments
 void replace_exit_and_env_status(char **args)
