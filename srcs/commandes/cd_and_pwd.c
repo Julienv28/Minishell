@@ -87,13 +87,19 @@ void	ft_cd(char **args, char ***envcp)
 // PWD
 // Affiche le chemin absolu du répertoire courant.
 
-void ft_pwd(void)
+void ft_pwd(char **args)
 {
     char path[1024];
 
+	//Verifier la presence d'options
+	if (args[1] && args[1][0] == '-' && count_ags(args) == 2)
+	{
+		printf("bash: pwd: -%c: invalid option\n", args[1][1]);
+		return ;
+	}
     // Récupérer le répertoire courant
     if (getcwd(path, sizeof(path)) != NULL)
-        printf("Répertoire actuel : %s\n", path);
+        printf("%s\n", path);
     else
         perror("getcwd\n");
 }
