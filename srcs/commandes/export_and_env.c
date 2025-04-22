@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:36 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/16 15:47:12 by opique           ###   ########.fr       */
+/*   Updated: 2025/04/22 10:11:33 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,7 @@ int is_valid_name(char *name)
     while (name[i])
     {
         if (!(ft_isalnum(name[i]) || name[i] == '_')) // Le reste doit être alphanumérique ou underscore
-        {
-            printf("restant lettres fausses\n");
             return (0);
-        }
         i++;
     }
     return (1);
@@ -70,18 +67,43 @@ void	ft_export(char *arg, char ***envcp)
 {
 	char	*key;
 	char	*value;
+	char	*equal_sign;
 
 	if (!arg)
 	{
 		ft_env(*envcp);
 		return ;
 	}
-	else if (arg && !ft_strchr(arg, '='))
+	arg = replace_all_variables(arg);
+	if (!arg)
 		return ;
-	key = ft_substr((const char *)arg, 0, ft_strchr(arg, '=') - arg);
-	value = ft_strdup(ft_strchr(arg, '=') + 1);
-	if (is_valid_name(key))
-		ft_set_env(key, value, envcp);
+	if (arg[0] == '\0')
+	{
+		ft_putstr_fd("export: `': not a valid identifier\n", STDERR_FILENO);
+		free(arg);
+		return ;
+	}
+	equal_sign = ft_strchr(arg, '=');
+	if (equal_sign)
+	{
+		key = ft_substr((const char *)arg, 0, equal_sign - arg);
+		value = ft_strdup(equal_sign + 1);
+	}
+	else
+	{
+		key = ft_strdup(arg);
+		value = NULL;
+	}
+	if (!is_valid_name(key))
+	{
+		ft_putstr_fd("export: `", STDERR_FILENO);
+		ft_putstr_fd(arg, STDERR_FILENO);
+		ft_putstr_fd("': not a validid identifier\n", STDERR_FILENO);
+		free(key);
+		return ;
+	}
+	if (equal_sign)
+		ft_set_env(key,value, envcp);
 	free(key);
 	free(value);
 }

@@ -34,7 +34,6 @@ int main(int ac, char **av, char **envp)
         command = tokens_to_cmds(tokens); // Convertir les tokens en commandes
         while (command)
         {
-            //printf("Commande : %s, Pipe : %d\n", command->command, command->is_pipe);
             args = split_args(command->command, ' ');
             //Affiche args
             if (args)
@@ -51,8 +50,6 @@ int main(int ac, char **av, char **envp)
             if (command->infile || command->outfile || command->errfile)
                 putback_direction(command, mem_fd);
             free_tab(args);
-            // if (command->next == NULL)
-            //     printf("Fin de la liste des commandes\n");
             command = command->next;
         }
         free_cmd(command);
