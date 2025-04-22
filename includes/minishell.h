@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/18 18:30:40 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/04/22 15:52:54 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,7 @@ int ft_isnumber(char *str);
 // Commandes
 void ft_echo(char *str, char **envcp);
 void ft_cd(char **args, char ***envcp);
-void ft_pwd(void);
+void ft_pwd(char **args);
 void ft_exit(char **args);
 void	ft_export(char *arg, char ***envcp);
 char *get_env_value(char *name, char **envp);

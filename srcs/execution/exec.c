@@ -19,7 +19,7 @@ void exec_builting(char **args, char ***envcp)
     else if (ft_strcmp(args[0], "cd") == 0)
         ft_cd(args, envcp);
     else if (ft_strcmp(args[0], "pwd") == 0)
-        ft_pwd();
+        ft_pwd(args);
     else if (ft_strcmp(args[0], "echo") == 0)
     {
 		  if (parse_args_echo(args) == 1)
