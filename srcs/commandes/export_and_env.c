@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_and_env.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:36 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/22 10:11:33 by opique           ###   ########.fr       */
+/*   Updated: 2025/04/22 15:05:14 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,12 @@ void	ft_export(char *arg, char ***envcp)
 		free(arg);
 		return ;
 	}
+	if (arg[0] == '-')
+	{
+		printf("bash: export: -%c: invalid option\n", arg[1]);
+		free(arg);
+		return ;
+	}
 	equal_sign = ft_strchr(arg, '=');
 	if (equal_sign)
 	{
@@ -98,7 +104,7 @@ void	ft_export(char *arg, char ***envcp)
 	{
 		ft_putstr_fd("export: `", STDERR_FILENO);
 		ft_putstr_fd(arg, STDERR_FILENO);
-		ft_putstr_fd("': not a validid identifier\n", STDERR_FILENO);
+		ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
 		free(key);
 		return ;
 	}
