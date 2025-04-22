@@ -137,7 +137,7 @@ char *get_path(char *cmd, char **envp)
     {
         ft_putstr_fd("command not found: ", STDERR_FILENO);
         ft_putstr_fd(cmd, STDERR_FILENO);
-        //ft_putstr_fd("\n", STDERR_FILENO);
+        ft_putstr_fd("\n", STDERR_FILENO);
     }
     free_tab(paths);
     return (path);

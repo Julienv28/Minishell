@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:06:45 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/22 11:52:45 by opique           ###   ########.fr       */
+/*   Updated: 2025/04/22 13:45:05 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,6 @@ char	**split_args(const char *s, char sep)
 			i++;
 		}
 		raw_word = word_dup(s, start, i);
-		//tab[j++] = remove_quotes_or_slash(raw_word) NA PAS RETIRE LES QUOTE avant $
 		tab[j++] = raw_word;
 		//free(raw_word);
 	}
@@ -83,33 +82,33 @@ char	**split_args(const char *s, char sep)
 	return (tab);
 }
 
-char	*remove_quotes_or_slash(char *str)
+char *remove_quotes_or_slash(char *str)
 {
-	int	i;
-	int	j;
-	char	*new_str;
+    int i = 0;
+    int j = 0;
+    char *new_str;
 
-	i = 0;
-	j = 0;
-	if (!str)
-		return (NULL);
-	new_str = malloc(sizeof(char) * ft_strlen(str) + 1);
-	if (new_str == NULL)
-		return (NULL);
-	while (str[i])
-	{
-		if (str[i] == '\\' && str[i + 1])  // si on rencontre un \, on prend le caractère suivant
+    if (!str)
+        return NULL;
+
+    new_str = malloc(sizeof(char) * (ft_strlen(str) + 1));
+    if (!new_str)
+        return NULL;
+
+    while (str[i])
+    {
+        if (str[i] == '\\' && str[i + 1]) // \ suivi d'un caractère
         {
             new_str[j++] = str[i + 1];
             i += 2;
         }
-		if (str[i] != '\'' && str[i] != '"' && str[i] != '$') // Supprime quotes
-		{
-			new_str[j] = str[i];
-			j++;
-		}
-		i++;
-	}
-	new_str[j] = '\0';
-	return (new_str);
+        else if (str[i] != '\'' && str[i] != '"') // supprimer quotes simples et doubles
+        {
+            new_str[j++] = str[i++];
+        }
+        else
+            i++; // skip quote
+    }
+    new_str[j] = '\0';
+    return new_str;
 }
