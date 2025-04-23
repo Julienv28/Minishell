@@ -1,13 +1,13 @@
 #include "../includes/minishell.h"
 
-int	count_ags(char **args)
+int count_ags(char **args)
 {
-	int	i;
+    int i;
 
-	i = 0;
-	while (args[i])
-		i++;
-	return (i);
+    i = 0;
+    while (args[i])
+        i++;
+    return (i);
 }
 
 void exec_builting(char **args, char ***envcp)
@@ -22,10 +22,10 @@ void exec_builting(char **args, char ***envcp)
         ft_pwd(args);
     else if (ft_strcmp(args[0], "echo") == 0)
     {
-		  if (parse_args_echo(args) == 1)
-	  	{
-		  	return ;
-		   }
+        if (parse_args_echo(args) == 1)
+        {
+            return;
+        }
         if (ft_strcmp(args[1], "-n") != 0)
         {
             i = 1;
@@ -64,40 +64,40 @@ void exec_builting(char **args, char ***envcp)
         ft_export(args[1], envcp);
     else if (ft_strcmp(args[0], "env") == 0)
         ft_env(*envcp);
-	else if (ft_strcmp(args[0], "unset") == 0)
-	    ft_unset(args[1], envcp);
+    else if (ft_strcmp(args[0], "unset") == 0)
+        ft_unset(args[1], envcp);
     else
         return;
 }
 
-char	*search_path(char **paths, char *cmd)
+char *search_path(char **paths, char *cmd)
 {
-	int		i;
-	char	*path;
-	char	*part_path;
+    int i;
+    char *path;
+    char *part_path;
 
-	i = 0;
-	while (paths[i])
-	{
-		part_path = ft_strjoin(paths[i], "/");
-		path = ft_strjoin(part_path, cmd);
-		free(part_path);
-		if (access(path, F_OK) == 0)
-			return (path);
-		free(path);
-		i++;
-	}
-	return (0);
+    i = 0;
+    while (paths[i])
+    {
+        part_path = ft_strjoin(paths[i], "/");
+        path = ft_strjoin(part_path, cmd);
+        free(part_path);
+        if (access(path, F_OK) == 0)
+            return (path);
+        free(path);
+        i++;
+    }
+    return (0);
 }
 
-int	find_line(char **envp, char *path)
+int find_line(char **envp, char *path)
 {
-	int	i;
+    int i;
 
-	i = 0;
-	while (envp[i] && ft_strncmp(path, envp[i], ft_strlen(path)) != 0)
-		i++;
-	return (i);
+    i = 0;
+    while (envp[i] && ft_strncmp(path, envp[i], ft_strlen(path)) != 0)
+        i++;
+    return (i);
 }
 
 // determine si un chemin passé a path est un repertoire ou non
@@ -149,7 +149,17 @@ void exec_cmd(t_com_list *command, char **envcp)
     char *path;
     int status;
 
+    g_exit_status = 1;
     args = ft_split(command->command, ' ');
+    if (!args || args[0] == NULL || args[0][0] == '\0')
+    {
+        ft_putstr_fd("minishell: ", STDERR_FILENO);
+        ft_putstr_fd(*args, STDERR_FILENO);
+        ft_putstr_fd("command not found\n", STDERR_FILENO);
+        g_exit_status = 127;
+        free_tab(args);
+        return;
+    }
     path = get_path(args[0], envcp);
     if (path == NULL)
     {
@@ -166,17 +176,17 @@ void exec_cmd(t_com_list *command, char **envcp)
             exit(1);
         }
     }
-    else if (pid > 0)          // Si on est dans le processus parent
+    else if (pid > 0) // Si on est dans le processus parent
     {
         waitpid(pid, &status, 0); // Attente de la fin de l'exécution du processus enfant
         // MAJ g_exit_status pour avoir la bonne valeur
         if (WIFEXITED(status))
             g_exit_status = WEXITSTATUS(status); // Code de sortie normal
         else if (WIFSIGNALED(status))
-            g_exit_status = 128 + WTERMSIG(status); // Interrompu par signal 
+            g_exit_status = 128 + WTERMSIG(status); // Interrompu par signal
     }
-    else   
-    {                    // Gestion d'une erreur de fork
+    else
+    { // Gestion d'une erreur de fork
         perror("fork failed");
         g_exit_status = 1;
     }

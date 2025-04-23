@@ -6,15 +6,25 @@
 
 void signal_handler(int sig)
 {
-    // exit_status = variable globale qui suit la valeur de sortie des signaux
     if (sig == SIGINT) // Si Ctrl+C
     {
-        g_exit_status = 130;    // Code de sortie pour une interruption par Ctrl+C
-        rl_replace_line("", 0); // Remplace la ligne de commande courante par une chaîne vide (ou autre). Donc Vider la ligne en cours
-        write(1, "\n", 1);
-        rl_on_new_line();       // Dit à readline que tu es sur une nouvelle ligne. Donc création nouvelle ligne"
-        rl_redisplay();         // Force le rafraîchissement du prompt.  
+        if (g_exit_status == 1) // cmd
+        {
+            g_exit_status = 130;
+            rl_replace_line("", 0);
+            write(1, "\n", 1); // Assure-toi que le retour à la ligne est bien fait
+            rl_on_new_line();  // Met à jour readline pour qu'il commence une nouvelle ligne
+        }
+        else
+        {
+            g_exit_status = 130;    // Code de sortie pour une interruption par Ctrl+C
+            rl_replace_line("", 0); // Remplace la ligne de commande courante par une chaîne vide (ou autre). Donc Vider la ligne en cours
+            write(1, "\n", 1);
+            rl_on_new_line(); // Dit à readline que tu es sur une nouvelle ligne. Donc création nouvelle ligne"
+            rl_redisplay();   // Force le rafraîchissement du prompt.
+        }
     }
+
     // Ajouter signal erreur quand prompt secondaire ouvert '>' et Ctrl+C
     else if (sig == SIGQUIT) // (Si Ctrl +\)
     {
