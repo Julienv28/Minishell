@@ -6,7 +6,7 @@ int main(int ac, char **av, char **envp)
 {
     char *input;
     char **args = NULL;
-    char    **envcp;
+    char **envcp;
     t_token *tokens;
     t_com_list *command;
     (void)ac;
@@ -16,26 +16,26 @@ int main(int ac, char **av, char **envp)
     envcp = ft_env_dup(envp);
     while (1)
     {
-        set_signal_action(); // gestion des signaux (SIGINT ET SIGQUIT)
+        set_signal_action();                         // gestion des signaux (SIGINT ET SIGQUIT)
         input = readline(GREEN "minishell$ " RESET); // Demander une saisie
         if (!input)
         {
             ft_putstr_fd("exit\n", STDOUT_FILENO);
             exit(g_exit_status);
         }
-        add_history(input);  // Ajouter l'entrée dans l'historique      
-        tokens = create_tokens(&input);   // Créer les tokens
+        add_history(input);             // Ajouter l'entrée dans l'historique
+        tokens = create_tokens(&input); // Créer les tokens
         if (!tokens)
         {
             free(tokens);
-            continue;           // retourne immédiatement au prompt principal
+            continue; // retourne immédiatement au prompt principal
         }
         free(input);                      // Libérer input après la création des tokenss
         command = tokens_to_cmds(tokens); // Convertir les tokens en commandes
         while (command)
         {
             args = split_args(command->command, ' ');
-            //Affiche args
+            // Affiche args
             if (args)
                 replace_exit_and_env_status(args); // Remplacer $ dans les arguments
             // Appliquer redirection avant execution

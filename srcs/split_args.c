@@ -3,112 +3,132 @@
 /*                                                        :::      ::::::::   */
 /*   split_args.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:06:45 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/22 13:45:05 by opique           ###   ########.fr       */
+/*   Updated: 2025/04/23 11:39:18 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static int	is_quote(char c)
+// static int is_quote(char c)
+// {
+//     return (c == '"' || c == '\'');
+// }
+
+static int count_words(const char *s, char sep)
 {
-	return (c == '"' || c == '\'');
+    int i = 0;
+    int count = 0;
+    int single_quote = 0;
+    int double_quote = 0;
+
+    while (s[i])
+    {
+        while (s[i] == sep)
+            i++;
+        if (!s[i])
+            break;
+        count++;
+        while (s[i])
+        {
+            if (s[i] == '\'' && !double_quote)
+                single_quote = !single_quote;
+            else if (s[i] == '"' && !single_quote)
+                double_quote = !double_quote;
+            else if (s[i] == sep && !single_quote && !double_quote)
+                break;
+            i++;
+        }
+    }
+    return (count);
 }
 
-static int	count_words(const char *s, char sep)
+static char *word_dup(const char *s, int start, int end)
 {
-	int i = 0, count = 0, in_quote = 0;
-
-	while (s[i])
-	{
-		while (s[i] == sep)
-			i++;
-		if (!s[i])
-			break;
-		count++;
-		while (s[i] && (in_quote || s[i] != sep))
-		{
-			if (is_quote(s[i]))
-				in_quote = !in_quote;
-			i++;
-		}
-	}
-	return (count);
+    char *res = malloc(end - start + 1);
+    int i = 0;
+    if (!res)
+        return (NULL);
+    while (start < end)
+        res[i++] = s[start++];
+    res[i] = '\0';
+    return (res);
 }
 
-static char	*word_dup(const char *s, int start, int end)
+char **split_args(const char *s, char sep)
 {
-	char *res = malloc(end - start + 1);
-	int i = 0;
-	if (!res)
-		return (NULL);
-	while (start < end)
-		res[i++] = s[start++];
-	res[i] = '\0';
-	return (res);
-}
+    int i = 0, j = 0, start;
+    // int in_quote = 0;
+    int single_quote = 0;
+    int double_quote = 0;
+    char **tab;
+    char *raw_word;
 
-char	**split_args(const char *s, char sep)
-{
-	int		i = 0, j = 0, start;
-	int		in_quote = 0;
-	char	**tab;
-	char	*raw_word;
+    tab = malloc(sizeof(char *) * (count_words(s, sep) + 1));
+    if (!tab)
+        return (NULL);
 
-	tab = malloc(sizeof(char *) * (count_words(s, sep) + 1));
-	if (!tab)
-		return (NULL);
-
-	while (s[i])
-	{
-		while (s[i] == sep)
-			i++;
-		if (!s[i])
-			break;
-		start = i;
-		while (s[i] && (in_quote || s[i] != sep))
-		{
-			if (is_quote(s[i]))
-				in_quote = !in_quote;
-			i++;
-		}
-		raw_word = word_dup(s, start, i);
-		tab[j++] = raw_word;
-		//free(raw_word);
-	}
-	tab[j] = NULL;
-	return (tab);
+    while (s[i])
+    {
+        while (s[i] == sep)
+            i++;
+        if (!s[i])
+            break;
+        start = i;
+        while (s[i])
+        {
+            if (s[i] == '\'' && !double_quote)
+                single_quote = !single_quote;
+            else if (s[i] == '"' && !single_quote)
+                double_quote = !double_quote;
+            else if (s[i] == sep && !single_quote && !double_quote)
+                break;
+            i++;
+        }
+        raw_word = word_dup(s, start, i);
+        tab[j++] = raw_word;
+        // free(raw_word);
+    }
+    tab[j] = NULL;
+    return (tab);
 }
 
 char *remove_quotes_or_slash(char *str)
 {
     int i = 0;
     int j = 0;
+    int single_quote;
+    int double_quote;
     char *new_str;
 
-    if (!str)
-        return NULL;
-
+    single_quote = 0;
+    double_quote = 0;
     new_str = malloc(sizeof(char) * (ft_strlen(str) + 1));
     if (!new_str)
-        return NULL;
-
+        return (NULL);
     while (str[i])
     {
-        if (str[i] == '\\' && str[i + 1]) // \ suivi d'un caractère
+        if (str[i] == '\'' && !double_quote)
         {
+            single_quote = !single_quote;
+            i++; // on ne copie pas les quotes simples délimiteuses
+        }
+        else if (str[i] == '"' && !single_quote)
+        {
+            double_quote = !double_quote;
+            i++; // on ne copie pas les quotes doubles délimiteuses
+        }
+        else if (str[i] == '\\' && str[i + 1]) // \ suivi d'un caractère
+        {
+            // gestion de l'antislash sauf dans quotes simples
             new_str[j++] = str[i + 1];
             i += 2;
         }
-        else if (str[i] != '\'' && str[i] != '"') // supprimer quotes simples et doubles
-        {
-            new_str[j++] = str[i++];
-        }
         else
-            i++; // skip quote
+            new_str[j++] = str[i++];
     }
     new_str[j] = '\0';
-    return new_str;
+    return (new_str);
 }
