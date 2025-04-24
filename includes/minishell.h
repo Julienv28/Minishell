@@ -137,8 +137,8 @@ int find_line(char **envp, char *path);
 char *search_path(char **paths, char *cmd);
 
 // Pipes (revoir les args pour pipex)
-void complex_pipex(int ac, char **av, char **envp);
-void pipex_simple(char **av, char **envp);
+void complex_pipex(int ac, char **args, char **envcp);
+void pipex_simple(char **args, char **envcp);
 int simplified_gnl(char **line);
 
 // Utils
