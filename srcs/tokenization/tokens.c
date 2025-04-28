@@ -38,37 +38,44 @@ t_token *create_tokens(char **str)
 
     i = 0;
     tokens = NULL;
-    expect_cmd = 1; // 1 car on attend une CMD en 1er
+    expect_cmd = 1; // On attend une CMD en premier
+
     while ((*str)[i])
     {
-        while ((*str)[i] == ' ')
+        while ((*str)[i] == ' ') // Sauter les espaces
             i++;
-        if (!(*str)[i])
+
+        if (!(*str)[i]) // Fin de la chaîne
             break;
+
+        // Détection des pipes
         if ((*str)[i] == '|')
         {
             if (check_pipe(*str, i) == -1)
                 return (NULL);
             add_token(&tokens, "|", PIPE);
-            // printf("Détection du pipe '|\n");
             i++;
-            expect_cmd = 1;
+            expect_cmd = 1; // Après un pipe, on attend une nouvelle commande
         }
-        else if ((*str)[i] == '&' || (*str)[i] == ':' || (*str)[i] == '!' 
-            || (*str)[i] == '#' || (*str)[i] == ';')
+        // Gestion des autres opérateurs si nécessaire
+        else if ((*str)[i] == '&' || (*str)[i] == ':' || (*str)[i] == '!' || (*str)[i] == '#' || (*str)[i] == ';')
         {
             if (check_input(*str, i) == -1)
                 return (NULL);
         }
+        // Gestion de la redirection
         else
         {
-            redirection_status = handle_redirection(*str, &i, &tokens); // Ne modifie pas str, donc OK
+            redirection_status = handle_redirection(*str, &i, &tokens);
             if (redirection_status == -1)
                 return (NULL);
-            // handle_redirection(*str, &i, &tokens); // Ne modifie pas str, donc OK
+
+            // Après avoir traité la redirection, on devrait ajouter la commande suivante
+            // La fonction handle_word permet de gérer correctement les commandes et leurs arguments
             if (handle_word(str, &i, &tokens, &expect_cmd) == -1)
                 break;
         }
     }
+
     return (tokens);
 }
