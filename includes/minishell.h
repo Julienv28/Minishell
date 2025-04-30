@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/28 13:18:15 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/04/30 10:13:35 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,9 +144,11 @@ int find_line(char **envp, char *path);
 char *search_path(char **paths, char *cmd);
 
 // Pipes (revoir les args pour pipex)
-void complex_pipex(int ac, char **args, char **envcp);
-void pipex_simple(char **args, char **envcp);
-int simplified_gnl(char **line);
+void	complex_pipex(t_com_list *command, int ac, char **args, char **envcp);
+void	pipex_simple(t_com_list *command, char **args, char **envcp);
+int     simplified_gnl(char **line);
+int	    parse_pipes(char **args);
+void 	pipes_manager(t_com_list *command, int count, char **args, char **envcp);
 
 // Utils
 void exit_error(void);
