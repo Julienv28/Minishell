@@ -3,20 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   pipex_simple.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 12:02:35 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/16 16:44:07 by opique           ###   ########.fr       */
+/*   Updated: 2025/04/30 09:50:58 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static void	child_process(char **args, char **envp, int *fd)
+static void	child_proc(t_com_list *command, char **args, char **envcp, int *fd)
 {
 	int	filein;
 
-	filein = open(av[1], O_RDONLY);
+	filein = open(args[1], O_RDONLY);
 	if (filein == -1)
 		exit_error();
 	dup2(fd[1], STDOUT_FILENO);
@@ -29,11 +29,11 @@ static void	child_process(char **args, char **envp, int *fd)
                 exec_cmd(command, envcp);
 }
 
-static void	parent_process(char **args, char **envp, int *fd)
+static void	parent_proc(t_com_list *command, char **args, char **envcp, int *fd)
 {
 	int	fileout;
 
-	fileout = open(av[4], O_WRONLY | O_CREAT | O_TRUNC, 0777);
+	fileout = open(args[4], O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (fileout == -1)
 		exit_error();
 	dup2(fd[0], STDIN_FILENO);
@@ -62,7 +62,7 @@ static void	timeout_handling(pid_t pid)
 	exit(0);
 }
 
-void	pipex_simple(char **args, char **envcp)
+void	pipex_simple(t_com_list *command, char **args, char **envcp)
 {
 	int		fd[2];
 	pid_t	pid1;
@@ -73,7 +73,7 @@ void	pipex_simple(char **args, char **envcp)
 	if (pid1 == -1)
 		exit_error();
 	if (pid1 == 0)
-		child_process(av, envp, fd);
+		child_proc(command, args, envcp, fd);
 	timeout_handling(pid1);
-	parent_process(av, envp, fd);
+	parent_proc(command, args, envcp, fd);
 }

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_args.c                                       :+:      :+:    :+:   */
+/*   pipes_manager.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 11:33:17 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/04 15:00:13 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/04/30 10:18:15 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,16 +31,34 @@ void parse_pipes(t_com_list *list, t_minishell *mini)
     mini->have_pipes = 0;
 }*/
 
-void	parse_pipes(t_com_list *list, t_minishell *mini)
+int	parse_pipes(char **args)
 {
-	while (list)
-	{
-		if (list->is_pipe)
-			mini->have_pipes++;
-		list = list->next;
-	}
+    int count;
+    int i;
+
+    if (!args)
+        return (0);
+    i = 0;
+    count = 0;
+    while (args && args[i])
+    {
+        if (strcmp(args[i], "|") == 0)
+            count++;
+        i++;
+    }
+    return (count);
 }
 
+void	pipes_manager(t_com_list *command, int count, char **args, char **envcp)
+{
+	int	fake_ac;
+
+	fake_ac = count_ags(args);
+	if (count == 1)
+		pipex_simple(command, args, envcp);
+	else
+		complex_pipex(command, fake_ac, args, envcp);
+}
 //fonction pour executer les pipes selon le nombre presents. 
 // Besoin de revoir les args en parametre.
 /*void	exec_pipes(t_minishell *mini)

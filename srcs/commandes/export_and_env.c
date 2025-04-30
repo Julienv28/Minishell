@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:36 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/30 13:42:40 by opique           ###   ########.fr       */
+/*   Updated: 2025/04/30 11:53:20 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,4 +124,34 @@ void	ft_env(char **envcp)
 		printf("%s\n", envcp[i]);
 		i++;
 	}
+}
+
+static int find_char_index(const char *s, char c)
+{
+	int i = 0;
+	while (s[i])
+	{
+		if (s[i] == c)
+			return i;
+		i++;
+	}
+	return -1;
+}
+
+int	check_events(char *arg)
+{
+	char	*res;
+	int		index;
+
+	index = find_char_index(arg, '!');
+	if (index >= 0)
+	{
+		res = ft_substr(arg, index, ft_strlen(arg) - index);
+		ft_putstr_fd("Minishell: ", STDERR_FILENO);
+		ft_putstr_fd(res, STDERR_FILENO);
+		ft_putstr_fd(": event not found\n", STDERR_FILENO);
+		free(res);
+		return (1);
+	}
+	return (0);
 }
