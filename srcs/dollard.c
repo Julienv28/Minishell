@@ -96,7 +96,11 @@ char *replace_variable_or_special(char *str, int *i, char *res)
 
     env_value = getenv(var_name);
     if (!env_value)
+    {
+        if (ft_strcmp(var_name, "UID") == 0)
+            ft_putstr_fd("UID non défini dans l'environnement\n", STDERR_FILENO);
         env_value = "";
+    }
     tmp = ft_strjoin(res, env_value);
     if (!tmp)
     {

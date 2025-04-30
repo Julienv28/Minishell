@@ -28,7 +28,6 @@ void signal_handler(int sig)
     // Ajouter signal erreur quand prompt secondaire ouvert '>' et Ctrl+C
     else if (sig == SIGQUIT) // (Si Ctrl +\)
     {
-        ft_putstr_fd("Quit: 3\n", STDOUT_FILENO); // message par defaut
         g_exit_status = 131;                      // 131 = interruption par (Ctrl +\)
     }
 }

@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   export_and_env.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:36 by juvitry           #+#    #+#             */
 /*   Updated: 2025/04/30 11:53:20 by juvitry          ###   ########.fr       */
@@ -109,7 +109,7 @@ void	ft_export(char *arg, char ***envcp)
 		return ;
 	}
 	if (equal_sign)
-		ft_set_env(key,value, envcp);
+		ft_set_env(key, value, envcp);
 	free(key);
 	free(value);
 }

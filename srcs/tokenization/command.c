@@ -53,11 +53,11 @@ t_com_list *tokens_to_cmds(t_token *tokens)
             else
                 add_bottom(&cmd_list, new_cmd); // Sinon, l'ajoute à la fin de la liste
             current_cmd = new_cmd;
-            printf("Détection d'une cmd: %s\n", tmp->value);
+            //printf("Détection d'une cmd: %s\n", tmp->value);
         }
         else if (tmp->type == ARG && current_cmd)
         {
-            printf("Détection d'un arg: %s\n", tmp->value);
+            //printf("Détection d'un arg: %s\n", tmp->value);
             // Si c'est un argument, on l'ajoute à la commande en cours
             current_cmd->command = concat_command(current_cmd->command, tmp->value);
         }
