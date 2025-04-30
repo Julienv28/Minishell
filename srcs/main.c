@@ -51,11 +51,19 @@ int main(int ac, char **av, char **envp)
                 continue;
             }
 
+            //On voit les pipes
+            int pipes_count = parse_pipes(args);
+            if (pipes_count != 0)
+                pipes_manager(command, pipes_count, args, envcp);
+
             // sinon on exécute
-            if (args && is_builting(args[0]) == 0)
-                exec_builting(args, &envcp);
-            else if (args)
-                exec_cmd(command, envcp);
+            else
+            {
+                if (args && is_builting(args[0]) == 0)
+                    exec_builting(args, &envcp);
+                else if (args)
+                    exec_cmd(command, envcp);
+            }
 
             // remettre les redirections normales
             if (mem_fd >= 0 && (command->infile || command->outfile || command->errfile))
