@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-static void	child_process(char *av, char **envp)
+static void	child_process(char *arg, char **envp)
 {
 	pid_t	pid;
 	int		fd[2];
@@ -26,7 +26,10 @@ static void	child_process(char *av, char **envp)
 	{
 		close(fd[0]);
 		dup2(fd[1], STDOUT_FILENO);
-		ft_exec(av, envp);
+		if (args && is_builting(arg) == 0)
+                exec_builting(&arg, &envcp);
+            else
+                exec_cmd(command, envcp);
 	}
 	else
 	{
@@ -65,7 +68,7 @@ static void	here_doc_handler(char *limiter, int ac)
 	}
 }
 
-void	complex_pipex(int ac, char **av, char **envp)
+void	complex_pipex(int ac, char **args, char **envp)
 {
 	int	i;
 	int	filein;
@@ -89,7 +92,10 @@ void	complex_pipex(int ac, char **av, char **envp)
 		while (i < ac - 2)
 			child_process(av[i++], envp);
 		dup2(fileout, STDOUT_FILENO);
-		ft_exec(av[ac - 2], envp);
+		if (args && is_builting(args[0]) == 0)
+                exec_builting(args, &envcp);
+            else
+                exec_cmd(command, envcp);
 	}
 	exit_error();
 }

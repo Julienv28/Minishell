@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-static void	child_process(char **av, char **envp, int *fd)
+static void	child_process(char **args, char **envp, int *fd)
 {
 	int	filein;
 
@@ -23,10 +23,13 @@ static void	child_process(char **av, char **envp, int *fd)
 	dup2(filein, STDIN_FILENO);
 	close(fd[0]);
 	close(fd[1]);
-	ft_exec(av[2], envp);
+	if (args && is_builting(args[0]) == 0)
+                exec_builting(args, &envcp);
+            else
+                exec_cmd(command, envcp);
 }
 
-static void	parent_process(char **av, char **envp, int *fd)
+static void	parent_process(char **args, char **envp, int *fd)
 {
 	int	fileout;
 
@@ -37,7 +40,10 @@ static void	parent_process(char **av, char **envp, int *fd)
 	dup2(fileout, STDOUT_FILENO);
 	close(fd[1]);
 	close(fd[0]);
-	ft_exec(av[3], envp);
+	if (args && is_builting(args[0]) == 0)
+                exec_builting(args, &envcp);
+            else
+                exec_cmd(command, envcp);
 }
 
 static void	timeout_handling(pid_t pid)
@@ -56,7 +62,7 @@ static void	timeout_handling(pid_t pid)
 	exit(0);
 }
 
-void	pipex_simple(char **av, char **envp)
+void	pipex_simple(char **args, char **envcp)
 {
 	int		fd[2];
 	pid_t	pid1;
