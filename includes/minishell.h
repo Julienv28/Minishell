@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/22 15:52:54 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/04/28 13:18:15 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,12 @@
 // variable globale pour suivre l'état des erreurs
 extern int g_exit_status;
 
+typedef struct s_file_list
+{
+    char *filename;
+    struct s_file_list *next;
+} t_file_list;
+
 typedef struct s_com_list
 {
     char *command;
@@ -59,6 +65,7 @@ typedef struct s_com_list
     int flag_in; // 1 si redirection >>, 0 sinon
     int flag_out;
     struct s_com_list *next;
+    t_file_list *all_outfilles;
 } t_com_list;
 
 typedef struct s_minishell
@@ -80,7 +87,7 @@ typedef struct s_token
 void set_signal_action(void);
 void signal_handler(int sig);
 char *replace_all_variables(char *str);
-void    replace_exit_and_env_status(char **args);
+void replace_exit_and_env_status(char **args);
 char *replace_variable_or_special(char *str, int *i, char *res);
 char *append_char(char *res, char c);
 
@@ -121,12 +128,12 @@ void ft_echo(char *str, char **envcp);
 void ft_cd(char **args, char ***envcp);
 void ft_pwd(char **args);
 void ft_exit(char **args);
-void	ft_export(char *arg, char ***envcp);
+void ft_export(char *arg, char ***envcp);
 char *get_env_value(char *name, char **envp);
-void	ft_set_env(char *key, char *value, char ***envp);
-void	ft_env(char **envp);
+void ft_set_env(char *key, char *value, char ***envp);
+void ft_env(char **envp);
 int is_valid_name(char *name);
-void	ft_unset(char *key, char ***envcp);
+void ft_unset(char *key, char ***envcp);
 
 // Exec
 void exec_cmd(t_com_list *command, char **envcp);
@@ -147,14 +154,17 @@ int open_file(char *av, int i);
 void ft_exec(char *av, char **envp);
 void free_tab(char **tab);
 char **split_args(const char *s, char sep);
-char	*remove_quotes_or_slash(char *str);
-void    free_cmd(t_com_list *command);
-char	**ft_env_dup(char **envp);
-void	ft_freeenvp(char **envcp);
-char	*ft_srjoin3(char *s1, char *s2, char *s3);
-char	**ft_realloc_env(char **envcp, char *new_entry);
-void	init_cmds(t_com_list *command);
-int	    parse_args_echo(char **args);
-int	    count_ags(char **args);
+char *remove_quotes_or_slash(char *str);
+void free_cmd(t_com_list *command);
+char **ft_env_dup(char **envp);
+void ft_freeenvp(char **envcp);
+char *ft_srjoin3(char *s1, char *s2, char *s3);
+char **ft_realloc_env(char **envcp, char *new_entry);
+void init_cmds(t_com_list *command);
+int parse_args_echo(char **args);
+int count_ags(char **args);
+
+void print_cmd_list(t_com_list *cmd_list);
+void add_outfile(t_file_list **list, char *filename);
 
 #endif

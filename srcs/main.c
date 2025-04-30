@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-int g_exit_status = 0; // variable globale pour signaux initialisé a 0
+int g_exit_status = 0;
 
 int main(int ac, char **av, char **envp)
 {
@@ -16,44 +16,56 @@ int main(int ac, char **av, char **envp)
     envcp = ft_env_dup(envp);
     while (1)
     {
-        set_signal_action();                         // gestion des signaux (SIGINT ET SIGQUIT)
-        input = readline(GREEN "minishell$ " RESET); // Demander une saisie
+        mem_fd = -2; // <- Très important pour bien contrôler l'état
+        set_signal_action();
+        input = readline(GREEN "minishell$ " RESET);
         if (!input)
         {
             ft_putstr_fd("exit\n", STDOUT_FILENO);
             exit(g_exit_status);
         }
-        add_history(input);             // Ajouter l'entrée dans l'historique
-        tokens = create_tokens(&input); // Créer les tokens
+        add_history(input);
+        tokens = create_tokens(&input);
         if (!tokens)
         {
             free(tokens);
-            continue; // retourne immédiatement au prompt principal
+            continue;
         }
-        free(input);                      // Libérer input après la création des tokenss
-        command = tokens_to_cmds(tokens); // Convertir les tokens en commandes
+        free(input);
+        command = tokens_to_cmds(tokens);
         while (command)
         {
             args = split_args(command->command, ' ');
-            // Affiche args
             if (args)
-                replace_exit_and_env_status(args); // Remplacer $ dans les arguments
-            // Appliquer redirection avant execution
+                replace_exit_and_env_status(args);
+
+            // Appliquer la redirection
             if (command->infile || command->outfile || command->errfile)
                 mem_fd = ft_redirection(command);
-            // Exécuter la commande
+
+            if (mem_fd == -1)
+            {
+                // erreur de redirection : on ne fait rien, on passe à la prochaine commande
+                free_tab(args);
+                command = command->next;
+                continue;
+            }
+
+            // sinon on exécute
             if (args && is_builting(args[0]) == 0)
                 exec_builting(args, &envcp);
-            else
+            else if (args)
                 exec_cmd(command, envcp);
-            // Rétablir les redirections
-            if (command->infile || command->outfile || command->errfile)
+
+            // remettre les redirections normales
+            if (mem_fd >= 0 && (command->infile || command->outfile || command->errfile))
                 putback_direction(command, mem_fd);
+
             free_tab(args);
             command = command->next;
         }
         free_cmd(command);
-        free_tokens(tokens); // Libérer les tokens
+        free_tokens(tokens);
     }
     ft_freeenvp(envcp);
     return (g_exit_status);

@@ -67,7 +67,7 @@ char *replace_variable_or_special(char *str, int *i, char *res)
     }
 
     // Cas spécial : $?
-    if (str[*i] == '?')
+    if (str[*i] == '?' && (str[*i + 1] == '\0' || str[*i + 1] == ' '))
     {
         status = ft_itoa(g_exit_status);
         if (!status)

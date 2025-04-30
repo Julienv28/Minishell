@@ -116,30 +116,54 @@ char *get_path(char *cmd, char **envp)
     char *path;
     int line;
 
-    if (access(cmd, X_OK) == 0)
+    // Si la commande est déjà un chemin absolu et exécutable
+    if (access(cmd, F_OK) == 0) // On vérifie d'abord si le fichier existe
     {
-        if (is_directory(cmd))
+        if (is_directory(cmd)) // Vérification si c'est un répertoire
         {
             ft_putstr_fd("minishell: ", STDERR_FILENO);
             ft_putstr_fd(cmd, STDERR_FILENO);
             ft_putstr_fd(": is a directory\n", STDERR_FILENO);
             return (NULL);
         }
-        return (ft_strdup(cmd));
+        if (access(cmd, X_OK) == 0)  // Vérification si c'est exécutable
+            return (ft_strdup(cmd)); // Commande trouvée et exécutable
+        else
+        {
+            ft_putstr_fd("minishell: ", STDERR_FILENO);
+            ft_putstr_fd(cmd, STDERR_FILENO);
+            ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
+            return (NULL); // Commande trouvée mais pas exécutable
+        }
     }
+
+    // Recherche de la commande dans les chemins spécifiés dans PATH
     line = find_line(envp, "PATH");
-    if (!envp[line])
+    if (!envp[line]) // Si le PATH n'est pas trouvé
         return (NULL);
+
+    // Découper le chemin du PATH en différents répertoires
     paths = ft_split(envp[line] + 5, ':');
+    // Recherche dans les répertoires du PATH
     path = search_path(paths, cmd);
-    if (path == NULL)
+
+    if (path == NULL) // Commande non trouvée dans les chemins de PATH
     {
-        ft_putstr_fd("command not found: ", STDERR_FILENO);
+        ft_putstr_fd("minishell: command not found: ", STDERR_FILENO); // Commande introuvable
         ft_putstr_fd(cmd, STDERR_FILENO);
         ft_putstr_fd("\n", STDERR_FILENO);
     }
-	free_tab(paths);
-    return (path);
+    else if (access(path, X_OK) != 0) // Vérification si le fichier est exécutable
+    {
+        ft_putstr_fd("minishell: ", STDERR_FILENO);
+        ft_putstr_fd(cmd, STDERR_FILENO);
+        ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
+        free(path);  // Libération de la mémoire allouée pour path
+        path = NULL; // Remise à NULL pour indiquer l'échec
+    }
+
+    free_tab(paths); // Libération de la mémoire allouée pour les chemins
+    return (path);   // Retourne NULL si la commande n'est pas trouvée ou pas exécutable
 }
 
 void exec_cmd(t_com_list *command, char **envcp)

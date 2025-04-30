@@ -8,8 +8,8 @@ int open_file_cmd(char *infile)
     fd = open(infile, O_RDONLY);
     if (fd == -1)
     {
-        perror("Erreur d'ouverture cmd du fichier d'entrée");
-        return (-1); // Retourner -1 en cas d'erreur
+        fprintf(stderr, "minishell: %s: No such file or directory\n", infile);
+        return (-1);
     }
     return (fd);
 }
@@ -30,10 +30,14 @@ int open_outfile(char *outfile, int append)
         fd = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644); // O_TRUNC pour écraser le fichier
     if (fd == -1)
     {
-        perror("Erreur d'ouverture du fichier de sortie");
-        return (-1); // Retourner -1 en cas d'erreur
+        fprintf(stderr, "minishell: %s: No such file or directory\n", outfile);
+        return (-1);
     }
-    // printf("fichier %s ouvert\n", outfile);
+    // Vider le fichier si nécessaire (nécessaire si un fichier existe déjà)
+    if (fd != -1 && !append)
+    {
+        ftruncate(fd, 0); // Vider le fichier avant de l'utiliser
+    }
     return (fd);
 }
 
@@ -46,7 +50,7 @@ int open_errfile(char *errfile)
     if (fd == -1)
     {
         perror("Erreur d'ouverture du fichier d'entrée");
-        return (-1); // Retourner -1 en cas d'erreur
+        return (-1);
     }
     return (fd);
 }
