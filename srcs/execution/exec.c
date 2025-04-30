@@ -12,7 +12,7 @@ int count_ags(char **args)
 
 void exec_builting(char **args, char ***envcp)
 {
-    int i;
+	int	i;
 
     if (ft_strcmp(args[0], "exit") == 0)
         ft_exit(args);
@@ -61,13 +61,26 @@ void exec_builting(char **args, char ***envcp)
         }
     }
     else if (ft_strcmp(args[0], "export") == 0)
-        ft_export(args[1], envcp);
+    {
+        if (count_ags(args) > 2)
+        {
+            printf("minishell: export: `%s': not a valid identifier\n", args[2]);
+            return ;
+        }
+		else
+		{
+			if (check_events(args[1]) == 0)
+				ft_export(args[1], envcp);
+			else
+				return ;
+		}
+	}
     else if (ft_strcmp(args[0], "env") == 0)
         ft_env(*envcp);
     else if (ft_strcmp(args[0], "unset") == 0)
         ft_unset(args[1], envcp);
     else
-        return;
+        return ;
 }
 
 char *search_path(char **paths, char *cmd)
