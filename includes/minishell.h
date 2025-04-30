@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/30 10:13:35 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/04/30 11:43:34 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,6 +165,7 @@ char **ft_realloc_env(char **envcp, char *new_entry);
 void init_cmds(t_com_list *command);
 int parse_args_echo(char **args);
 int count_ags(char **args);
+int	check_events(char *arg);
 
 void print_cmd_list(t_com_list *cmd_list);
 void add_outfile(t_file_list **list, char *filename);
