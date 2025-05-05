@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/30 11:43:34 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/05/05 16:23:17 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ typedef struct s_file_list
 {
     char *filename;
     struct s_file_list *next;
+    int flag; // ajouter
 } t_file_list;
 
 typedef struct s_com_list
@@ -144,17 +145,18 @@ int find_line(char **envp, char *path);
 char *search_path(char **paths, char *cmd);
 
 // Pipes (revoir les args pour pipex)
-void	complex_pipex(t_com_list *command, int ac, char **args, char **envcp);
-void	pipex_simple(t_com_list *command, char **args, char **envcp);
-int     simplified_gnl(char **line);
-int	    parse_pipes(char **args);
-void 	pipes_manager(t_com_list *command, int count, char **args, char **envcp);
+void complex_pipex(t_com_list *command, int ac, char **args, char **envcp);
+void pipex_simple(t_com_list *command, char **args, char **envcp);
+int simplified_gnl(char **line);
+int parse_pipes(char **args);
+void pipes_manager(t_com_list *command, int count, char **args, char **envcp);
 
 // Utils
 void exit_error(void);
 int open_file(char *av, int i);
 void ft_exec(char *av, char **envp);
 void free_tab(char **tab);
+void free_file_list(t_file_list *list);
 char **split_args(const char *s, char sep);
 char *remove_quotes_or_slash(char *str);
 void free_cmd(t_com_list *command);
@@ -165,9 +167,9 @@ char **ft_realloc_env(char **envcp, char *new_entry);
 void init_cmds(t_com_list *command);
 int parse_args_echo(char **args);
 int count_ags(char **args);
-int	check_events(char *arg);
+int check_events(char *arg);
 
 void print_cmd_list(t_com_list *cmd_list);
-void add_outfile(t_file_list **list, char *filename);
+void add_outfile(t_file_list **list, char *filename, int flag);
 
 #endif
