@@ -68,8 +68,15 @@ t_token *create_tokens(char **str)
         {
             redirection_status = handle_redirection(*str, &i, &tokens);
             if (redirection_status == -1)
+            {
+                free_tokens(tokens);
                 return (NULL);
-
+            }
+            if (redirection_status == 1)
+            {
+                // expect_cmd = 0; // Après redirection, on attend pas spécialement une CMD
+                continue; // Redirection traitée, boucle suivante
+            }
             // Après avoir traité la redirection, on devrait ajouter la commande suivante
             // La fonction handle_word permet de gérer correctement les commandes et leurs arguments
             if (handle_word(str, &i, &tokens, &expect_cmd) == -1)

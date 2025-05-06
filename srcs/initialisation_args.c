@@ -6,7 +6,7 @@
 /*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 10:25:54 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/25 12:14:57 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/05/05 16:11:53 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,10 +72,11 @@ t_com_list *fill_values(char **commands)
 }
 
 // ajouter un fichier à la liste
-void add_outfile(t_file_list **list, char *filename)
+void add_outfile(t_file_list **list, char *filename, int flag)
 {
     t_file_list *new = malloc(sizeof(t_file_list));
     new->filename = ft_strdup(filename);
+    new->flag = flag;
     new->next = NULL;
 
     if (*list == NULL)

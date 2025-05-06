@@ -5,6 +5,12 @@ int open_file_cmd(char *infile)
 {
     int fd;
 
+    // Vérifier si le fichier d'entrée existe
+    if (access(infile, F_OK) == -1)
+    {
+        fprintf(stderr, "minishell: %s: No such file or directory\n", infile);
+        return (-1);
+    }
     fd = open(infile, O_RDONLY);
     if (fd == -1)
     {
@@ -32,11 +38,6 @@ int open_outfile(char *outfile, int append)
     {
         fprintf(stderr, "minishell: %s: No such file or directory\n", outfile);
         return (-1);
-    }
-    // Vider le fichier si nécessaire (nécessaire si un fichier existe déjà)
-    if (fd != -1 && !append)
-    {
-        ftruncate(fd, 0); // Vider le fichier avant de l'utiliser
     }
     return (fd);
 }
