@@ -103,8 +103,11 @@ char *concat_command(char *current_command, char *new_part);
 int parse_redirection(char *str, int *i);
 char *add_symbol(int type);
 int handle_word(char **str, int *i, t_token **tokens, int *expect_cmd);
-int ft_redirection(t_com_list *command);
-void putback_direction(t_com_list *command, int mem_fd);
+//int ft_redirection(t_com_list *command);
+//void putback_direction(t_com_list *command, int mem_fd);
+void restore_redirections(int mem_fd_in, int mem_fd_out, int mem_fd_err);
+int ft_redirection(t_com_list *command, int *mem_fd_in, int *mem_fd_out, int *mem_fd_err);
+
 int open_file_cmd(char *infile);
 int open_outfile(char *outfile, int append);
 int open_errfile(char *errfile);

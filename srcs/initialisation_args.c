@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initialisation_args.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 10:25:54 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/05 16:11:53 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/05/06 12:48:45 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,10 @@ t_com_list *list_new(char *command)
     new = malloc(sizeof(t_com_list));
     if (!new)
         return (NULL);
-    new->command = ft_strdup(command);
+    if (command)
+        new->command = ft_strdup(command);
+    else    
+        new->command = NULL;
     new->is_pipe = 0;
     new->next = NULL;
     new->all_outfilles = NULL;

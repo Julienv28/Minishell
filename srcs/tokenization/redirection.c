@@ -86,107 +86,7 @@ char *add_symbol(int type)
         return (ft_strdup(">"));
     return (NULL);
 }
-
 /*
-int ft_redirection(t_com_list *command)
-{
-    int fd = -1;
-    int mem_fd = -1;
-    t_file_list *tmp;
-
-    // Redirection entrée (STDIN)
-    if (command->infile)
-    {
-        mem_fd = dup(STDIN_FILENO);
-        if (mem_fd == -1)
-        {
-            perror("Erreur lors de la sauvegarde de STDIN");
-            return (-1);
-        }
-        fd = open_file_cmd(command->infile);
-        if (fd == -1)
-        {
-            close(mem_fd);
-            return (-1);
-        }
-        if (dup2(fd, STDIN_FILENO) == -1)
-        {
-            perror("Erreur avec dup2 pour la redirection d'entrée");
-            close(fd);
-            close(mem_fd);
-            return (-1);
-        }
-        close(fd);
-    }
-    // Redirection sortie (STDOUT)
-    else if (command->outfile)
-    {
-        mem_fd = dup(STDOUT_FILENO);
-        if (mem_fd == -1)
-        {
-            perror("Erreur lors de la sauvegarde de STDOUT");
-            return (-1);
-        }
-
-        // Créer tous les fichiers
-        tmp = command->all_outfilles;
-        while (tmp)
-        {
-            fd = open_outfile(tmp->filename, tmp->flag);
-            // printf("Redirection de sortie vers le fichier: %s\n", command->outfile);
-            if (fd == -1)
-            {
-                close(mem_fd);
-                return (-1);
-            }
-            close(fd);
-            tmp = tmp->next;
-        }
-
-        // Redirection finale vers outfile principal
-        fd = open_outfile(command->outfile, command->flag_out);
-        if (fd == -1)
-        {
-            close(mem_fd);
-            return (-1);
-        }
-        // printf("Redirection de sortie vers le fichier: %s\n", command->outfile);
-        if (dup2(fd, STDOUT_FILENO) == -1)
-        {
-            perror("Erreur avec dup2 pour outfile principal");
-            close(fd);
-            close(mem_fd);
-            return (-1);
-        }
-        close(fd);
-    }
-    // Redirection erreur (STDERR)
-    else if (command->errfile)
-    {
-        mem_fd = dup(STDERR_FILENO);
-        if (mem_fd == -1)
-        {
-            perror("Erreur lors de la sauvegarde de STDERR");
-            return (-1);
-        }
-        fd = open_errfile(command->errfile);
-        if (fd == -1)
-        {
-            close(mem_fd);
-            return (-1);
-        }
-        if (dup2(fd, STDERR_FILENO) == -1)
-        {
-            perror("Erreur avec dup2 pour la redirection d'erreur");
-            close(fd);
-            close(mem_fd);
-            return (-1);
-        }
-        close(fd);
-    }
-
-    return mem_fd; // on retourne mem_fd pour restaurer plus tard
-}*/
 int ft_redirection(t_com_list *command)
 {
     int fd = -1;
@@ -199,11 +99,11 @@ int ft_redirection(t_com_list *command)
     if (command->infile)
     {
         mem_fd_in = dup(STDIN_FILENO);
-        if (mem_fd_in == -1)
-        {
-            perror("Erreur lors de la sauvegarde de STDIN");
-            return (-1);
-        }
+        //if (mem_fd_in == -1)
+        //{
+        //      perror("Erreur lors de la sauvegarde de STDIN");
+        //      return (-1);
+        //}
 
         // Vérification de l'existence du fichier d'entrée
         fd = open_file_cmd(command->infile);
@@ -325,4 +225,95 @@ void putback_direction(t_com_list *command, int mem_fd)
     else if (command->errfile)
         dup2(mem_fd, STDERR_FILENO);
     close(mem_fd);
+}*/
+int ft_redirection(t_com_list *command, int *mem_fd_in, int *mem_fd_out, int *mem_fd_err)
+{
+    int fd;
+    t_file_list *tmp;
+    int has_error = 0; // Ajouté pour savoir si une redirection échoue
+
+    // Redirection entrée
+    if (command->infile)
+    {
+        *mem_fd_in = dup(STDIN_FILENO);
+        fd = open_file_cmd(command->infile);
+        if (fd != -1)
+        {
+            dup2(fd, STDIN_FILENO);
+            close(fd);
+        }
+        else
+        {
+            fprintf(stderr, "minishell: %s: No such file or directory\n", command->infile);
+            has_error = 1;
+        }
+    }
+
+    // Redirection sortie
+    if (command->outfile || command->all_outfilles)
+    {
+        *mem_fd_out = dup(STDOUT_FILENO);
+
+        if (command->outfile)
+        {
+            fd = open_outfile(command->outfile, command->flag_out);
+            if (fd != -1)
+            {
+                dup2(fd, STDOUT_FILENO);
+                close(fd);
+            }
+            else
+            {
+                fprintf(stderr, "minishell: %s: No such file or directory\n", command->outfile);
+                has_error = 1;
+            }
+        }
+
+        tmp = command->all_outfilles;
+        while (tmp)
+        {
+            fd = open_outfile(tmp->filename, tmp->flag);
+            if (fd != -1)
+                close(fd); // juste créer
+            tmp = tmp->next;
+        }
+    }
+
+    // Redirection erreur
+    if (command->errfile)
+    {
+        *mem_fd_err = dup(STDERR_FILENO);
+        fd = open_errfile(command->errfile);
+        if (fd != -1)
+        {
+            dup2(fd, STDERR_FILENO);
+            close(fd);
+        }
+        else
+        {
+            perror("minishell: error opening errfile");
+            has_error = 1;
+        }
+    }
+    return has_error;
+}
+
+
+void restore_redirections(int mem_fd_in, int mem_fd_out, int mem_fd_err)
+{
+    if (mem_fd_in != -1)
+    {
+        dup2(mem_fd_in, STDIN_FILENO);
+        close(mem_fd_in);
+    }
+    if (mem_fd_out != -1)
+    {
+        dup2(mem_fd_out, STDOUT_FILENO);
+        close(mem_fd_out);
+    }
+    if (mem_fd_err != -1)
+    {
+        dup2(mem_fd_err, STDERR_FILENO);
+        close(mem_fd_err);
+    }
 }
