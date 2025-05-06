@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/06 13:43:48 by opique           ###   ########.fr       */
+/*   Updated: 2025/05/06 13:24:24 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
-#define MINISHELL_H
+# define MINISHELL_H
 
 // Définition des codes de couleur ANSI
 #define RESET "\x1b[0m"
@@ -34,8 +34,6 @@
 #include <fcntl.h>
 #include <signal.h> // gerer les signaux
 
-#define TIMEOUT_ITERATIONS 10000
-
 // Définition des types de tokens
 #define INPUT 1
 #define HEREDOC 2
@@ -46,28 +44,31 @@
 #define ARG 7
 
 // variable globale pour suivre l'état des erreurs
-extern int g_exit_status;
+extern int	g_exit_status;
 
 typedef struct s_file_list
 {
-    char *filename;
-    struct s_file_list *next;
-    int flag; // ajouter
-} t_file_list;
+	char				*filename;
+	struct s_file_list	*next;
+	int					flag; // ajouter
+}	t_file_list;
 
 typedef struct s_com_list
 {
-    char *command;
-    char *path;
-    int is_pipe;
-    char *outfile;
-    char *infile;
-    char *errfile;
-    int flag_in; // 1 si redirection >>, 0 sinon
-    int flag_out;
-    struct s_com_list *next;
-    t_file_list *all_outfilles;
-} t_com_list;
+	char				*command;
+	char				**args;
+	char				**envcp;
+	char				*path;
+	int					is_pipe;
+	char				*outfile;
+	char				*infile;
+	char				*errfile;
+	int					flag_in; // 1 si redirection >>, 0 sinon
+	int					flag_out;
+	int					append;
+	t_file_list			*all_outfilles;
+	struct s_com_list	*next;
+}	t_com_list;
 
 typedef struct s_minishell
 {
@@ -140,19 +141,20 @@ int is_valid_name(char *name);
 void ft_unset(char *key, char ***envcp);
 
 // Exec
-void exec_cmd(t_com_list *command, char **envcp);
-int is_builting(char *cmd);
-void exec_builting(char **args, char ***envcp);
-char *get_path(char *cmd, char **envp);
-int find_line(char **envp, char *path);
-char *search_path(char **paths, char *cmd);
+void	exec_cmd(t_com_list *command);
+int		is_builting(char *cmd);
+void	exec_builting(char **args, char ***envcp);
+char	*get_path(char *cmd, char **envp);
+int		find_line(char **envp, char *path);
+char	*search_path(char **paths, char *cmd);
+void	execute_cmd(t_com_list *cmd);
 
 // Pipes (revoir les args pour pipex)
-void complex_pipex(t_com_list *command, int ac, char **args, char **envcp);
-void pipex_simple(t_com_list *command, char **args, char **envcp);
-int simplified_gnl(char **line);
-int parse_pipes(char **args);
-void pipes_manager(t_com_list *command, int count, char **args, char **envcp);
+// void 		complex_pipex(t_com_list *command, int ac, char **args, char **envcp);
+// void 		pipex_simple(t_com_list *command, char **args, char **envcp);
+// int			simplified_gnl(char **line);
+char		**split_pipe_respect_quotes(const char *line);
+t_com_list	*parse_pipes(char *line);
 
 // Utils
 void exit_error(void);
