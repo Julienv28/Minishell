@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/05 16:23:17 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/05/06 11:44:45 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,8 @@ typedef struct s_file_list
 typedef struct s_com_list
 {
     char *command;
+    char **args;
+    char **envcp;
     char *path;
     int is_pipe;
     char *outfile;
@@ -67,6 +69,7 @@ typedef struct s_com_list
     int flag_out;
     struct s_com_list *next;
     t_file_list *all_outfilles;
+    struct s_com_list *next;
 } t_com_list;
 
 typedef struct s_minishell
@@ -137,19 +140,18 @@ int is_valid_name(char *name);
 void ft_unset(char *key, char ***envcp);
 
 // Exec
-void exec_cmd(t_com_list *command, char **envcp);
-int is_builting(char *cmd);
-void exec_builting(char **args, char ***envcp);
-char *get_path(char *cmd, char **envp);
-int find_line(char **envp, char *path);
-char *search_path(char **paths, char *cmd);
+void	exec_cmd(t_com_list *command);
+int		is_builting(char *cmd);
+void	exec_builting(char **args, char ***envcp);
+char	*get_path(char *cmd, char **envp);
+int		find_line(char **envp, char *path);
+char	*search_path(char **paths, char *cmd);
 
 // Pipes (revoir les args pour pipex)
 void complex_pipex(t_com_list *command, int ac, char **args, char **envcp);
 void pipex_simple(t_com_list *command, char **args, char **envcp);
 int simplified_gnl(char **line);
-int parse_pipes(char **args);
-void pipes_manager(t_com_list *command, int count, char **args, char **envcp);
+char	**split_pipe_respect_quotes(const char *line);
 
 // Utils
 void exit_error(void);
