@@ -24,7 +24,6 @@ int handle_redirection(char *str, int *i, t_token **tokens)
             (*i)++;
 
         start = *i;
-
         // Récupérer le fichier après la redirection
         while (str[*i] && str[*i] != ' ' && str[*i] != '|' && str[*i] != '<' && str[*i] != '>')
             (*i)++;
@@ -226,6 +225,7 @@ void putback_direction(t_com_list *command, int mem_fd)
         dup2(mem_fd, STDERR_FILENO);
     close(mem_fd);
 }*/
+
 int ft_redirection(t_com_list *command, int *mem_fd_in, int *mem_fd_out, int *mem_fd_err)
 {
     int fd;
@@ -297,7 +297,6 @@ int ft_redirection(t_com_list *command, int *mem_fd_in, int *mem_fd_out, int *me
     }
     return has_error;
 }
-
 
 void restore_redirections(int mem_fd_in, int mem_fd_out, int mem_fd_err)
 {

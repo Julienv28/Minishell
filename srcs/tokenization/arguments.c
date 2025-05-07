@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   arguments.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:06:51 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/15 14:53:50 by opique           ###   ########.fr       */
+/*   Updated: 2025/05/07 17:56:33 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ int check_mismatched_quotes(char *str)
 int prompt_for_quotes(char **str)
 {
     char *input;
-    char *tmp; 
-    char    *join;
+    char *tmp;
+    char *join;
 
     tmp = NULL;
     // S'assurer que la première ligne se termine par \n

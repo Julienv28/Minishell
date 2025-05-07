@@ -70,7 +70,9 @@ void exec_builting(char **args, char ***envcp)
         else
         {
             if (check_events(args[1]) == 0)
+            {
                 ft_export(args[1], envcp);
+            }
             else
                 return;
         }

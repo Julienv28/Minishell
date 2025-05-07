@@ -6,7 +6,7 @@
 /*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/07 08:32:15 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/05/07 18:01:28 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,9 +89,9 @@ typedef struct s_token
 // Signaux
 void set_signal_action(void);
 void signal_handler(int sig);
-char *replace_all_variables(char *str);
-void replace_exit_and_env_status(char **args);
-char *replace_variable_or_special(char *str, int *i, char *res);
+char *replace_all_variables(char *str, char **envcp);
+void replace_exit_and_env_status(char **args, char **envcp);
+char *replace_variable_or_special(char *str, int *i, char *res, char **envcp);
 char *append_char(char *res, char c);
 
 // Tokens

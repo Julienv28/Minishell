@@ -106,7 +106,6 @@ int main(int ac, char **av, char **envp)
             free_tokens(tokens);
             continue;
         }
-
         command = tokens_to_cmds(tokens);
         if (!command)
             printf("Aucune commande générée\n");
@@ -134,7 +133,7 @@ int main(int ac, char **av, char **envp)
                 args = NULL;
 
             if (args)
-                replace_exit_and_env_status(args);
+                replace_exit_and_env_status(args, envcp);
 
             // Appliquer les redirections
             if (command->infile || command->outfile || command->errfile)
@@ -146,7 +145,6 @@ int main(int ac, char **av, char **envp)
                 command = command->next;
                 continue;
             }
-
             int pipes_count = parse_pipes(args);
             if (pipes_count > 0)
                 pipes_manager(command, pipes_count, args, envcp);
