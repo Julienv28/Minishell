@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 10:45:02 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/06 13:41:37 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/05/06 11:25:40 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,6 @@ static void	setup_child_io(int prev_fd, int *fd, int has_next)
 static void	hand_child_proc(t_com_list *cmd, int prev_fd, int *fd, int has_next)
 {
 	setup_child_io(prev_fd, fd, has_next);
-	if (cmd->infile || cmd->outfile)
-	{
-		int	redir_fd = ft_redirection(cmd);
-		if (redir_fd == -1)
-			exit(1);
-	}
 	if (cmd->args && is_builting(cmd->args[0]) == 0)
 		exec_builting(cmd->args, &cmd->envcp);
 	else
