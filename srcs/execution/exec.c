@@ -12,7 +12,7 @@ int count_ags(char **args)
 
 void exec_builting(char **args, char ***envcp)
 {
-	int	i;
+    int i;
 
     if (ft_strcmp(args[0], "exit") == 0)
         ft_exit(args);
@@ -65,22 +65,22 @@ void exec_builting(char **args, char ***envcp)
         if (count_ags(args) > 2)
         {
             printf("minishell: export: `%s': not a valid identifier\n", args[2]);
-            return ;
+            return;
         }
-		else
-		{
-			if (check_events(args[1]) == 0)
-				ft_export(args[1], envcp);
-			else
-				return ;
-		}
-	}
+        else
+        {
+            if (check_events(args[1]) == 0)
+                ft_export(args[1], envcp);
+            else
+                return;
+        }
+    }
     else if (ft_strcmp(args[0], "env") == 0)
         ft_env(*envcp);
     else if (ft_strcmp(args[0], "unset") == 0)
         ft_unset(args[1], envcp);
     else
-        return ;
+        return;
 }
 
 char *search_path(char **paths, char *cmd)
@@ -179,35 +179,35 @@ char *get_path(char *cmd, char **envp)
     return (path);   // Retourne NULL si la commande n'est pas trouvée ou pas exécutable
 }
 
-void	exec_cmd(t_com_list *cmd)
+void exec_cmd(t_com_list *command, char **envcp)
 {
-	pid_t	pid;
-	char	**args;
-	char	*path;
-	int		status;
+    pid_t pid;
+    char **args;
+    char *path;
+    int status;
 
-	g_exit_status = 1;
-	args = ft_split(cmd->command, ' ');
-	if (!args || args[0] == NULL || args[0][0] == '\0')
-	{
-		ft_putstr_fd("minishell: ", STDERR_FILENO);
-		ft_putstr_fd(*args, STDERR_FILENO);
-		ft_putstr_fd("command not found\n", STDERR_FILENO);
-		g_exit_status = 127;
-		free_tab(args);
-		return ;
-	}
-	path = get_path(args[0], cmd->envcp);
-	if (path == NULL)
-	{
-		g_exit_status = 127; // Commande introuvable
-		free_tab(args);
-		return ;
-	}
-	pid = fork();
-	if (pid == 0) // Si on est dans le processus enfant
-	{
-        if (execve(path, args, cmd->envcp) == -1)
+    g_exit_status = 1;
+    args = ft_split(command->command, ' ');
+    if (!args || args[0] == NULL || args[0][0] == '\0')
+    {
+        ft_putstr_fd("minishell: ", STDERR_FILENO);
+        ft_putstr_fd(*args, STDERR_FILENO);
+        ft_putstr_fd("command not found\n", STDERR_FILENO);
+        g_exit_status = 127;
+        free_tab(args);
+        return;
+    }
+    path = get_path(args[0], envcp);
+    if (path == NULL)
+    {
+        g_exit_status = 127; // Commande introuvable
+        free_tab(args);
+        return;
+    }
+    pid = fork();
+    if (pid == 0) // Si on est dans le processus enfant
+    {
+        if (execve(path, args, envcp) == -1)
         {
             perror("execve failed");
             exit(1);

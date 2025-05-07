@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/06 11:44:45 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/05/07 08:32:15 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,6 @@ typedef struct s_com_list
     char *errfile;
     int flag_in; // 1 si redirection >>, 0 sinon
     int flag_out;
-    struct s_com_list *next;
     t_file_list *all_outfilles;
     struct s_com_list *next;
 } t_com_list;
@@ -105,8 +104,8 @@ char *concat_command(char *current_command, char *new_part);
 int parse_redirection(char *str, int *i);
 char *add_symbol(int type);
 int handle_word(char **str, int *i, t_token **tokens, int *expect_cmd);
-//int ft_redirection(t_com_list *command);
-//void putback_direction(t_com_list *command, int mem_fd);
+// int ft_redirection(t_com_list *command);
+// void putback_direction(t_com_list *command, int mem_fd);
 void restore_redirections(int mem_fd_in, int mem_fd_out, int mem_fd_err);
 int ft_redirection(t_com_list *command, int *mem_fd_in, int *mem_fd_out, int *mem_fd_err);
 
@@ -143,23 +142,25 @@ int is_valid_name(char *name);
 void ft_unset(char *key, char ***envcp);
 
 // Exec
-void	exec_cmd(t_com_list *command);
-int		is_builting(char *cmd);
-void	exec_builting(char **args, char ***envcp);
-char	*get_path(char *cmd, char **envp);
-int		find_line(char **envp, char *path);
-char	*search_path(char **paths, char *cmd);
+void exec_cmd(t_com_list *cmd, char **envcp);
+int is_builting(char *cmd);
+void exec_builting(char **args, char ***envcp);
+char *get_path(char *cmd, char **envp);
+int find_line(char **envp, char *path);
+char *search_path(char **paths, char *cmd);
 
 // Pipes (revoir les args pour pipex)
 void complex_pipex(t_com_list *command, int ac, char **args, char **envcp);
 void pipex_simple(t_com_list *command, char **args, char **envcp);
 int simplified_gnl(char **line);
-char	**split_pipe_respect_quotes(const char *line);
+char **split_pipe_respect_quotes(const char *line);
+void pipes_manager(t_com_list *command, int count, char **args, char **envcp);
+int parse_pipes(char **args);
 
 // Utils
 void exit_error(void);
 int open_file(char *av, int i);
-void ft_exec(char *av, char **envp);
+// void ft_exec(char *av, char **envp);
 void free_tab(char **tab);
 void free_file_list(t_file_list *list);
 char **split_args(const char *s, char sep);

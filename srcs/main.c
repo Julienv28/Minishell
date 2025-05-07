@@ -4,36 +4,36 @@ int g_exit_status = 0;
 /*
 int main(int ac, char **av, char **envp)
 {
-	char		*input;
-	t_token		*tokens;
-	t_com_list	*command;
-	int			mem_fd;
+    char		*input;
+    t_token		*tokens;
+    t_com_list	*command;
+    int			mem_fd;
 
-	(void)ac;
-	(void)av;
-	command->envcp = ft_env_dup(envp);
-	while (1)
-	{
-		mem_fd = -2; // <- Très important pour bien contrôler l'état
-		set_signal_action();
-		input = readline(GREEN "minishell$ " RESET);
-		if (!input)
-		{
-			ft_putstr_fd("exit\n", STDOUT_FILENO);
-			exit(g_exit_status);
-		}
-		add_history(input);
-		tokens = create_tokens(&input);
-		if (!tokens)
-		{
-			free(tokens);
-			continue ;
-		}
-		free(input);
-		command = tokens_to_cmds(tokens);
-		while (command)
-		{
-			command->args = split_args(command->command, ' ');
+    (void)ac;
+    (void)av;
+    command->envcp = ft_env_dup(envp);
+    while (1)
+    {
+        mem_fd = -2; // <- Très important pour bien contrôler l'état
+        set_signal_action();
+        input = readline(GREEN "minishell$ " RESET);
+        if (!input)
+        {
+            ft_putstr_fd("exit\n", STDOUT_FILENO);
+            exit(g_exit_status);
+        }
+        add_history(input);
+        tokens = create_tokens(&input);
+        if (!tokens)
+        {
+            free(tokens);
+            continue ;
+        }
+        free(input);
+        command = tokens_to_cmds(tokens);
+        while (command)
+        {
+            command->args = split_args(command->command, ' ');
             if (command->args)
                 replace_exit_and_env_status(command->args);
 
@@ -121,7 +121,7 @@ int main(int ac, char **av, char **envp)
                 {
                     has_redir_error = ft_redirection(command, &mem_fd_in, &mem_fd_out, &mem_fd_err);
                     restore_redirections(mem_fd_in, mem_fd_out, mem_fd_err);
-                    mem_fd_in  = mem_fd_err = -1;
+                    mem_fd_in = mem_fd_err = -1;
                 }
                 command = command->next;
                 continue;
