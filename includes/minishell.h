@@ -6,7 +6,7 @@
 /*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/07 18:01:28 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/05/09 18:15:55 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,12 +134,12 @@ void ft_echo(char *str, char **envcp);
 void ft_cd(char **args, char ***envcp);
 void ft_pwd(char **args);
 void ft_exit(char **args);
-void ft_export(char *arg, char ***envcp);
+void ft_export(char **arg, char ***envcp);
 char *get_env_value(char *name, char **envp);
 void ft_set_env(char *key, char *value, char ***envp);
 void ft_env(char **envp);
 int is_valid_name(char *name);
-void ft_unset(char *key, char ***envcp);
+void ft_unset(char **args, char ***envcp);
 
 // Exec
 void exec_cmd(t_com_list *cmd, char **envcp);

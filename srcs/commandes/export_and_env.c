@@ -6,7 +6,7 @@
 /*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:36 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/07 13:56:19 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/05/09 18:11:54 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,56 +61,65 @@ void ft_set_env(char *key, char *value, char ***envcp)
     *envcp = new_env;
 }
 
-void ft_export(char *arg, char ***envcp)
+void ft_export(char **args, char ***envcp)
 {
     char *key;
     char *value;
     char *equal_sign;
+    char *replaced;
+    int i;
 
-    if (!arg)
+    i = 1;
+    while (args[i])
     {
-        ft_env(*envcp);
-        return;
-    }
-    arg = replace_all_variables(arg, *envcp);
-    if (!arg)
-        return;
-    if (arg[0] == '\0')
-    {
-        ft_putstr_fd("export: `': not a valid identifier\n", STDERR_FILENO);
-        free(arg);
-        return;
-    }
-    if (arg[0] == '-')
-    {
-        printf("bash: export: -%c: invalid option\n", arg[1]);
-        free(arg);
-        return;
-    }
-    equal_sign = ft_strchr(arg, '=');
-    if (equal_sign)
-    {
-        key = ft_substr((const char *)arg, 0, equal_sign - arg);
-        value = ft_strdup(equal_sign + 1);
-    }
-    else
-    {
-        key = ft_strdup(arg);
-        value = NULL;
-    }
-    if (!is_valid_name(key))
-    {
-        ft_putstr_fd("export: `", STDERR_FILENO);
-        ft_putstr_fd(arg, STDERR_FILENO);
-        ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
+        replaced = replace_all_variables(args[i], *envcp);
+        if (!replaced)
+        {
+            i++;
+            continue;
+        }
+        if (replaced[0] == '\0')
+        {
+            ft_putstr_fd("export: `': not a valid identifier\n", STDERR_FILENO);
+            free(replaced);
+            i++;
+            continue;
+        }
+        if (replaced[0] == '-')
+        {
+            printf("bash: export: -%c: invalid option\n", replaced[1]);
+            free(replaced);
+            i++;
+            continue;
+        }
+        equal_sign = ft_strchr(replaced, '=');
+        if (equal_sign)
+        {
+            key = ft_substr(replaced, 0, equal_sign - replaced);
+            value = ft_strdup(equal_sign + 1);
+        }
+        else
+        {
+            key = ft_strdup(replaced);
+            value = NULL;
+        }
+        if (!is_valid_name(key))
+        {
+            ft_putstr_fd("export: `", STDERR_FILENO);
+            ft_putstr_fd(replaced, STDERR_FILENO);
+            ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
+            free(key);
+            free(replaced);
+            i++;
+            continue;
+        }
+        if (equal_sign)
+            ft_set_env(key, value, envcp);
         free(key);
-        return;
+        free(value);
+        free(replaced);
+        i++;
     }
-    if (equal_sign)
-        ft_set_env(key, value, envcp);
-    // remove_quotes_or_slash(arg);
-    free(key);
-    free(value);
 }
 
 void ft_env(char **envcp)
