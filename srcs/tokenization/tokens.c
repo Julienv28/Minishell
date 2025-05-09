@@ -83,6 +83,5 @@ t_token *create_tokens(char **str)
                 break;
         }
     }
-
     return (tokens);
 }

@@ -226,16 +226,26 @@ void putback_direction(t_com_list *command, int mem_fd)
         dup2(mem_fd, STDERR_FILENO);
     close(mem_fd);
 }*/
+<<<<<<< Updated upstream
+=======
+
+// Fonction centrale pour gérer les redirections d'entrée, sortie et erreur
+// Fonction qui gère la redirection de sortie multiple
+>>>>>>> Stashed changes
 int ft_redirection(t_com_list *command, int *mem_fd_in, int *mem_fd_out, int *mem_fd_err)
 {
     int fd;
     t_file_list *tmp;
-    int has_error = 0; // Ajouté pour savoir si une redirection échoue
+    int has_error = 0;
 
-    // Redirection entrée
+    // Sauvegarde des descripteurs de fichiers
+    *mem_fd_in = dup(STDIN_FILENO);
+    *mem_fd_out = dup(STDOUT_FILENO);
+    *mem_fd_err = dup(STDERR_FILENO);
+
+    // Redirection d'entrée
     if (command->infile)
     {
-        *mem_fd_in = dup(STDIN_FILENO);
         fd = open_file_cmd(command->infile);
         if (fd != -1)
         {
@@ -252,14 +262,12 @@ int ft_redirection(t_com_list *command, int *mem_fd_in, int *mem_fd_out, int *me
     // Redirection sortie
     if (command->outfile || command->all_outfilles)
     {
-        *mem_fd_out = dup(STDOUT_FILENO);
-
         if (command->outfile)
         {
             fd = open_outfile(command->outfile, command->flag_out);
             if (fd != -1)
             {
-                dup2(fd, STDOUT_FILENO);
+                dup2(fd, STDOUT_FILENO); // Redirection vers le dernier fichier
                 close(fd);
             }
             else
@@ -269,12 +277,21 @@ int ft_redirection(t_com_list *command, int *mem_fd_in, int *mem_fd_out, int *me
             }
         }
 
+        // Traiter les autres fichiers de sortie redirigés (command->all_outfilles)
         tmp = command->all_outfilles;
         while (tmp)
         {
             fd = open_outfile(tmp->filename, tmp->flag);
             if (fd != -1)
-                close(fd); // juste créer
+            {
+                // Crée les fichiers mais ne redirige pas immédiatement la sortie
+                close(fd); // On ferme chaque fichier après sa création
+            }
+            else
+            {
+                fprintf(stderr, "minishell: %s: No such file or directory\n", tmp->filename);
+                has_error = 1;
+            }
             tmp = tmp->next;
         }
     }
@@ -282,7 +299,6 @@ int ft_redirection(t_com_list *command, int *mem_fd_in, int *mem_fd_out, int *me
     // Redirection erreur
     if (command->errfile)
     {
-        *mem_fd_err = dup(STDERR_FILENO);
         fd = open_errfile(command->errfile);
         if (fd != -1)
         {
@@ -291,10 +307,14 @@ int ft_redirection(t_com_list *command, int *mem_fd_in, int *mem_fd_out, int *me
         }
         else
         {
-            perror("minishell: error opening errfile");
+            fprintf(stderr, "minishell: %s: No such file or directory\n", command->errfile);
             has_error = 1;
         }
     }
+
+    // Restauration des descripteurs si une erreur est rencontrée
+    if (has_error)
+        restore_redirections(*mem_fd_in, *mem_fd_out, *mem_fd_err);
     return has_error;
 }
 

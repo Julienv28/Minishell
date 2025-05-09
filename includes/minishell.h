@@ -6,7 +6,11 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
+<<<<<<< Updated upstream
 /*   Updated: 2025/05/06 13:24:24 by juvitry          ###   ########.fr       */
+=======
+/*   Updated: 2025/05/09 16:35:21 by oceanepique      ###   ########.fr       */
+>>>>>>> Stashed changes
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +110,7 @@ int handle_word(char **str, int *i, t_token **tokens, int *expect_cmd);
 //int ft_redirection(t_com_list *command);
 //void putback_direction(t_com_list *command, int mem_fd);
 void restore_redirections(int mem_fd_in, int mem_fd_out, int mem_fd_err);
+int handle_file_redirection(char *filename, int flag, int *mem_fd, int fd_type);
 int ft_redirection(t_com_list *command, int *mem_fd_in, int *mem_fd_out, int *mem_fd_err);
 
 int open_file_cmd(char *infile);
@@ -133,12 +138,12 @@ void ft_echo(char *str, char **envcp);
 void ft_cd(char **args, char ***envcp);
 void ft_pwd(char **args);
 void ft_exit(char **args);
-void ft_export(char *arg, char ***envcp);
+void ft_export(char **args, char ***envcp);
 char *get_env_value(char *name, char **envp);
 void ft_set_env(char *key, char *value, char ***envp);
 void ft_env(char **envp);
 int is_valid_name(char *name);
-void ft_unset(char *key, char ***envcp);
+void ft_unset(char **args, char ***envcp);
 
 // Exec
 void	exec_cmd(t_com_list *command);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:21 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/22 16:49:54 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/05/09 16:09:02 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,62 +27,78 @@ unset seul retourne:
 unset: not enough arguments
 */
 
-//La fonction est longue, il faudra la raccourcir...
-void	ft_unset(char *key, char ***envcp)
+// La fonction est longue, il faudra la raccourcir...
+void ft_unset(char **args, char ***envcp)
 {
-	int		i;
-	int		j;
-	int		size;
-	char	**new_env;
+    int i;
+    int j;
+    int k;
+    int size;
+    char **new_env;
 
-	if (!key || !*envcp)
-	{
-		ft_putstr_fd("unset: not enough arguments\n", STDOUT_FILENO);
-		return ;
-	}
-	size = 0;
-	while ((*envcp)[size])
-		size++;
-	new_env = malloc(sizeof(char *) * size);
-	if (!new_env)
-		return ;
-	i = 0;
-	j = 0;
-	if (key[0] == '\0')
-	{
-		ft_putstr_fd("bash: unset: `': not a valid identifier\n", STDERR_FILENO);
-		return ;
-	}
-	if (key[0] == '-')
-	{
-		printf("bash: unset: -%c: invalid option\n", key[1]);
-		return ;
-	}
-	if (!is_valid_name(key))
-	{
-		ft_putstr_fd("bash: unset: `", STDERR_FILENO);
-		ft_putstr_fd(key, STDERR_FILENO);
-		ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
-		return ;
-	}
-	while ((*envcp)[i])
-	{
-		if (ft_strncmp((*envcp)[i], key, ft_strlen(key)) == 0
-			&& (*envcp)[i][ft_strlen(key)] == '=')
-		{
-			free((*envcp)[i]);
-			i++;
-			continue ;
-		}
-		new_env[j++] = (*envcp)[i++];
-	}
-	new_env[j] = NULL;
-	free(*envcp);
-	*envcp = new_env;
+    if (!args[1])
+    {
+        // ft_putstr_fd("unset: not enough arguments\n", STDOUT_FILENO);
+        return;
+    }
+
+    i = 1;
+    while (args[i])
+    {
+        if (args[i][0] == '-' && args[i][1] != '\0') // Si l'argument commence par '-'
+        {
+            ft_putstr_fd("bash: ", STDERR_FILENO);
+            ft_putstr_fd(args[i], STDERR_FILENO);
+            ft_putstr_fd(": invalid option\n", STDERR_FILENO);
+            return;
+        }
+        // Cas special avec !
+        if (strchr(args[i], '!')) // Si un '!' est trouvé dans le nom de la variable
+        {
+            ft_putstr_fd("bash: unset: `", STDERR_FILENO);
+            ft_putstr_fd(args[i], STDERR_FILENO);
+            ft_putstr_fd("': event not found\n", STDERR_FILENO);
+            return;
+        }
+        i++;
+    }
+    i = 1;
+    while (args[i])
+    {
+        if (!is_valid_name(args[i]))
+        {
+            ft_putstr_fd("bash: unset: `", STDERR_FILENO);
+            ft_putstr_fd(args[i], STDERR_FILENO);
+            ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
+            i++;
+            continue;
+        }
+        // Recréation de l'env sans la variable args[i]
+        size = 0;
+        while ((*envcp)[size])
+            size++;
+        new_env = malloc(sizeof(char *) * size);
+        if (!new_env)
+            return;
+        j = 0;
+        k = 0;
+        while ((*envcp)[j])
+        {
+            if (ft_strncmp((*envcp)[j], args[i], ft_strlen(args[i])) == 0 && (*envcp)[j][ft_strlen(args[i])] == '=')
+                free((*envcp)[j]);
+            else
+                new_env[k++] = (*envcp)[j];
+            j++;
+        }
+        new_env[k] = NULL;
+        free(*envcp);
+        *envcp = new_env;
+        i++;
+    }
 }
 
-/*Le continue ; 
+/*Le continue ;
 ici dans la boucle while ((*envcp)[i]) signifie :
 
-    « Passe à l’itération suivante de la boucle, sans faire le reste du code 
-	(ici, sans copier la ligne dans new_env) »*/
+    « Passe à l’itération suivante de la boucle, sans faire le reste du code
+    (ici, sans copier la ligne dans new_env) »*/

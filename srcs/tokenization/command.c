@@ -63,10 +63,10 @@ t_com_list *tokens_to_cmds(t_token *tokens)
     while (tmp)
     {
         // Affiche la valeur du token pour débogage
-        //printf("Token type: %d, value: %s\n", tmp->type, tmp->value);
+        // printf("Token type: %d, value: %s\n", tmp->type, tmp->value);
         if (tmp->type == CMD)
         {
-            if (!tmp->value)  // Vérifie si la valeur du token est NULL
+            if (!tmp->value) // Vérifie si la valeur du token est NULL
             {
                 fprintf(stderr, "Erreur : token CMD avec valeur NULL\n");
                 tmp = tmp->next;
@@ -141,13 +141,12 @@ t_com_list *tokens_to_cmds(t_token *tokens)
             else
             {
                 fprintf(stderr, "minishell: syntax error near unexpected token '%s'\n", tmp->value);
-                return NULL;  // Si pas de fichier après la redirection, on renvoie NULL pour signaler une erreur
+                return NULL; // Si pas de fichier après la redirection, on renvoie NULL pour signaler une erreur
             }
         }
         tmp = tmp->next;
     }
-    
-    
+
     // Créer une commande vide si redirection seule
     if ((pending_outfile || pending_infile) && !current_cmd)
     {

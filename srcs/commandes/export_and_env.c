@@ -6,7 +6,11 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:36 by juvitry           #+#    #+#             */
+<<<<<<< Updated upstream
 /*   Updated: 2025/04/30 11:53:20 by juvitry          ###   ########.fr       */
+=======
+/*   Updated: 2025/05/09 16:10:00 by oceanepique      ###   ########.fr       */
+>>>>>>> Stashed changes
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +21,7 @@ int is_valid_name(char *name)
 {
     int i;
 
-    if (!name || (!ft_isalpha(name[0]) && name[0] != '_')) // Le nom doit commencer par une lettre ou un underscore
+    if (!name || name[0] == '\0' || (!ft_isalpha(name[0]) && name[0] != '_')) // Le nom doit commencer par une lettre ou un underscore
         return (0);
     i = 1;
     while (name[i])
@@ -62,6 +66,7 @@ void	ft_set_env(char *key, char *value, char ***envcp)
 	*envcp = new_env;
 }
 
+<<<<<<< Updated upstream
 
 void	ft_export(char *arg, char ***envcp)
 {
@@ -112,6 +117,67 @@ void	ft_export(char *arg, char ***envcp)
 		ft_set_env(key, value, envcp);
 	free(key);
 	free(value);
+=======
+void ft_export(char **args, char ***envcp)
+{
+    char *key;
+    char *value;
+    char *equal_sign;
+    char *replaced;
+    int i;
+
+    i = 1;
+    while (args[i])
+    {
+        replaced = replace_all_variables(args[i], *envcp);
+        if (!replaced)
+        {
+            i++;
+            continue;
+        }
+        if (replaced[0] == '\0')
+        {
+            ft_putstr_fd("export: `': not a valid identifier\n", STDERR_FILENO);
+            free(replaced);
+            i++;
+            continue;
+        }
+        if (replaced[0] == '-')
+        {
+            printf("bash: export: -%c: invalid option\n", replaced[1]);
+            free(replaced);
+            i++;
+            continue;
+        }
+        equal_sign = ft_strchr(replaced, '=');
+        if (equal_sign)
+        {
+            key = ft_substr(replaced, 0, equal_sign - replaced);
+            value = ft_strdup(equal_sign + 1);
+        }
+        else
+        {
+            key = ft_strdup(replaced);
+            value = NULL;
+        }
+        if (!is_valid_name(key))
+        {
+            ft_putstr_fd("export: `", STDERR_FILENO);
+            ft_putstr_fd(replaced, STDERR_FILENO);
+            ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
+            free(key);
+            free(replaced);
+            i++;
+            continue;
+        }
+        if (equal_sign)
+            ft_set_env(key, value, envcp);
+        free(key);
+        free(value);
+        free(replaced);
+        i++;
+    }
+>>>>>>> Stashed changes
 }
 
 void	ft_env(char **envcp)

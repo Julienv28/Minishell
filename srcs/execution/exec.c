@@ -62,8 +62,14 @@ void exec_builting(char **args, char ***envcp)
     }
     else if (ft_strcmp(args[0], "export") == 0)
     {
-        if (count_ags(args) > 2)
+        // if (count_ags(args) > 2)
+        // {
+        //     printf("minishell: export: `%s': not a valid identifier\n", args[2]);
+        //     return;
+        // }
+        if (!args[1]) // Aucun argument : afficher l'environnement
         {
+<<<<<<< Updated upstream
             printf("minishell: export: `%s': not a valid identifier\n", args[2]);
             return ;
         }
@@ -75,10 +81,20 @@ void exec_builting(char **args, char ***envcp)
 				return ;
 		}
 	}
+=======
+            ft_env(*envcp);
+            return;
+        }
+        else if (check_events(args[1]) == 0)
+            ft_export(args, envcp);
+        else
+            return;
+    }
+>>>>>>> Stashed changes
     else if (ft_strcmp(args[0], "env") == 0)
         ft_env(*envcp);
     else if (ft_strcmp(args[0], "unset") == 0)
-        ft_unset(args[1], envcp);
+        ft_unset(args, envcp);
     else
         return ;
 }
