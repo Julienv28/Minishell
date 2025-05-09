@@ -4,39 +4,39 @@ int g_exit_status = 0;
 /*
 int main(int ac, char **av, char **envp)
 {
-	char		*input;
-	t_token		*tokens;
-	t_com_list	*command;
-	t_com_list	*full_list;
-	int			mem_fd;
+    char		*input;
+    t_token		*tokens;
+    t_com_list	*command;
+    int			mem_fd;
 
-	(void)ac;
-	(void)av;
-	command->envcp = ft_env_dup(envp);
-	while (1)
-	{
-		mem_fd = -2; // <- Très important pour bien contrôler l'état
-		set_signal_action();
-		input = readline(GREEN "minishell$ " RESET);
-		if (!input)
-		{
-			ft_putstr_fd("exit\n", STDOUT_FILENO);
-			exit(g_exit_status);
-		}
-		add_history(input);
-		tokens = create_tokens(&input);
-		if (!tokens)
-		{
-			free(tokens);
-			continue ;
-		}
-		free(input);
-		command = tokens_to_cmds(tokens);
-		while (command)
-		{
-			command->args = split_args(command->command, ' ');
+    (void)ac;
+    (void)av;
+    command->envcp = ft_env_dup(envp);
+    while (1)
+    {
+        mem_fd = -2; // <- Très important pour bien contrôler l'état
+        set_signal_action();
+        input = readline(GREEN "minishell$ " RESET);
+        if (!input)
+        {
+            ft_putstr_fd("exit\n", STDOUT_FILENO);
+            exit(g_exit_status);
+        }
+        add_history(input);
+        tokens = create_tokens(&input);
+        if (!tokens)
+        {
+            free(tokens);
+            continue ;
+        }
+        free(input);
+        command = tokens_to_cmds(tokens);
+        while (command)
+        {
+            command->args = split_args(command->command, ' ');
             if (command->args)
                 replace_exit_and_env_status(command->args);
+
             // Appliquer la redirection
             if (command->infile || command->outfile || command->errfile)
                 mem_fd = ft_redirection(command);
@@ -48,14 +48,16 @@ int main(int ac, char **av, char **envp)
                 command = command->next;
                 continue;
             }
+
             // sinon on exécute
             else
             {
                 if (command->args && is_builting(command->args[0]) == 0)
-                    exec_builting(command->args, &command->envcp);
+                    exec_builting(command->args, &envcp);
                 else if (command->args)
-                    exec_cmd(command);
+                    exec_cmd(command, envcp);
             }
+
             // remettre les redirections normales
             if (mem_fd >= 0 && (command->infile || command->outfile || command->errfile))
                 putback_direction(command, mem_fd);
@@ -66,7 +68,7 @@ int main(int ac, char **av, char **envp)
         free_cmd(command);
         free_tokens(tokens);
     }
-    ft_freeenvp(command->envcp);
+    ft_freeenvp(envcp);
     return (g_exit_status);
 }*/
 
@@ -104,7 +106,6 @@ int main(int ac, char **av, char **envp)
             free_tokens(tokens);
             continue;
         }
-
         command = tokens_to_cmds(tokens);
         if (!command)
             printf("Aucune commande générée\n");
@@ -119,7 +120,7 @@ int main(int ac, char **av, char **envp)
                 {
                     has_redir_error = ft_redirection(command, &mem_fd_in, &mem_fd_out, &mem_fd_err);
                     restore_redirections(mem_fd_in, mem_fd_out, mem_fd_err);
-                    mem_fd_in  = mem_fd_err = -1;
+                    mem_fd_in = mem_fd_err = -1;
                 }
                 command = command->next;
                 continue;
@@ -132,7 +133,7 @@ int main(int ac, char **av, char **envp)
                 args = NULL;
 
             if (args)
-                replace_exit_and_env_status(args);
+                replace_exit_and_env_status(args, envcp);
 
             // Appliquer les redirections
             if (command->infile || command->outfile || command->errfile)
@@ -144,7 +145,6 @@ int main(int ac, char **av, char **envp)
                 command = command->next;
                 continue;
             }
-
             int pipes_count = parse_pipes(args);
             if (pipes_count > 0)
                 pipes_manager(command, pipes_count, args, envcp);
@@ -170,38 +170,3 @@ int main(int ac, char **av, char **envp)
     ft_freeenvp(envcp);
     return g_exit_status;
 }
-
-// int	main(int ac, char **av, char **envp)
-// {
-// 	char		*input;
-// 	t_com_list	*commands;
-
-// 	(void)ac;
-// 	(void)av;
-// 	while (1)
-// 	{
-// 		set_signal_action();
-// 		input = readline(GREEN "minishell$" RESET);
-// 		if (!input)
-// 		{
-// 			ft_putstr_fd("exit\n", STDOUT_FILENO);
-// 			exit(g_exit_status);
-// 		}
-// 		add_history(input);
-// 		commands = parse_pipes(input);
-// 		free(input);
-// 		t_com_list	*tmp = commands;
-// 		while (tmp)
-// 		{
-// 			tmp->envcp = ft_env_dup(envp);
-// 			tmp = tmp->next;
-// 		}
-// 		if (commands)
-// 		{
-// 			execute_cmd(commands);
-// 			ft_freeenvp(commands->envcp);
-// 			free_cmd(commands);
-// 		}
-// 	}
-// 	return (g_exit_status);
-// }

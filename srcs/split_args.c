@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split_args.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:06:45 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/06 11:24:03 by opique           ###   ########.fr       */
+/*   Updated: 2025/05/07 18:00:58 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ char **split_args(const char *s, char sep)
     char **tab;
     char *raw_word;
 
-    if (!s) 
+    if (!s)
         return NULL;
     tab = malloc(sizeof(char *) * (count_words(s, sep) + 1));
     if (!tab)
