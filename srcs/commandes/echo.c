@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:42:01 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/12 15:15:37 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/05/12 15:29:17 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ int parse_args_echo(char **args)
 // Trimmer les variables et nettoyer les espaces inutiles
 char	*clean_spaces(char *str)
 {
-	int 	i = 0, j = 0;
+	int 	i = 0, j = 1;
 	int 	in_space = 0;
 	char	*trimmed;
 	char	*res;
@@ -95,10 +95,11 @@ char	*clean_spaces(char *str)
 	trimmed = ft_strdup(str + i);
 	if (!trimmed)
 		return (NULL);
-	res = malloc(ft_strlen(trimmed) + 1);
+	res = malloc(ft_strlen(trimmed) + 2);
 	if (!res)
 		return (NULL);
 	i = 0;
+	res[0] = ' ';
 	while (trimmed[i])
 	{
 		if (ft_isspace(trimmed[i]))
