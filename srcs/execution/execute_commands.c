@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_commands.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 10:45:02 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/07 08:40:30 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/05/12 15:48:13 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,3 +84,28 @@
 //         cmd = cmd->next;
 //     }
 // }
+
+void	execute(t_com_list *cmds, char **envcp)
+{
+	if (!cmds)
+		return ;
+	if (cmds->next == NULL)
+	{
+		char	**args = split_args(cmds->command, ' ');
+		if (!args || !args[0])
+		{
+			free_tab(args);
+			return ;
+		}
+		replace_exit_and_env_status(args, envcp);
+        if (is_builting(args[0]) == 0)
+            exec_builting(args, &envcp);
+    	else
+            exec_cmd(cmds, envcp);
+		free_tab(args);
+	}
+	else
+	{
+		exec_pipes(cmds, envcp);
+	}
+}
