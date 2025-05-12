@@ -94,7 +94,7 @@ char *replace_variable_or_special(char *str, int *i, char *res, char **envcp)
     var_name[j] = '\0';
 
     // env_value = getenv(var_name);
-    env_value = get_env_value(var_name, envcp);
+    env_value = get_value_cleaned(var_name, envcp);
     if (!env_value)
     {
         if (ft_strcmp(var_name, "UID") == 0)

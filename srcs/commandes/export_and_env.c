@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_and_env.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:36 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/09 18:11:54 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/05/12 15:11:34 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,3 +163,4 @@ int check_events(char *arg)
     }
     return (0);
 }
+

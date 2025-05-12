@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 17:56:48 by juvitry           #+#    #+#             */
-/*   Updated: 2024/11/23 10:57:16 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/05/12 14:52:32 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,14 @@ int	ft_isalnum(int c)
 {
 	if ((c >= 48 && c <= 57) || (c >= 65 && c <= 90) || (c >= 97 && c <= 122))
 		return (8);
+	else
+		return (0);
+}
+
+int	ft_isspace(int c)
+{
+	if (c == 32 || c == 9)
+		return (1);
 	else
 		return (0);
 }

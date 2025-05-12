@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/09 18:15:55 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/05/12 15:13:36 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,6 +136,7 @@ void ft_pwd(char **args);
 void ft_exit(char **args);
 void ft_export(char **arg, char ***envcp);
 char *get_env_value(char *name, char **envp);
+char	*get_value_cleaned(char *name, char **envp);
 void ft_set_env(char *key, char *value, char ***envp);
 void ft_env(char **envp);
 int is_valid_name(char *name);
@@ -174,6 +175,7 @@ void init_cmds(t_com_list *command);
 int parse_args_echo(char **args);
 int count_ags(char **args);
 int check_events(char *arg);
+char	*clean_spaces(char *str);
 
 void print_cmd_list(t_com_list *cmd_list);
 void add_outfile(t_file_list **list, char *filename, int flag);
