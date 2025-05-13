@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:42:01 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/12 15:29:17 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/05/13 15:38:31 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void ft_echo(char *str, char **envp)
 {
     (void)**envp;
 
-    ft_putstr_fd(str, 1); // La chaîne est déjà traitée
+    ft_putstr_fd(str, STDOUT_FILENO); // La chaîne est déjà traitée
 }
 
 char	*get_value_cleaned(char *name, char **envp)
