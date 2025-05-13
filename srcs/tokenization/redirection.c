@@ -42,9 +42,20 @@ int handle_redirection(char *str, int *i, t_token **tokens)
     return (0); // Pas de redirection
 }
 
+
 // Analyser les redirections et avancer l'index
 int parse_redirection(char *str, int *i)
 {
+    if (str[*i] == '2' && str[*i + 1] == '>' && str[*i + 2] == '>')
+    {
+        (*i) += 3;
+        return (ERR_REDIR);
+    }
+    else if (str[*i] == '2' && str[*i + 1] == '>')
+    {
+        (*i) += 2;
+        return (ERR_REDIR);
+    }
     if (str[*i] == '<' && str[*i + 1] == '<')
     {
         *i += 2; // Avancer l'index de 2 pour ignorer "<<"
@@ -83,6 +94,8 @@ char *add_symbol(int type)
         return (ft_strdup("<"));
     else if (type == TRUNC)
         return (ft_strdup(">"));
+    else if (type == ERR_REDIR)
+        return ft_strdup("2>");
     return (NULL);
 }
 /*
@@ -230,73 +243,66 @@ int ft_redirection(t_com_list *command, int *mem_fd_in, int *mem_fd_out, int *me
 {
     int fd;
     t_file_list *tmp;
-    int has_error = 0; // Ajouté pour savoir si une redirection échoue
 
-    // Redirection entrée
+    // Gestion de l'entrée
     if (command->infile)
     {
-        *mem_fd_in = dup(STDIN_FILENO);
         fd = open_file_cmd(command->infile);
-        if (fd != -1)
+        if (fd < 0)
         {
-            dup2(fd, STDIN_FILENO);
-            close(fd);
+            perror(command->infile);
+            return (-1);
         }
-        else
-        {
-            fprintf(stderr, "minishell: %s: No such file or directory\n", command->infile);
-            has_error = 1;
-        }
+        *mem_fd_in = dup(STDIN_FILENO);
+        dup2(fd, STDIN_FILENO);
+        close(fd);
     }
 
-    // Redirection sortie
-    if (command->outfile || command->all_outfilles)
+    // Gestion de la sortie principale
+    if (command->outfile)
     {
         *mem_fd_out = dup(STDOUT_FILENO);
-
-        if (command->outfile)
+        fd = open_outfile(command->outfile, command->flag_out);
+        if (fd < 0)
         {
-            fd = open_outfile(command->outfile, command->flag_out);
-            if (fd != -1)
-            {
-                dup2(fd, STDOUT_FILENO);
-                close(fd);
-            }
-            else
-            {
-                fprintf(stderr, "minishell: %s: No such file or directory\n", command->outfile);
-                has_error = 1;
-            }
+            perror(command->outfile);
+            return (-1); // Ne pas créer quoi que ce soit d’autre
         }
-
-        tmp = command->all_outfilles;
-        while (tmp)
-        {
-            fd = open_outfile(tmp->filename, tmp->flag);
-            if (fd != -1)
-                close(fd); // juste créer
-            tmp = tmp->next;
-        }
+        dup2(fd, STDOUT_FILENO);
+        close(fd);
     }
 
-    // Redirection erreur
+    // Gestion de tous les outfiles secondaires
+    tmp = command->all_outfilles;
+    while (tmp)
+    {
+        fd = open_outfile(tmp->filename, tmp->flag);
+        if (fd < 0)
+        {
+            perror(tmp->filename);
+            return (-1);
+        }
+        close(fd); // just to create it
+        tmp = tmp->next;
+    }
+
+    // Gestion de l'erreur standard
     if (command->errfile)
     {
         *mem_fd_err = dup(STDERR_FILENO);
         fd = open_errfile(command->errfile);
-        if (fd != -1)
+        if (fd < 0)
         {
-            dup2(fd, STDERR_FILENO);
-            close(fd);
+            perror(command->errfile);
+            return (-1);
         }
-        else
-        {
-            perror("minishell: error opening errfile");
-            has_error = 1;
-        }
+        dup2(fd, STDERR_FILENO);
+        close(fd);
     }
-    return has_error;
+
+    return (0);
 }
+
 
 void restore_redirections(int mem_fd_in, int mem_fd_out, int mem_fd_err)
 {

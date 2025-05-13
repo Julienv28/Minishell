@@ -107,8 +107,8 @@ int main(int ac, char **av, char **envp)
             continue;
         }
         command = tokens_to_cmds(tokens);
-        if (!command)
-            printf("Aucune commande générée\n");
+        //if (!command)
+        //    printf("Aucune commande générée\n");
         while (command)
         {
             has_redir_error = 0;
