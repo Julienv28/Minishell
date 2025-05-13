@@ -48,23 +48,23 @@ void free_file_list(t_file_list *list)
 
 t_com_list *tokens_to_cmds(t_token *tokens)
 {
-    t_com_list *cmd_list = NULL;
-    t_com_list *current_cmd = NULL;
-    t_token *tmp = tokens;
-    t_com_list *new_cmd;
-    char *filename;
-    char *pending_outfile = NULL;
-    int pending_flag_out = -1;
-    char *pending_infile = NULL;
-    int pending_flag_in = -1;
-    int flag;
-    int redir_type;
+    t_com_list      *cmd_list = NULL;
+    t_com_list      *current_cmd = NULL;
+    t_token         *tmp = tokens;
+    t_com_list      *new_cmd;
+    char            *filename;
+    char            *pending_outfile = NULL;
+    int             pending_flag_out = -1;
+    char            *pending_infile = NULL;
+    int             pending_flag_in = -1;
+    int             flag;
+    int             redir_type;
+    t_file_list     *pending_all_outfiles = NULL;
 
     while (tmp)
     {
         // Affiche la valeur du token pour débogage
-        //printf("Token type: %d, value: %s\n", tmp->type, tmp->value);
-        if (tmp->type == CMD)
+        if (tmp->type == CMD || (tmp->type == ARG && current_cmd == NULL))
         {
             if (!tmp->value)  // Vérifie si la valeur du token est NULL
             {
@@ -98,8 +98,12 @@ t_com_list *tokens_to_cmds(t_token *tokens)
         }
         else if (tmp->type == ARG && current_cmd)
             current_cmd->command = concat_command(current_cmd->command, tmp->value);
-        else if (tmp->type == PIPE && current_cmd)
-            current_cmd->is_pipe = 1;
+        else if (tmp->type == PIPE)
+        {
+            if (current_cmd)
+                current_cmd->is_pipe = 1;
+            current_cmd = NULL;
+        }
         else if (tmp->type == TRUNC || tmp->type == INPUT || tmp->type == HEREDOC || tmp->type == APPEND)
         {
             redir_type = tmp->type; // <== Sauvegarde le type de redirection actuel
@@ -135,6 +139,7 @@ t_com_list *tokens_to_cmds(t_token *tokens)
                     {
                         pending_outfile = filename;
                         pending_flag_out = flag;
+                        add_outfile(&pending_all_outfiles, filename, flag);
                     }
                 }
             }
@@ -145,29 +150,6 @@ t_com_list *tokens_to_cmds(t_token *tokens)
             }
         }
         tmp = tmp->next;
-    }
-    
-    
-    // Créer une commande vide si redirection seule
-    if ((pending_outfile || pending_infile) && !current_cmd)
-    {
-        new_cmd = list_new(NULL); // Pas de commande
-        if (pending_outfile)
-        {
-            new_cmd->outfile = pending_outfile;
-            new_cmd->flag_out = pending_flag_out;
-            add_outfile(&new_cmd->all_outfilles, pending_outfile, pending_flag_out);
-        }
-        if (pending_infile)
-        {
-            new_cmd->infile = pending_infile;
-            new_cmd->flag_in = pending_flag_in;
-        }
-
-        if (!cmd_list)
-            cmd_list = new_cmd;
-        else
-            add_bottom(&cmd_list, new_cmd);
     }
     return (cmd_list);
 }

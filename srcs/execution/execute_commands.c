@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 10:45:02 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/12 15:48:13 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/05/13 10:25:35 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,25 +87,107 @@
 
 void	execute(t_com_list *cmds, char **envcp)
 {
+	char	**args;
+
 	if (!cmds)
 		return ;
 	if (cmds->next == NULL)
 	{
-		char	**args = split_args(cmds->command, ' ');
+		args = split_args(cmds->command, ' ');
 		if (!args || !args[0])
 		{
 			free_tab(args);
 			return ;
 		}
 		replace_exit_and_env_status(args, envcp);
-        if (is_builting(args[0]) == 0)
-            exec_builting(args, &envcp);
-    	else
-            exec_cmd(cmds, envcp);
+		if (is_builting(args[0]) == 0)
+			exec_builting(args, &envcp);
+		else
+			exec_cmd(cmds, envcp);
 		free_tab(args);
 	}
 	else
 	{
 		exec_pipes(cmds, envcp);
 	}
+}
+
+static int	count_commands(t_com_list *cmds)
+{
+	int			count;
+	t_com_list	*tmp;
+
+	count = 0;
+	tmp = cmds;
+	while (tmp)
+	{
+		count++;
+		tmp = tmp->next;
+	}
+	return (count);
+}
+
+static void	wait_children(void)
+{
+	int		status;
+	pid_t	pid;
+
+	pid = wait(&status);
+	while (pid > 0)
+	{
+		if (WIFEXITED(status))
+			g_exit_status = WEXITSTATUS(status);
+		else if (WIFSIGNALED(status))
+			g_exit_status = 128 + WTERMSIG(status);
+	}
+}
+
+void	exec_pipes(t_com_list *cmds, char **envcp)
+{
+	int			n = count_commands(cmds);
+	int			i = 0;
+	int 		pipefd[2][2];
+	pid_t		pid;
+	t_com_list	*curr = cmds;
+
+	while (curr)
+	{
+		if (i < n - 1 && pipe(pipefd[i % 2]) == -1)
+		{
+			perror("pipe");
+			return ;
+		}
+		pid = fork();
+		if (pid == -1)
+		{
+			perror("fork");
+			return ;
+		}
+		if (pid == 0)
+		{
+			if (i > 0)
+				dup2(pipefd[(i + 1) % 2][1], STDOUT_FILENO);
+			if (i < n - 1)
+				dup2(pipefd[i % 2][1], STDOUT_FILENO);
+			close(pipefd[0][0]);
+			close(pipefd[0][1]);
+			close(pipefd[1][0]);
+			close(pipefd[1][1]);
+			char **args = split_args(curr->command, ' ');
+			if (is_builting(args[0]))
+				exec_builting(args, &envcp);
+			else
+				exec_cmd(curr, envcp);
+			free_tab(args);
+			exit(g_exit_status);
+		}
+		if (i > 0)
+		{
+			close(pipefd[(i + 1) % 2][0]);
+			close(pipefd[(i + 1) % 2][1]);
+		}
+		i++;
+		curr = curr->next;
+	}
+	wait_children();
 }

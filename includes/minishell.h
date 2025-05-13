@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/12 15:13:36 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/05/13 10:26:18 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,6 @@ typedef struct s_com_list
 {
     char *command;
     char **args;
-    char **envcp;
     char *path;
     int is_pipe;
     char *outfile;
@@ -149,6 +148,8 @@ void exec_builting(char **args, char ***envcp);
 char *get_path(char *cmd, char **envp);
 int find_line(char **envp, char *path);
 char *search_path(char **paths, char *cmd);
+void	exec_pipes(t_com_list *cmds, char **envcp);
+void	execute(t_com_list *cmds, char **envcp);
 
 // Pipes (revoir les args pour pipex)
 void complex_pipex(t_com_list *command, int ac, char **args, char **envcp);

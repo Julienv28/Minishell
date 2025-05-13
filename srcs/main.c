@@ -145,17 +145,17 @@ int main(int ac, char **av, char **envp)
                 command = command->next;
                 continue;
             }
-            int pipes_count = parse_pipes(args);
-            if (pipes_count > 0)
-                pipes_manager(command, pipes_count, args, envcp);
-            else
-            {
-                if (args && args[0] && is_builting(args[0]) == 0)
-                    exec_builting(args, &envcp);
-                else if (args && args[0])
-                    exec_cmd(command, envcp);
-            }
-
+            // int pipes_count = parse_pipes(args);
+            // if (pipes_count > 0)
+            //     pipes_manager(command, pipes_count, args, envcp);
+            // else
+            // {
+            //     if (args && args[0] && is_builting(args[0]) == 0)
+            //         exec_builting(args, &envcp);
+            //     else if (args && args[0])
+            //         exec_cmd(command, envcp);
+            // }
+            execute(command, envcp);
             // Restauration des redirections
             if ((command->infile || command->outfile || command->errfile) && has_redir_error >= 0)
             {
