@@ -186,52 +186,30 @@ char *get_path(char *cmd, char **envp)
 
 void exec_cmd(t_com_list *command, char **envcp)
 {
-    pid_t pid;
-    char **args;
-    char *path;
-    int status;
+	char	**args;
+	char	*path;
 
-    g_exit_status = 1;
-    args = ft_split(command->command, ' ');
-    if (!args || args[0] == NULL || args[0][0] == '\0')
-    {
-        ft_putstr_fd("minishell: ", STDERR_FILENO);
-        ft_putstr_fd(*args, STDERR_FILENO);
-        ft_putstr_fd("command not found\n", STDERR_FILENO);
-        g_exit_status = 127;
-        free_tab(args);
-        return;
-    }
-    path = get_path(args[0], envcp);
-    if (path == NULL)
-    {
-        g_exit_status = 127; // Commande introuvable
-        free_tab(args);
-        return;
-    }
-    pid = fork();
-    if (pid == 0) // Si on est dans le processus enfant
-    {
-        if (execve(path, args, envcp) == -1)
-        {
-            perror("execve failed");
-            exit(1);
-        }
-    }
-    else if (pid > 0) // Si on est dans le processus parent
-    {
-        waitpid(pid, &status, 0); // Attente de la fin de l'exécution du processus enfant
-        // MAJ g_exit_status pour avoir la bonne valeur
-        if (WIFEXITED(status))
-            g_exit_status = WEXITSTATUS(status); // Code de sortie normal
-        else if (WIFSIGNALED(status))
-            g_exit_status = 128 + WTERMSIG(status); // Interrompu par signal
-    }
-    else
-    { // Gestion d'une erreur de fork
-        perror("fork failed");
-        g_exit_status = 1;
-    }
-    free(path);
-    free_tab(args);
+	g_exit_status = 1;
+	args = ft_split(command->command, ' ');
+	if (!args || args[0] == NULL || args[0][0] == '\0')
+	{
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		ft_putstr_fd("command not found\n", STDERR_FILENO);
+		g_exit_status = 127;
+		free_tab(args);
+		return ;
+	}
+	path = get_path(args[0], envcp);
+	if (path == NULL)
+	{
+		g_exit_status = 127; // Commande introuvable
+		free_tab(args);
+		return ;
+	}
+	execve(path, args, envcp);
+	perror("execve failed");
+	free_tab(args);
+	free(path);
+	exit(1);
 }
+

@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 10:45:02 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/13 11:54:17 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/05/13 15:14:34 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,9 +86,21 @@
 //     }
 // }
 
+static void	read_com_list(t_com_list *cmds)
+{
+	t_com_list *tmp = cmds;
+	int i = 0;
+	while (tmp)
+	{
+    	printf("Command %d: %s\n", i++, tmp->command);
+    	tmp = tmp->next;
+	}
+}
+
 void	execute(t_com_list *cmds, char **envcp)
 {
 	char	**args;
+	pid_t	pid;
 
 	if (!cmds)
 		return ;
@@ -101,14 +113,38 @@ void	execute(t_com_list *cmds, char **envcp)
 			return ;
 		}
 		replace_exit_and_env_status(args, envcp);
-		if (is_builting(args[0]) == 0)
+		if (ft_strcmp(args[0], "exit") == 0)
 			exec_builting(args, &envcp);
-		else
-			exec_cmd(cmds, envcp);
+		pid = fork();
+		if (pid == -1)
+		{
+			perror("fork");
+			free_tab(args);
+			return ;
+		}
+		if (pid == 0) // === CHILD ===
+		{
+			if (is_builting(args[0]) == 0)
+				exec_builting(args, &envcp);
+			else
+				exec_cmd(cmds, envcp);
+			free_tab(args);
+			exit(g_exit_status);
+		}
+		else // === PARENT ===
+		{
+			int status;
+			waitpid(pid, &status, 0);
+			if (WIFEXITED(status))
+				g_exit_status = WEXITSTATUS(status);
+			else if (WIFSIGNALED(status))
+				g_exit_status = 128 + WTERMSIG(status);
+		}
 		free_tab(args);
 	}
 	else
 	{
+		read_com_list(cmds);
 		exec_pipes(cmds, envcp);
 	}
 }
@@ -160,19 +196,22 @@ void	exec_pipes(t_com_list *cmds, char **envcp)
 			perror("pipe");
 			return ;
 		}
+		printf("creating process for command: %s\n", curr->command);
 		pid = fork();
 		if (pid == -1)
 		{
 			perror("fork");
 			return ;
 		}
-		if (pid == 0)
+		if (pid == 0)  // === CHILD ===
 		{
+			printf("Child process %d: %s\n", getpid(), curr->command);
 			if (prev_fd != -1)
 			{
 				dup2(prev_fd, STDIN_FILENO);
 				close(prev_fd);
 			}
+			
 			if (curr->next)
 			{
 				close(pipefd[0]);
@@ -180,6 +219,12 @@ void	exec_pipes(t_com_list *cmds, char **envcp)
 				close(pipefd[1]);
 			}
 			char **args = split_args(curr->command, ' ');
+			if (!args || !args[0])
+			{
+				printf("Invalid or empty command: %s\n", curr->command);
+				exit (1);
+			}
+			replace_exit_and_env_status(args, envcp);
 			if (is_builting(args[0]))
 				exec_builting(args, &envcp);
 			else
@@ -187,6 +232,7 @@ void	exec_pipes(t_com_list *cmds, char **envcp)
 			free_tab(args);
 			exit(g_exit_status);
 		}
+		// === PARENT ===
 		if (prev_fd != -1)
 			close(prev_fd);
 		if (curr->next)
@@ -195,7 +241,13 @@ void	exec_pipes(t_com_list *cmds, char **envcp)
 			prev_fd = pipefd[0];
 		}
 		else
+		{
+			if (pipefd[0] >= 0)
+				close(pipefd[0]);
+			if (pipefd[1] >= 0)
+				close(pipefd[1]);
 			prev_fd = -1;
+		}
 		curr = curr->next;
 	}
 	wait_children();
