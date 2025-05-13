@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:42:01 by juvitry           #+#    #+#             */
 /*   Updated: 2025/05/13 15:38:31 by juvitry          ###   ########.fr       */
@@ -46,7 +46,7 @@ char *get_env_value(char *name, char **envp)
     }
     return (NULL);
 }
-
+/*
 int parse_args_echo(char **args)
 {
     int i;
@@ -80,7 +80,7 @@ int parse_args_echo(char **args)
     }
     else
         return (0);
-}
+}*/
 
 // Trimmer les variables et nettoyer les espaces inutiles
 char	*clean_spaces(char *str)
@@ -121,6 +121,23 @@ char	*clean_spaces(char *str)
 	free (trimmed);
 	return (res);
 }
+
+int is_valid_n_option(char *arg)
+{
+   int	i;
+
+	if (!arg || arg[0] != '-' || arg[1] != 'n')
+		return (0);
+	i = 2;
+	while (arg[i])
+	{
+		if (arg[i] != 'n')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 /*
 static int	ft_isupper(int c)
 {

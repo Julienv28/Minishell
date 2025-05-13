@@ -12,7 +12,7 @@ int count_ags(char **args)
 
 void exec_builting(char **args, char ***envcp)
 {
-    int i;
+    //int i;
 
     if (ft_strcmp(args[0], "exit") == 0)
         ft_exit(args);
@@ -20,6 +20,7 @@ void exec_builting(char **args, char ***envcp)
         ft_cd(args, envcp);
     else if (ft_strcmp(args[0], "pwd") == 0)
         ft_pwd(args);
+    /*
     else if (ft_strcmp(args[0], "echo") == 0)
     {
         if (parse_args_echo(args) == 1)
@@ -59,7 +60,32 @@ void exec_builting(char **args, char ***envcp)
                 }
             }
         }
+    }*/
+   else if (ft_strcmp(args[0], "echo") == 0)
+    {
+        int i = 1;
+        int newline = 1;
+
+        // Traite toutes les options -n, -nn, etc.
+        while (args[i] && is_valid_n_option(args[i]))
+        {
+            newline = 0;
+            i++;
+        }
+
+        // Affiche les arguments restants
+        while (args[i])
+        {
+            ft_echo(args[i], *envcp);
+            if (args[i + 1])
+                ft_putchar_fd(' ', 1);
+            i++;
+        }
+
+        if (newline)
+            ft_putchar_fd('\n', 1);
     }
+
     else if (ft_strcmp(args[0], "export") == 0)
     {
         // if (count_ags(args) > 2)
@@ -70,7 +96,7 @@ void exec_builting(char **args, char ***envcp)
         if (!args[1]) // Aucun argument : afficher l'environnement
         {
             ft_env(*envcp); // Affiche les variables d'environnement
-            return;
+            //return;
         }
         else
         {
@@ -79,6 +105,12 @@ void exec_builting(char **args, char ***envcp)
             else
                 return;
         }
+        // Debug: affiche manuellement la variable qu'on vient d'ajouter
+        for (int j = 0; (*envcp)[j]; j++) {
+            if (ft_strncmp((*envcp)[j], "HOLQ=", 5) == 0)
+                printf("DEBUG: Variable HOLQ présente -> %s\n", (*envcp)[j]);
+        }
+        
     }
     else if (ft_strcmp(args[0], "env") == 0)
         ft_env(*envcp);
