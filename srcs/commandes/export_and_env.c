@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_and_env.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:36 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/12 15:11:34 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/05/13 15:42:44 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,15 @@ void ft_set_env(char *key, char *value, char ***envcp)
     }
     ft_freeenvp(*envcp);
     *envcp = new_env;
+
+    int k = 0;
+    printf("DEBUG ENVCP after export:\n");
+    while ((*envcp)[k])
+    {
+        printf("-> %s\n", (*envcp)[k]);
+        k++;
+    }
+
 }
 
 void ft_export(char **args, char ***envcp)
@@ -73,6 +82,8 @@ void ft_export(char **args, char ***envcp)
     while (args[i])
     {
         replaced = replace_all_variables(args[i], *envcp);
+        printf("Replaced: %s\n", replaced);
+
         if (!replaced)
         {
             i++;
@@ -129,7 +140,8 @@ void ft_env(char **envcp)
     i = 0;
     while (envcp[i])
     {
-        printf("%s\n", envcp[i]);
+        if (ft_strchr(envcp[i], '=')) // Pour éviter d'afficher des exports sans valeur
+            printf("%s\n", envcp[i]);
         i++;
     }
 }

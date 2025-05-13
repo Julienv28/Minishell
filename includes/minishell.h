@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/13 12:14:06 by opique           ###   ########.fr       */
+/*   Updated: 2025/05/13 16:43:48 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,6 +141,7 @@ void ft_set_env(char *key, char *value, char ***envp);
 void ft_env(char **envp);
 int is_valid_name(char *name);
 void ft_unset(char **args, char ***envcp);
+int is_valid_n_option(char *arg);
 
 // Exec
 void exec_cmd(t_com_list *cmd, char **envcp);
@@ -174,7 +175,7 @@ void ft_freeenvp(char **envcp);
 char *ft_srjoin3(char *s1, char *s2, char *s3);
 char **ft_realloc_env(char **envcp, char *new_entry);
 void init_cmds(t_com_list *command);
-int parse_args_echo(char **args);
+//int parse_args_echo(char **args);
 int count_ags(char **args);
 int check_events(char *arg);
 char	*clean_spaces(char *str);
