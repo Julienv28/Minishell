@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 10:45:02 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/13 11:20:28 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/05/13 11:54:17 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,7 +170,7 @@ void	exec_pipes(t_com_list *cmds, char **envcp)
 		{
 			if (prev_fd != -1)
 			{
-				dup2(prev_fd, STDOUT_FILENO);
+				dup2(prev_fd, STDIN_FILENO);
 				close(prev_fd);
 			}
 			if (curr->next)
