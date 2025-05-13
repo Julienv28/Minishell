@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:36 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/12 15:11:34 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/05/13 16:45:00 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void ft_set_env(char *key, char *value, char ***envcp)
     char **new_env;
 
     new_entry = ft_strjoin(key, "=");
-    tmp = ft_strjoin(new_entry, value);
+    tmp = ft_strjoin(new_entry, value ? value : "");
     free(new_entry);
     new_entry = tmp;
     i = 0;
@@ -68,7 +68,31 @@ void ft_export(char **args, char ***envcp)
     char *equal_sign;
     char *replaced;
     int i;
+    int j;
 
+    i = 0;
+    j = 0;
+    if (!args[1])
+    {
+        while ((*envcp)[i])
+        {
+            printf("declare -x ");
+            while ((*envcp)[i][j])
+            {
+                if ((*envcp)[i][j] == '=')
+                {
+                    printf("=\"%s\"\n", (*envcp)[i] + j + 1);
+                    break;
+                }
+                putchar((*envcp)[i][j]);
+                j++;
+            }
+        if (!ft_strchr((*envcp)[i], '='))
+            printf("\n");
+        i++;
+        }
+        return ;
+    }
     i = 1;
     while (args[i])
     {
@@ -127,7 +151,7 @@ void ft_env(char **envcp)
     int i;
 
     i = 0;
-    while (envcp[i])
+    while (envcp && envcp[i])
     {
         printf("%s\n", envcp[i]);
         i++;

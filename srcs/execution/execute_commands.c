@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 10:45:02 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/13 15:14:34 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/05/13 16:05:43 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,67 +86,88 @@
 //     }
 // }
 
-static void	read_com_list(t_com_list *cmds)
+int	is_builtin_global(char *cmd)
 {
-	t_com_list *tmp = cmds;
-	int i = 0;
-	while (tmp)
-	{
-    	printf("Command %d: %s\n", i++, tmp->command);
-    	tmp = tmp->next;
-	}
+	return (ft_strcmp(cmd, "cd") == 0 
+		|| ft_strcmp(cmd, "exit") == 0
+		|| ft_strcmp(cmd, "export") == 0
+		|| ft_strcmp(cmd, "unset") == 0);
 }
 
-void	execute(t_com_list *cmds, char **envcp)
+void execute(t_com_list *cmds, char **envcp)
 {
-	char	**args;
-	pid_t	pid;
+    char **args;
+    pid_t pid;
 
-	if (!cmds)
-		return ;
-	if (cmds->next == NULL)
-	{
-		args = split_args(cmds->command, ' ');
-		if (!args || !args[0])
-		{
-			free_tab(args);
-			return ;
-		}
-		replace_exit_and_env_status(args, envcp);
-		if (ft_strcmp(args[0], "exit") == 0)
-			exec_builting(args, &envcp);
-		pid = fork();
-		if (pid == -1)
-		{
-			perror("fork");
-			free_tab(args);
-			return ;
-		}
-		if (pid == 0) // === CHILD ===
-		{
-			if (is_builting(args[0]) == 0)
-				exec_builting(args, &envcp);
-			else
-				exec_cmd(cmds, envcp);
-			free_tab(args);
-			exit(g_exit_status);
-		}
-		else // === PARENT ===
-		{
-			int status;
-			waitpid(pid, &status, 0);
-			if (WIFEXITED(status))
-				g_exit_status = WEXITSTATUS(status);
-			else if (WIFSIGNALED(status))
-				g_exit_status = 128 + WTERMSIG(status);
-		}
-		free_tab(args);
-	}
-	else
-	{
-		read_com_list(cmds);
-		exec_pipes(cmds, envcp);
-	}
+    if (!cmds)
+        return;
+    if (cmds->next == NULL)  // Une seule commande
+    {
+        args = split_args(cmds->command, ' ');
+        if (!args || !args[0])
+        {
+            free_tab(args);
+            return;
+        }
+        replace_exit_and_env_status(args, envcp);
+        // Vérifie si c'est un builtin
+        if (is_builting(args[0]) == 0) 
+        {
+            if (is_builtin_global(args[0]))  // Si c'est un builtin global (ex: exit, cd, export, unset)
+                exec_builting(args, &envcp);  // Exécution dans le processus parent
+            else  // Si c'est un autre builtin (pas global)
+            {
+                pid = fork();
+                if (pid == -1)
+                {
+                    perror("fork");
+                    free_tab(args);
+                    return;
+                }
+                if (pid == 0)  // === Processus Enfant ===
+                {
+                    exec_builting(args, &envcp);  // Exécution du builtin dans l'enfant
+                    exit(g_exit_status);
+                }
+                else  // === Processus Parent ===
+                {
+                    int status;
+                    waitpid(pid, &status, 0);
+                    if (WIFEXITED(status))
+                        g_exit_status = WEXITSTATUS(status);
+                    else if (WIFSIGNALED(status))
+                        g_exit_status = 128 + WTERMSIG(status);
+                }
+            }
+        }
+        else  // Si ce n'est pas un builtin
+        {
+            pid = fork();
+            if (pid == -1)
+            {
+                perror("fork");
+                free_tab(args);
+                return;
+            }
+            if (pid == 0)  // === Processus Enfant ===
+            {
+                exec_cmd(cmds, envcp);  // Exécution de la commande externe
+                exit(g_exit_status);
+            }
+            else  // === Processus Parent ===
+            {
+                int status;
+                waitpid(pid, &status, 0);
+                if (WIFEXITED(status))
+                    g_exit_status = WEXITSTATUS(status);
+                else if (WIFSIGNALED(status))
+                    g_exit_status = 128 + WTERMSIG(status);
+            }
+        }
+        free_tab(args);
+    }
+    else  // Si il y a plusieurs commandes (avec pipes)
+        exec_pipes(cmds, envcp);
 }
 
 // static int	count_commands(t_com_list *cmds)
@@ -211,7 +232,6 @@ void	exec_pipes(t_com_list *cmds, char **envcp)
 				dup2(prev_fd, STDIN_FILENO);
 				close(prev_fd);
 			}
-			
 			if (curr->next)
 			{
 				close(pipefd[0]);
