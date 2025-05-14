@@ -111,7 +111,7 @@ void execute(t_com_list *cmds, char **envcp)
         }
         replace_exit_and_env_status(args, envcp);
         // Vérifie si c'est un builtin
-        if (is_builting(args[0]) == 0) 
+        if (is_builting(args[0])) 
         {
             if (is_builtin_global(args[0]))  // Si c'est un builtin global (ex: exit, cd, export, unset)
                 exec_builting(args, &envcp);  // Exécution dans le processus parent
@@ -203,72 +203,70 @@ static void	wait_children(void)
 		perror("wait");
 }
 
-void	exec_pipes(t_com_list *cmds, char **envcp)
+void exec_pipes(t_com_list *cmds, char **envcp)
 {
-	int			prev_fd = -1;
-	int 		pipefd[2];
-	pid_t		pid;
-	t_com_list	*curr = cmds;
+    int prev_fd = -1;
+    int pipefd[2];
+    pid_t pid;
+    t_com_list *curr = cmds;
 
-	while (curr)
-	{
-		if (curr->next && pipe(pipefd) == -1)
-		{
-			perror("pipe");
-			return ;
-		}
-		printf("creating process for command: %s\n", curr->command);
-		pid = fork();
-		if (pid == -1)
-		{
-			perror("fork");
-			return ;
-		}
-		if (pid == 0)  // === CHILD ===
-		{
-			printf("Child process %d: %s\n", getpid(), curr->command);
-			if (prev_fd != -1)
-			{
-				dup2(prev_fd, STDIN_FILENO);
-				close(prev_fd);
-			}
-			if (curr->next)
-			{
-				close(pipefd[0]);
-				dup2(pipefd[1], STDOUT_FILENO);
-				close(pipefd[1]);
-			}
-			char **args = split_args(curr->command, ' ');
-			if (!args || !args[0])
-			{
-				printf("Invalid or empty command: %s\n", curr->command);
-				exit (1);
-			}
-			replace_exit_and_env_status(args, envcp);
-			if (is_builting(args[0]))
-				exec_builting(args, &envcp);
-			else
-				exec_cmd(curr, envcp);
-			free_tab(args);
-			exit(g_exit_status);
-		}
-		// === PARENT ===
-		if (prev_fd != -1)
-			close(prev_fd);
-		if (curr->next)
-		{
-			close(pipefd[1]);
-			prev_fd = pipefd[0];
-		}
-		else
-		{
-			if (pipefd[0] >= 0)
-				close(pipefd[0]);
-			if (pipefd[1] >= 0)
-				close(pipefd[1]);
-			prev_fd = -1;
-		}
-		curr = curr->next;
-	}
-	wait_children();
+    while (curr)
+    {
+        if (curr->next && pipe(pipefd) == -1)
+        {
+            perror("pipe");
+            return;
+        }
+        printf("Creating process for command: %s\n", curr->command);
+        pid = fork();
+        if (pid == -1)
+        {
+            perror("fork");
+            return;
+        }
+        if (pid == 0)  // === CHILD ===
+        {
+            printf("Child process %d: %s\n", getpid(), curr->command);
+            if (prev_fd != -1)
+            {
+                printf("Child %d: Duplicating stdin from fd %d\n", getpid(), prev_fd);
+                dup2(prev_fd, STDIN_FILENO);
+                close(prev_fd);
+            }
+            if (curr->next)
+            {
+                printf("Child %d: Duplicating stdout to fd %d\n", getpid(), pipefd[1]);
+                close(pipefd[0]);
+                dup2(pipefd[1], STDOUT_FILENO);
+                close(pipefd[1]);
+            }
+            char **args = split_args(curr->command, ' ');
+            if (!args || !args[0])
+            {
+                printf("Invalid or empty command: %s\n", curr->command);
+                exit(1);
+            }
+            replace_exit_and_env_status(args, envcp);
+            if (is_builting(args[0]))
+                exec_builting(args, &envcp);
+            else
+                exec_cmd(curr, envcp);
+            free_tab(args);
+            exit(g_exit_status);
+        }
+        // === PARENT ===
+        if (prev_fd != -1)
+        {
+            printf("Parent: Closing fd %d\n", prev_fd);
+            close(prev_fd);
+        }
+        if (curr->next)
+        {
+            printf("Parent: Closing fd %d\n", pipefd[1]);
+            close(pipefd[1]);
+        }
+		prev_fd = (curr->next) ? pipefd[0] : -1;
+        curr = curr->next;
+    }
+    wait_children();
 }
