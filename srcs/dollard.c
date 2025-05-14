@@ -114,6 +114,59 @@ char *replace_variable_or_special(char *str, int *i, char *res, char **envcp)
     return tmp;
 }
 
+/*
+char *replace_all_variables(char *str, char **envcp)
+{
+    int i = 0;
+    char *res = ft_strdup("");
+    if (!res || !str)
+        return NULL;
+
+    while (str[i])
+    {
+        if (str[i] == '\'')
+        {
+            res = append_char(res, str[i++]);
+            while (str[i] && str[i] != '\'')
+                res = append_char(res, str[i++]);
+            if (str[i] == '\'')
+                res = append_char(res, str[i++]);
+        }
+        else if (str[i] == '"')
+        {
+            res = append_char(res, str[i++]);
+            while (str[i] && str[i] != '"')
+            {
+                if (str[i] == '$')
+                {
+                    // Si on a une concaténation comme "$"HOME → on veut garder le $
+                    if (str[i + 1] == '"' && i > 0 && str[i - 1] == '"')
+                        res = append_char(res, str[i++]); // ajoute juste le $
+                    else
+                        res = replace_variable_or_special(str, &i, res, envcp);
+                }
+                else
+                    res = append_char(res, str[i++]);
+            }
+            if (str[i] == '"')
+                res = append_char(res, str[i++]);
+        }
+        else if (str[i] == '$')
+        {
+            // Même logique en dehors de quotes
+            if (str[i + 1] == '"' && i > 0 && str[i - 1] == '"')
+                res = append_char(res, str[i++]);
+            else
+                res = replace_variable_or_special(str, &i, res, envcp);
+        }
+        else
+        {
+            res = append_char(res, str[i++]);
+        }
+    }
+    return res;
+}*/
+
 char *replace_all_variables(char *str, char **envcp)
 {
     int i = 0;
