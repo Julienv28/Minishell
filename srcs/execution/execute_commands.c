@@ -205,13 +205,14 @@ static void	wait_children(void)
 
 void exec_pipes(t_com_list *cmds, char **envcp)
 {
-    int prev_fd = -1;
-    int pipefd[2];
+    int prev_fd = -1;           // Pour l'entrée (stdin) du processus courant
+    int pipefd[2];              // [0] = read end, [1] = write end
     pid_t pid;
     t_com_list *curr = cmds;
 
     while (curr)
     {
+        // Si une commande suit, créer un pipe
         if (curr->next && pipe(pipefd) == -1)
         {
             perror("pipe");
@@ -227,18 +228,20 @@ void exec_pipes(t_com_list *cmds, char **envcp)
         if (pid == 0)  // === CHILD ===
         {
             printf("Child process %d: %s\n", getpid(), curr->command);
+            // Si ce n'est pas la première commande, rediriger stdin depuis le pipe précédent
             if (prev_fd != -1)
             {
                 printf("Child %d: Duplicating stdin from fd %d\n", getpid(), prev_fd);
                 dup2(prev_fd, STDIN_FILENO);
                 close(prev_fd);
             }
+            // Si ce n'est pas la dernière commande, rediriger stdout vers le pipe actuel
             if (curr->next)
             {
                 printf("Child %d: Duplicating stdout to fd %d\n", getpid(), pipefd[1]);
-                close(pipefd[0]);
                 dup2(pipefd[1], STDOUT_FILENO);
                 close(pipefd[1]);
+                close(pipefd[0]);  // Fermeture côté lecture inutile
             }
             char **args = split_args(curr->command, ' ');
             if (!args || !args[0])
@@ -251,21 +254,36 @@ void exec_pipes(t_com_list *cmds, char **envcp)
                 exec_builting(args, &envcp);
             else
                 exec_cmd(curr, envcp);
+
             free_tab(args);
             exit(g_exit_status);
         }
         // === PARENT ===
-        if (prev_fd != -1)
-        {
-            printf("Parent: Closing fd %d\n", prev_fd);
-            close(prev_fd);
-        }
-        if (curr->next)
-        {
-            printf("Parent: Closing fd %d\n", pipefd[1]);
-            close(pipefd[1]);
-        }
-		prev_fd = (curr->next) ? pipefd[0] : -1;
+        // Fermer l'entrée précédente (devenue inutile après fork)
+       if (prev_fd != -1)
+	{
+    	printf("Parent: Closing fd %d (prev_fd)\n", prev_fd);
+    	close(prev_fd);
+	}
+
+	// Fermer le write-end du pipe (toujours dans le parent)
+	if (curr->next)
+	{
+    	printf("Parent: Closing fd %d (pipe write)\n", pipefd[1]);
+    	close(pipefd[1]);
+    	prev_fd = pipefd[0];  // à garder pour la prochaine commande
+	}
+	else
+	{
+    // Plus de commande suivante : fermeture du read-end aussi
+    	if (pipefd[0] != -1)
+    	{
+        	printf("Parent: Closing final pipe read fd %d\n", pipefd[0]);
+        	close(pipefd[0]);
+    	}
+    	prev_fd = -1;
+	}
+
         curr = curr->next;
     }
     wait_children();
