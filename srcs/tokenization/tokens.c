@@ -29,7 +29,7 @@ t_token *add_token(t_token **head, char *str, int type)
 }
 
 // Analyser la ligne de commande et créer des tokens
-t_token *create_tokens(char **str)
+t_token *create_tokens(char **str, char **envcp)
 {
     int i;
     int expect_cmd; // Flag pour savoir si on attend une CMD (1) ou un ARG
@@ -66,7 +66,7 @@ t_token *create_tokens(char **str)
         // Gestion de la redirection
         else
         {
-            redirection_status = handle_redirection(*str, &i, &tokens);
+            redirection_status = handle_redirection(*str, &i, &tokens, envcp);
             if (redirection_status == -1)
             {
                 free_tokens(tokens);

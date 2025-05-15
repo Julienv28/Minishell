@@ -46,29 +46,57 @@ void free_file_list(t_file_list *list)
     }
 }
 
+char *expand_string(char *str, char **envcp)
+{
+    char *tmp;
+    char *res;
+
+    if (!str)
+        return NULL;
+
+    tmp = replace_all_variables(str, envcp);
+    if (!tmp)
+        return NULL;
+
+    res = remove_quotes_or_slash(tmp);
+    free(tmp);
+
+    if (!res)
+        return NULL;
+
+    // Si la variable est vide et non entre quotes, on ignore
+    if (res[0] == '\0' && !strchr(str, '"') && !strchr(str, '\''))
+    {
+        free(res);
+        return NULL;
+    }
+
+    return res; // 🔁 à libérer après usage
+}
+
 t_com_list *tokens_to_cmds(t_token *tokens)
 {
-    t_com_list      *cmd_list = NULL;
-    t_com_list      *current_cmd = NULL;
-    t_token         *tmp = tokens;
-    t_com_list      *new_cmd;
-    char            *filename;
-    char            *pending_outfile = NULL;
-    int             pending_flag_out = -1;
-    char            *pending_errfile = NULL;
-    char            *pending_infile = NULL;
-    int             pending_flag_in = -1;
-    int             flag;
-    int             redir_type;
-    t_file_list     *pending_all_outfiles = NULL;
-    int             fd;
+    t_com_list *cmd_list = NULL;
+    t_com_list *current_cmd = NULL;
+    t_token *tmp = tokens;
+    t_com_list *new_cmd;
+    char *filename;
+    char *pending_outfile = NULL;
+    int pending_flag_out = -1;
+    char *pending_errfile = NULL;
+    char *pending_infile = NULL;
+    int pending_flag_in = -1;
+    int flag;
+    int redir_type;
+    t_file_list *pending_all_outfiles = NULL;
+    int fd;
 
     while (tmp)
     {
         // Affiche la valeur du token pour débogage
         if (tmp->type == CMD)
         {
-            if (!tmp->value)  // Vérifie si la valeur du token est NULL
+            if (!tmp->value) // Vérifie si la valeur du token est NULL
             {
                 fprintf(stderr, "Erreur : token CMD avec valeur NULL\n");
                 tmp = tmp->next;
@@ -153,7 +181,7 @@ t_com_list *tokens_to_cmds(t_token *tokens)
                 }
                 else // TRUNC or APPEND
                 {
-                    //int mode = O_WRONLY | O_CREAT | (flag ? O_APPEND : O_TRUNC);
+                    // int mode = O_WRONLY | O_CREAT | (flag ? O_APPEND : O_TRUNC);
                     fd = open_outfile(filename, flag);
                     if (fd < 0)
                     {
@@ -192,7 +220,7 @@ t_com_list *tokens_to_cmds(t_token *tokens)
             new_cmd->outfile = pending_outfile;
             new_cmd->flag_out = pending_flag_out;
             new_cmd->all_outfilles = pending_all_outfiles;
-           // add_outfile(&new_cmd->all_outfilles, pending_outfile, pending_flag_out);
+            // add_outfile(&new_cmd->all_outfilles, pending_outfile, pending_flag_out);
         }
         if (pending_infile)
         {
@@ -201,7 +229,7 @@ t_com_list *tokens_to_cmds(t_token *tokens)
         }
         if (pending_errfile)
             new_cmd->errfile = pending_errfile;
-        
+
         if (!cmd_list)
             cmd_list = new_cmd;
         else
@@ -212,13 +240,6 @@ t_com_list *tokens_to_cmds(t_token *tokens)
 
 int is_builting(char *cmd)
 {
-   return (
-        ft_strcmp(cmd, "exit") == 0
-        || ft_strcmp(cmd, "cd") == 0
-        || ft_strcmp(cmd, "pwd") == 0
-        || ft_strcmp(cmd, "echo") == 0
-        || ft_strcmp(cmd, "env") == 0
-        || ft_strcmp(cmd, "export") == 0
-        || ft_strcmp(cmd, "unset") == 0
-    );
+    return (
+        ft_strcmp(cmd, "exit") == 0 || ft_strcmp(cmd, "cd") == 0 || ft_strcmp(cmd, "pwd") == 0 || ft_strcmp(cmd, "echo") == 0 || ft_strcmp(cmd, "env") == 0 || ft_strcmp(cmd, "export") == 0 || ft_strcmp(cmd, "unset") == 0);
 }

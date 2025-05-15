@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_and_env.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:36 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/13 16:45:00 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/05/15 16:36:09 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,11 +71,11 @@ void ft_export(char **args, char ***envcp)
     int j;
 
     i = 0;
-    j = 0;
     if (!args[1])
     {
         while ((*envcp)[i])
         {
+            j = 0;
             printf("declare -x ");
             while ((*envcp)[i][j])
             {
@@ -87,11 +87,11 @@ void ft_export(char **args, char ***envcp)
                 putchar((*envcp)[i][j]);
                 j++;
             }
-        if (!ft_strchr((*envcp)[i], '='))
-            printf("\n");
-        i++;
+            if (!ft_strchr((*envcp)[i], '='))
+                printf("\n");
+            i++;
         }
-        return ;
+        return;
     }
     i = 1;
     while (args[i])
@@ -138,7 +138,10 @@ void ft_export(char **args, char ***envcp)
             continue;
         }
         if (equal_sign)
+        {
+            // printf("Ajout ou modification de l'environnement : %s=%s\n", key, value);
             ft_set_env(key, value, envcp);
+        }
         free(key);
         free(value);
         free(replaced);
@@ -187,4 +190,3 @@ int check_events(char *arg)
     }
     return (0);
 }
-

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/13 12:14:06 by opique           ###   ########.fr       */
+/*   Updated: 2025/05/15 18:15:22 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,13 +90,13 @@ typedef struct s_token
 void set_signal_action(void);
 void signal_handler(int sig);
 char *replace_all_variables(char *str, char **envcp);
-void replace_exit_and_env_status(char **args, char **envcp);
+void expand_variables(char **args, char **envcp);
 char *replace_variable_or_special(char *str, int *i, char *res, char **envcp);
 char *append_char(char *res, char c);
 
 // Tokens
 t_token *add_token(t_token **head, char *str, int type);
-t_token *create_tokens(char **str);
+t_token *create_tokens(char **str, char **envcp);
 void print_tokens(t_token *tokens);
 void free_tokens(t_token *tokens);
 t_com_list *tokens_to_cmds(t_token *tokens);
@@ -117,7 +117,7 @@ int open_errfile(char *errfile);
 t_com_list *fill_values(char **commands);
 void add_bottom(t_com_list **list, t_com_list *new);
 t_com_list *list_new(char *command);
-int handle_redirection(char *str, int *i, t_token **tokens);
+int handle_redirection(char *str, int *i, t_token **tokens, char **envcp);
 int prompt_for_quotes(char **str);
 
 // check
@@ -136,34 +136,34 @@ void ft_pwd(char **args);
 void ft_exit(char **args);
 void ft_export(char **arg, char ***envcp);
 char *get_env_value(char *name, char **envp);
-char	*get_value_cleaned(char *name, char **envp);
+char *get_value_cleaned(char *name, char **envp);
 void ft_set_env(char *key, char *value, char ***envp);
 void ft_env(char **envp);
 int is_valid_name(char *name);
 void ft_unset(char **args, char ***envcp);
 
 // Exec
-void exec_cmd(t_com_list *cmd, char **envcp);
+void exec_cmd(t_com_list *cmd, char ***envcp);
 int is_builting(char *cmd);
 void exec_builting(char **args, char ***envcp);
 char *get_path(char *cmd, char **envp);
 int find_line(char **envp, char *path);
 char *search_path(char **paths, char *cmd);
-void	exec_pipes(t_com_list *cmds, char **envcp);
-void	execute(t_com_list *cmds, char **envcp);
+void exec_pipes(t_com_list *cmds, char ***envcp);
+void execute(t_com_list *cmds, char ***envcp);
 
 // Pipes (revoir les args pour pipex)
-void complex_pipex(t_com_list *command, int ac, char **args, char **envcp);
-void pipex_simple(t_com_list *command, char **args, char **envcp);
-int simplified_gnl(char **line);
+////void complex_pipex(t_com_list *command, int ac, char **args, char **envcp);
+// void pipex_simple(t_com_list *command, char **args, char **envcp);
+// int simplified_gnl(char **line);
 char **split_pipe_respect_quotes(const char *line);
-void pipes_manager(t_com_list *command, int count, char **args, char **envcp);
+// void pipes_manager(t_com_list *command, int count, char **args, char **envcp);
 int parse_pipes(char **args);
 
 // Utils
 void exit_error(void);
-int open_file(char *av, int i);
-// void ft_exec(char *av, char **envp);
+// int open_file(char *av, int i);
+//  void ft_exec(char *av, char **envp);
 void free_tab(char **tab);
 void free_file_list(t_file_list *list);
 char **split_args(const char *s, char sep);
@@ -177,7 +177,7 @@ void init_cmds(t_com_list *command);
 int parse_args_echo(char **args);
 int count_ags(char **args);
 int check_events(char *arg);
-char	*clean_spaces(char *str);
+char *clean_spaces(char *str);
 
 void print_cmd_list(t_com_list *cmd_list);
 void add_outfile(t_file_list **list, char *filename, int flag);

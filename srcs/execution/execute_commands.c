@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_commands.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 10:45:02 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/13 16:05:43 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/05/15 19:37:24 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,88 +86,69 @@
 //     }
 // }
 
-int	is_builtin_global(char *cmd)
+/*
+int is_builtin_global(char *cmd)
 {
-	return (ft_strcmp(cmd, "cd") == 0 
-		|| ft_strcmp(cmd, "exit") == 0
-		|| ft_strcmp(cmd, "export") == 0
-		|| ft_strcmp(cmd, "unset") == 0);
-}
+    return (ft_strcmp(cmd, "cd") == 0 || ft_strcmp(cmd, "exit") == 0 || ft_strcmp(cmd, "export") == 0 || ft_strcmp(cmd, "unset") == 0);
+}*/
 
-void execute(t_com_list *cmds, char **envcp)
+void execute(t_com_list *cmds, char ***envcp)
 {
     char **args;
     pid_t pid;
 
     if (!cmds)
         return;
-    if (cmds->next == NULL)  // Une seule commande
+    // if (cmds->next == NULL) // Une seule commande
+    //{
+    args = split_args(cmds->command, ' ');
+    if (!args || !args[0])
     {
-        args = split_args(cmds->command, ' ');
-        if (!args || !args[0])
+        free_tab(args);
+        return;
+    }
+
+    expand_variables(args, *envcp);
+
+    if (is_builting(args[0]))
+    {
+        // PAS DE FORK pour les builtins
+        exec_builting(args, envcp);
+    }
+    else
+    {
+        // FORK pour les commandes externes
+        pid = fork();
+        if (pid == -1)
         {
+            perror("fork");
             free_tab(args);
             return;
         }
-        replace_exit_and_env_status(args, envcp);
-        // Vérifie si c'est un builtin
-        if (is_builting(args[0])) 
+
+        if (pid == 0) // Enfant
         {
-            if (is_builtin_global(args[0]))  // Si c'est un builtin global (ex: exit, cd, export, unset)
-                exec_builting(args, &envcp);  // Exécution dans le processus parent
-            else  // Si c'est un autre builtin (pas global)
-            {
-                pid = fork();
-                if (pid == -1)
-                {
-                    perror("fork");
-                    free_tab(args);
-                    return;
-                }
-                if (pid == 0)  // === Processus Enfant ===
-                {
-                    exec_builting(args, &envcp);  // Exécution du builtin dans l'enfant
-                    exit(g_exit_status);
-                }
-                else  // === Processus Parent ===
-                {
-                    int status;
-                    waitpid(pid, &status, 0);
-                    if (WIFEXITED(status))
-                        g_exit_status = WEXITSTATUS(status);
-                    else if (WIFSIGNALED(status))
-                        g_exit_status = 128 + WTERMSIG(status);
-                }
-            }
+            exec_cmd(cmds, envcp);
+            exit(g_exit_status);
         }
-        else  // Si ce n'est pas un builtin
+        else // Parent
         {
-            pid = fork();
-            if (pid == -1)
-            {
-                perror("fork");
-                free_tab(args);
-                return;
-            }
-            if (pid == 0)  // === Processus Enfant ===
-            {
-                exec_cmd(cmds, envcp);  // Exécution de la commande externe
-                exit(g_exit_status);
-            }
-            else  // === Processus Parent ===
-            {
-                int status;
-                waitpid(pid, &status, 0);
-                if (WIFEXITED(status))
-                    g_exit_status = WEXITSTATUS(status);
-                else if (WIFSIGNALED(status))
-                    g_exit_status = 128 + WTERMSIG(status);
-            }
+            int status;
+            waitpid(pid, &status, 0);
+            if (WIFEXITED(status))
+                g_exit_status = WEXITSTATUS(status);
+            else if (WIFSIGNALED(status))
+                g_exit_status = 128 + WTERMSIG(status);
         }
-        free_tab(args);
     }
-    else  // Si il y a plusieurs commandes (avec pipes)
-        exec_pipes(cmds, envcp);
+
+    free_tab(args);
+    //}
+    // else
+    // {
+    //     exec_pipes(cmds, envcp);
+    //     printf("\nOUT\n");
+    // }
 }
 
 // static int	count_commands(t_com_list *cmds)
@@ -185,28 +166,113 @@ void execute(t_com_list *cmds, char **envcp)
 // 	return (count);
 // }
 
-static void	wait_children(void)
+static void wait_children(void)
 {
-	int		status;
-	pid_t	pid;
+    int status;
+    pid_t pid;
 
-	pid = wait(&status);
-	while (pid != -1)
-	{
-		if (WIFEXITED(status))
-			g_exit_status = WEXITSTATUS(status);
-		else if (WIFSIGNALED(status))
-			g_exit_status = 128 + WTERMSIG(status);
-		pid = wait(&status);
-	}
-	if (errno != ECHILD)
-		perror("wait");
+    pid = wait(&status);
+    while (pid > 0) // Tant qu'il y a des processus enfants à attendre
+    {
+        if (WIFEXITED(status))
+            g_exit_status = WEXITSTATUS(status);
+        else if (WIFSIGNALED(status))
+            g_exit_status = 128 + WTERMSIG(status);
+        pid = wait(&status);
+    }
 }
 
+void exec_pipes(t_com_list *cmds, char ***envcp)
+{
+    int pipefd[2];
+    int prev_fd = -1; // pour garder le read end du pipe précédent
+    pid_t pid;
+    t_com_list *curr = cmds;
+
+    while (curr)
+    {
+        // Crée un pipe s'il y a une commande suivante
+        if (curr->next && pipe(pipefd) == -1)
+        {
+            perror("pipe");
+            return;
+        }
+        pid = fork();
+        if (pid == -1)
+        {
+            perror("fork");
+            return;
+        }
+
+        if (pid == 0) // === CHILD ===
+        {
+            // Si ce n'est pas la première commande : redirige l'entrée
+            if (prev_fd != -1)
+            {
+                dup2(prev_fd, STDIN_FILENO);
+                close(prev_fd);
+            }
+
+            // Si ce n'est pas la dernière commande : redirige la sortie
+            if (curr->next)
+            {
+                dup2(pipefd[1], STDOUT_FILENO);
+                close(pipefd[1]);
+                close(pipefd[0]);
+            }
+            else
+            {
+                close(pipefd[1]); // Fermer le côté écriture du pipe si c'est le dernier
+                close(pipefd[0]); // Fermer le côté lecture du pipe
+            }
+            // Prépare les arguments
+            char **args = split_args(curr->command, ' ');
+            if (!args || !args[0])
+                exit(1);
+
+            expand_variables(args, *envcp);
+
+            if (is_builting(args[0]))
+                exec_builting(args, envcp); // forké même si builtin
+            else
+                exec_cmd(curr, envcp);
+
+            free_tab(args);
+            exit(g_exit_status); // Par sécurité
+        }
+        else // === PARENT ===
+        {
+            // Ferme l'ancien pipe read end
+            if (prev_fd != -1)
+            {
+                close(prev_fd);
+            }
+            // Ferme cote ecriture du pipe
+            if (curr->next)
+            {
+                close(pipefd[1]);    // Écriture plus nécessaire
+                prev_fd = pipefd[0]; // Garder le read end pour la prochaine itération
+            }
+            else
+            {
+                // Dernière commande, plus de pipe à garder
+                if (pipefd[0] != -1)
+                {
+                    close(pipefd[0]);
+                }
+                prev_fd = -1;
+            }
+        }
+        curr = curr->next;
+    }
+    wait_children();
+}
+
+/*
 void exec_pipes(t_com_list *cmds, char **envcp)
 {
-    int prev_fd = -1;           // Pour l'entrée (stdin) du processus courant
-    int pipefd[2];              // [0] = read end, [1] = write end
+    int prev_fd = -1; // Pour l'entrée (stdin) du processus courant
+    int pipefd[2];    // [0] = read end, [1] = write end
     pid_t pid;
     t_com_list *curr = cmds;
 
@@ -225,7 +291,7 @@ void exec_pipes(t_com_list *cmds, char **envcp)
             perror("fork");
             return;
         }
-        if (pid == 0)  // === CHILD ===
+        if (pid == 0) // === CHILD ===
         {
             printf("Child process %d: %s\n", getpid(), curr->command);
             // Si ce n'est pas la première commande, rediriger stdin depuis le pipe précédent
@@ -241,7 +307,7 @@ void exec_pipes(t_com_list *cmds, char **envcp)
                 printf("Child %d: Duplicating stdout to fd %d\n", getpid(), pipefd[1]);
                 dup2(pipefd[1], STDOUT_FILENO);
                 close(pipefd[1]);
-                close(pipefd[0]);  // Fermeture côté lecture inutile
+                close(pipefd[0]); // Fermeture côté lecture inutile
             }
             char **args = split_args(curr->command, ' ');
             if (!args || !args[0])
@@ -249,7 +315,7 @@ void exec_pipes(t_com_list *cmds, char **envcp)
                 printf("Invalid or empty command: %s\n", curr->command);
                 exit(1);
             }
-            replace_exit_and_env_status(args, envcp);
+            expand_variables(args, envcp);
             if (is_builting(args[0]))
                 exec_builting(args, &envcp);
             else
@@ -260,31 +326,31 @@ void exec_pipes(t_com_list *cmds, char **envcp)
         }
         // === PARENT ===
         // Fermer l'entrée précédente (devenue inutile après fork)
-       if (prev_fd != -1)
-	{
-    	printf("Parent: Closing fd %d (prev_fd)\n", prev_fd);
-    	close(prev_fd);
-	}
+        if (prev_fd != -1)
+        {
+            printf("Parent: Closing fd %d (prev_fd)\n", prev_fd);
+            close(prev_fd);
+        }
 
-	// Fermer le write-end du pipe (toujours dans le parent)
-	if (curr->next)
-	{
-    	printf("Parent: Closing fd %d (pipe write)\n", pipefd[1]);
-    	close(pipefd[1]);
-    	prev_fd = pipefd[0];  // à garder pour la prochaine commande
-	}
-	else
-	{
-    // Plus de commande suivante : fermeture du read-end aussi
-    	if (pipefd[0] != -1)
-    	{
-        	printf("Parent: Closing final pipe read fd %d\n", pipefd[0]);
-        	close(pipefd[0]);
-    	}
-    	prev_fd = -1;
-	}
+        // Fermer le write-end du pipe (toujours dans le parent)
+        if (curr->next)
+        {
+            printf("Parent: Closing fd %d (pipe write)\n", pipefd[1]);
+            close(pipefd[1]);
+            prev_fd = pipefd[0]; // à garder pour la prochaine commande
+        }
+        else
+        {
+            // Plus de commande suivante : fermeture du read-end aussi
+            if (pipefd[0] != -1)
+            {
+                printf("Parent: Closing final pipe read fd %d\n", pipefd[0]);
+                close(pipefd[0]);
+            }
+            prev_fd = -1;
+        }
 
         curr = curr->next;
     }
     wait_children();
-}
+}*/

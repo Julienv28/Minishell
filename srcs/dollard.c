@@ -13,6 +13,94 @@ char *append_char(char *res, char c)
     return tmp;
 }
 
+char *expand_exit_status(char *res)
+{
+    char *status = ft_itoa(g_exit_status);
+    char *tmp;
+
+    if (!status)
+        return NULL;
+    tmp = ft_strjoin(res, status);
+    free(res);
+    free(status);
+    return tmp;
+}
+
+char *expand_env_variable(char *str, int *i, char *res, char **envcp)
+{
+    char var_name[256];
+    int j = 0;
+    char *tmp;
+    char *env_value;
+
+    while (str[*i] && (ft_isalnum(str[*i]) || str[*i] == '_'))
+        var_name[j++] = str[(*i)++];
+    var_name[j] = '\0';
+
+    env_value = get_value_cleaned(var_name, envcp);
+    if (!env_value)
+    {
+        printf("Variable non trouvée : %s\n", var_name);
+        env_value = "";
+    }
+
+    tmp = ft_strjoin(res, env_value);
+    free(res);
+    return tmp;
+}
+
+char *expand_single_quote_literal(char *str, int *i, char *res)
+{
+    (*i)++; // skip first '
+    while (str[*i] && str[*i] != '\'')
+        res = append_char(res, str[(*i)++]);
+    if (str[*i] == '\'')
+        (*i)++;
+    return res;
+}
+
+char *expand_gettext_style(char *str, int *i, char *res)
+{
+    (*i)++; // skip initial "
+    while (str[*i] && str[*i] != '"')
+        res = append_char(res, str[(*i)++]);
+    if (str[*i] == '"')
+        (*i)++;
+    return res;
+}
+
+char *replace_variable_or_special(char *str, int *i, char *res, char **envcp)
+{
+    (*i)++; // skip $
+
+    if (!str[*i])
+        return append_char(res, '$');
+
+    if (str[*i] == '\'')
+        return expand_single_quote_literal(str, i, res);
+
+    if (str[*i] == '"' && *i == 1)
+        return expand_gettext_style(str, i, res);
+
+    if (str[*i] == '?')
+    {
+        (*i)++;
+        return expand_exit_status(res);
+    }
+
+    if (!ft_isalpha(str[*i]) && str[*i] != '_' && !ft_isdigit(str[*i]))
+        return append_char(res, '$');
+
+    if (ft_isdigit(str[*i]))
+    {
+        (*i)++;
+        return res;
+    }
+
+    return expand_env_variable(str, i, res, envcp);
+}
+
+/*
 char *replace_variable_or_special(char *str, int *i, char *res, char **envcp)
 {
     char var_name[256];
@@ -67,7 +155,8 @@ char *replace_variable_or_special(char *str, int *i, char *res, char **envcp)
     }
 
     // Cas spécial : $?
-    if (str[*i] == '?' && (str[*i + 1] == '\0' || str[*i + 1] == ' '))
+    // if (str[*i] == '?' && (str[*i + 1] == '\0' || str[*i + 1] == ' '))
+    if (str[*i] == '?')
     {
         status = ft_itoa(g_exit_status);
         if (!status)
@@ -112,7 +201,7 @@ char *replace_variable_or_special(char *str, int *i, char *res, char **envcp)
     }
     free(res);
     return tmp;
-}
+}*/
 
 /*
 char *replace_all_variables(char *str, char **envcp)
@@ -202,7 +291,7 @@ char *replace_all_variables(char *str, char **envcp)
 }
 
 // Fonction pour remplacer toutes les variables d'environnement dans un tableau d'arguments
-void replace_exit_and_env_status(char **args, char **envcp)
+void expand_variables(char **args, char **envcp)
 {
     int i = 0;
     int j = 0;

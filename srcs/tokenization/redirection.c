@@ -1,12 +1,14 @@
 #include "../includes/minishell.h"
 
 // Fonction pour gérer la redirection dans la commande
-int handle_redirection(char *str, int *i, t_token **tokens)
+int handle_redirection(char *str, int *i, t_token **tokens, char **envcp)
 {
     int start;
     int type;
     char *word;
     char *symbol;
+    char *expanded;
+    char *cleaned;
 
     // Vérifier les redirections
     type = parse_redirection(str, i);
@@ -35,13 +37,17 @@ int handle_redirection(char *str, int *i, t_token **tokens)
         }
 
         word = ft_strndup(str + start, *i - start); // Copier le fichier de redirection
-        add_token(tokens, word, ARG);               // Ajouter le fichier comme argument
+        expanded = replace_all_variables(word, envcp);
+        printf("Redirection vers : %s\n", expanded);
+        cleaned = remove_quotes_or_slash(expanded);
+        free(expanded);
+        word = cleaned;
+        add_token(tokens, word, ARG); // Ajouter le fichier comme argument
         free(word);
         return (1); // Redirection traitée
     }
     return (0); // Pas de redirection
 }
-
 
 // Analyser les redirections et avancer l'index
 int parse_redirection(char *str, int *i)
@@ -302,7 +308,6 @@ int ft_redirection(t_com_list *command, int *mem_fd_in, int *mem_fd_out, int *me
 
     return (0);
 }
-
 
 void restore_redirections(int mem_fd_in, int mem_fd_out, int mem_fd_err)
 {

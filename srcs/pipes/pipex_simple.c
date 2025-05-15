@@ -6,12 +6,12 @@
 /*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 12:02:35 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/07 08:33:16 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/05/15 17:23:21 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
+/*
 static void child_proc(t_com_list *command, char **args, char **envcp, int *fd)
 {
     dup2(fd[1], STDOUT_FILENO);
@@ -20,7 +20,7 @@ static void child_proc(t_com_list *command, char **args, char **envcp, int *fd)
     if (args && is_builting(args[0]) == 0)
         exec_builting(args, &envcp);
     else
-        exec_cmd(command, envcp);
+        exec_cmd(command, &envcp);
 }
 
 static void parent_proc(t_com_list *command, char **args, char **envcp, int *fd)
@@ -33,7 +33,7 @@ static void parent_proc(t_com_list *command, char **args, char **envcp, int *fd)
     else if (ft_strcmp(args[0], "cd") == 0)
         ;
     else
-        exec_cmd(command, envcp);
+        exec_cmd(command, &envcp);
 }
 
 void split_args_for_pipe(char **args, char ***left, char ***right)
@@ -95,3 +95,4 @@ void pipex_simple(t_com_list *command, char **args, char **envcp)
     waitpid(pid1, NULL, 0);
     waitpid(pid2, NULL, 0);
 }
+*/

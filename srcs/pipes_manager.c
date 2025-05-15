@@ -6,7 +6,7 @@
 /*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 11:33:17 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/07 08:29:14 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/05/15 17:25:05 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int parse_pipes(char **args)
     }
     return (count);
 }
-
+/*
 void pipes_manager(t_com_list *command, int count, char **args, char **envcp)
 {
     int fake_ac;
@@ -62,7 +62,7 @@ void pipes_manager(t_com_list *command, int count, char **args, char **envcp)
 
 // Besoin de revoir les args en parametre.
 
-/*void	exec_pipes(t_minishell *mini)
+void	exec_pipes(t_minishell *mini)
 {
     if (mini->have_pipes == 0)
         return ;

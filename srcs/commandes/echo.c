@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:42:01 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/13 15:38:31 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/05/15 17:56:12 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,16 @@ void ft_echo(char *str, char **envp)
     ft_putstr_fd(str, STDOUT_FILENO); // La chaîne est déjà traitée
 }
 
-char	*get_value_cleaned(char *name, char **envp)
+char *get_value_cleaned(char *name, char **envp)
 {
-	char	*raw;
+    char *raw;
 
-	raw = get_env_value(name, envp);
-	if (!raw)
-		return (NULL);
-	return (clean_spaces(raw));
+    printf("Recherche de : %s\n", name);
+    raw = get_env_value(name, envp);
+    printf("Valeur trouvée : %s\n", raw);
+    if (!raw)
+        return (NULL);
+    return (clean_spaces(raw));
 }
 
 char *get_env_value(char *name, char **envp)
@@ -83,43 +85,43 @@ int parse_args_echo(char **args)
 }
 
 // Trimmer les variables et nettoyer les espaces inutiles
-char	*clean_spaces(char *str)
+char *clean_spaces(char *str)
 {
-	int 	i = 0, j = 1;
-	int 	in_space = 0;
-	char	*trimmed;
-	char	*res;
+    int i = 0, j = 1;
+    int in_space = 0;
+    char *trimmed;
+    char *res;
 
-	while (str[i] && ft_isspace(str[i]))
-		i++;
-	trimmed = ft_strdup(str + i);
-	if (!trimmed)
-		return (NULL);
-	res = malloc(ft_strlen(trimmed) + 2);
-	if (!res)
-		return (NULL);
-	i = 0;
-	res[0] = ' ';
-	while (trimmed[i])
-	{
-		if (ft_isspace(trimmed[i]))
-		{
-			if (!in_space)
-				res[j++] = ' ';
-			in_space = 1;
-		}
-		else
-		{
-			res[j++] = trimmed[i];
-			in_space = 0;
-		}
-		i++;
-	}
-	if (j > 0 && res[j - 1] == ' ')
-		j--;
-	res[j] = '\0';
-	free (trimmed);
-	return (res);
+    while (str[i] && ft_isspace(str[i]))
+        i++;
+    trimmed = ft_strdup(str + i);
+    if (!trimmed)
+        return (NULL);
+    res = malloc(ft_strlen(trimmed) + 2);
+    if (!res)
+        return (NULL);
+    i = 0;
+    res[0] = ' ';
+    while (trimmed[i])
+    {
+        if (ft_isspace(trimmed[i]))
+        {
+            if (!in_space)
+                res[j++] = ' ';
+            in_space = 1;
+        }
+        else
+        {
+            res[j++] = trimmed[i];
+            in_space = 0;
+        }
+        i++;
+    }
+    if (j > 0 && res[j - 1] == ' ')
+        j--;
+    res[j] = '\0';
+    free(trimmed);
+    return (res);
 }
 /*
 static int	ft_isupper(int c)

@@ -184,32 +184,32 @@ char *get_path(char *cmd, char **envp)
     return (path);   // Retourne NULL si la commande n'est pas trouvée ou pas exécutable
 }
 
-void exec_cmd(t_com_list *command, char **envcp)
+void exec_cmd(t_com_list *command, char ***envcp)
 {
-	char	**args;
-	char	*path;
+    char **args;
+    char *path;
 
-	g_exit_status = 1;
-	args = ft_split(command->command, ' ');
-	if (!args || args[0] == NULL || args[0][0] == '\0')
-	{
-		ft_putstr_fd("minishell: ", STDERR_FILENO);
-		ft_putstr_fd("command not found\n", STDERR_FILENO);
-		g_exit_status = 127;
-		free_tab(args);
-		return ;
-	}
-	path = get_path(args[0], envcp);
-	if (path == NULL)
-	{
-		g_exit_status = 127; // Commande introuvable
-		free_tab(args);
-		return ;
-	}
-	execve(path, args, envcp);
-	perror("execve failed");
-	free_tab(args);
-	free(path);
-	exit(1);
+    g_exit_status = 1;
+    args = ft_split(command->command, ' ');
+    if (!args || args[0] == NULL || args[0][0] == '\0')
+    {
+        ft_putstr_fd("minishell: ", STDERR_FILENO);
+        ft_putstr_fd("command not found\n", STDERR_FILENO);
+        g_exit_status = 127;
+        free_tab(args);
+        return;
+    }
+    path = get_path(args[0], *envcp);
+    if (path == NULL)
+    {
+        g_exit_status = 127; // Commande introuvable
+        free_tab(args);
+        return;
+    }
+    // execve(path, args, envcp);
+    execve(path, args, *envcp);
+    perror("execve failed");
+    free_tab(args);
+    free(path);
+    exit(1);
 }
-
