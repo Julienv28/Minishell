@@ -6,26 +6,43 @@
 /*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:42:01 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/15 17:56:12 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/05/16 14:32:55 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void ft_echo(char *str, char **envp)
+void ft_echo(char **args)
 {
-    (void)**envp;
+    int i = 1;
+    int newline = 1;
 
-    ft_putstr_fd(str, STDOUT_FILENO); // La chaîne est déjà traitée
+    // Gère tous les -n consécutifs
+    while (args[i] && is_valid_n_flag(args[i]))
+    {
+        newline = 0;
+        i++;
+    }
+
+    while (args[i])
+    {
+        ft_putstr_fd(args[i], STDOUT_FILENO);
+        if (args[i + 1])
+            ft_putchar_fd(' ', STDOUT_FILENO);
+        i++;
+    }
+
+    if (newline)
+        ft_putchar_fd('\n', STDOUT_FILENO);
 }
 
 char *get_value_cleaned(char *name, char **envp)
 {
     char *raw;
 
-    printf("Recherche de : %s\n", name);
+    // printf("Recherche de : %s\n", name);
     raw = get_env_value(name, envp);
-    printf("Valeur trouvée : %s\n", raw);
+    // printf("Valeur trouvée : %s\n", raw);
     if (!raw)
         return (NULL);
     return (clean_spaces(raw));
@@ -87,7 +104,7 @@ int parse_args_echo(char **args)
 // Trimmer les variables et nettoyer les espaces inutiles
 char *clean_spaces(char *str)
 {
-    int i = 0, j = 1;
+    int i = 0, j = 0;
     int in_space = 0;
     char *trimmed;
     char *res;
@@ -97,11 +114,15 @@ char *clean_spaces(char *str)
     trimmed = ft_strdup(str + i);
     if (!trimmed)
         return (NULL);
-    res = malloc(ft_strlen(trimmed) + 2);
+
+    res = malloc(ft_strlen(trimmed) + 1); // +1 pour le \0
     if (!res)
+    {
+        free(trimmed);
         return (NULL);
+    }
+
     i = 0;
-    res[0] = ' ';
     while (trimmed[i])
     {
         if (ft_isspace(trimmed[i]))
@@ -117,12 +138,14 @@ char *clean_spaces(char *str)
         }
         i++;
     }
+
     if (j > 0 && res[j - 1] == ' ')
         j--;
     res[j] = '\0';
     free(trimmed);
     return (res);
 }
+
 /*
 static int	ft_isupper(int c)
 {

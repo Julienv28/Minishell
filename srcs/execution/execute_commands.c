@@ -6,7 +6,7 @@
 /*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 10:45:02 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/15 19:37:24 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/05/16 14:09:08 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,17 +99,13 @@ void execute(t_com_list *cmds, char ***envcp)
 
     if (!cmds)
         return;
-    // if (cmds->next == NULL) // Une seule commande
-    //{
     args = split_args(cmds->command, ' ');
     if (!args || !args[0])
     {
         free_tab(args);
         return;
     }
-
     expand_variables(args, *envcp);
-
     if (is_builting(args[0]))
     {
         // PAS DE FORK pour les builtins

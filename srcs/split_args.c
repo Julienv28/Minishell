@@ -6,7 +6,7 @@
 /*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:06:45 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/07 18:00:58 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/05/16 14:07:44 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ static char *word_dup(const char *s, int start, int end)
 char **split_args(const char *s, char sep)
 {
     int i = 0, j = 0, start;
-    // int in_quote = 0;
     int single_quote = 0;
     int double_quote = 0;
     char **tab;
@@ -68,33 +67,34 @@ char **split_args(const char *s, char sep)
 
     if (!s)
         return NULL;
+
     tab = malloc(sizeof(char *) * (count_words(s, sep) + 1));
     if (!tab)
-        return (NULL);
+        return NULL;
 
     while (s[i])
     {
-        while (s[i] == sep)
+        while (s[i] == sep) // Ignore separators
             i++;
-        if (!s[i])
+        if (!s[i]) // Break when we reach the end of the string
             break;
         start = i;
         while (s[i])
         {
+            // Handle toggling of single and double quotes
             if (s[i] == '\'' && !double_quote)
                 single_quote = !single_quote;
             else if (s[i] == '"' && !single_quote)
                 double_quote = !double_quote;
             else if (s[i] == sep && !single_quote && !double_quote)
-                break;
+                break; // Argument ends when no quotes around
             i++;
         }
         raw_word = word_dup(s, start, i);
         tab[j++] = raw_word;
-        // free(raw_word);
     }
     tab[j] = NULL;
-    return (tab);
+    return tab;
 }
 
 char *remove_quotes_or_slash(char *str)
@@ -122,7 +122,7 @@ char *remove_quotes_or_slash(char *str)
             double_quote = !double_quote;
             i++; // on ne copie pas les quotes doubles délimiteuses
         }
-        else if (str[i] == '\\' && str[i + 1]) // \ suivi d'un caractère
+        else if (str[i] == '\\' && str[i + 1] && !single_quote) // \ suivi d'un caractère
         {
             // gestion de l'antislash sauf dans quotes simples
             new_str[j++] = str[i + 1];

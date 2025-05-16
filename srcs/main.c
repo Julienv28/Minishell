@@ -118,8 +118,6 @@ int main(int ac, char **av, char **envp)
             continue;
         }
         command = tokens_to_cmds(tokens);
-        // if (!command)
-        //     printf("Aucune commande générée\n");
         while (command)
         {
             has_redir_error = 0;
@@ -137,35 +135,15 @@ int main(int ac, char **av, char **envp)
                 continue;
             }
 
-            // Sécurité : ne pas appeler split_args sur NULL
-            // if (command->command)
-            //     args = split_args(command->command, ' ');
-            // else
-            //     args = NULL;
-
-            // if (args)
-            //     replace_exit_and_env_status(args, envcp);
-
             // Appliquer les redirections
             if (command->infile || command->outfile || command->errfile)
                 has_redir_error = ft_redirection(command, &mem_fd_in, &mem_fd_out, &mem_fd_err);
 
             if (has_redir_error)
             {
-                // free_tab(args);
                 command = command->next;
                 continue;
             }
-            // int pipes_count = parse_pipes(args);
-            // if (pipes_count > 0)
-            //     pipes_manager(command, pipes_count, args, envcp);
-            // else
-            // {
-            //     if (args && args[0] && is_builting(args[0]) == 0)
-            //         exec_builting(args, &envcp);
-            //     else if (args && args[0])
-            //         exec_cmd(command, envcp);
-            // }
             if (has_pipe(command))
             {
                 exec_pipes(command, &envcp);
@@ -180,7 +158,6 @@ int main(int ac, char **av, char **envp)
                 restore_redirections(mem_fd_in, mem_fd_out, mem_fd_err);
                 mem_fd_in = mem_fd_out = mem_fd_err = -1;
             }
-            // free_tab(args);
             command = command->next;
         }
     }

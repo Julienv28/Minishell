@@ -26,29 +26,36 @@ char *expand_exit_status(char *res)
     return tmp;
 }
 
-char *expand_env_variable(char *str, int *i, char *res, char **envcp)
+char *expand_env_variable(char *str, int *i, char *res, char **envcp, int quoted)
 {
     char var_name[256];
     int j = 0;
     char *tmp;
     char *env_value;
 
+    // Extraction du nom de la variable d'environnement
     while (str[*i] && (ft_isalnum(str[*i]) || str[*i] == '_'))
         var_name[j++] = str[(*i)++];
     var_name[j] = '\0';
 
-    env_value = get_value_cleaned(var_name, envcp);
+    // Choix entre get_env_value ou get_value_cleaned selon le flag quoted
+    if (quoted)
+        env_value = get_env_value(var_name, envcp); // On garde les espaces dans le cas de la citation
+    else
+        env_value = get_value_cleaned(var_name, envcp); // On nettoie les espaces si non cité
+
     if (!env_value)
     {
         printf("Variable non trouvée : %s\n", var_name);
-        env_value = "";
+        env_value = ""; // En cas d'absence de variable
     }
 
-    tmp = ft_strjoin(res, env_value);
+    tmp = ft_strjoin(res, env_value); // Concaténation avec le résultat
     free(res);
     return tmp;
 }
 
+/*
 char *expand_single_quote_literal(char *str, int *i, char *res)
 {
     (*i)++; // skip first '
@@ -67,21 +74,36 @@ char *expand_gettext_style(char *str, int *i, char *res)
     if (str[*i] == '"')
         (*i)++;
     return res;
-}
+}*/
 
-char *replace_variable_or_special(char *str, int *i, char *res, char **envcp)
+char *replace_variable_or_special(char *str, int *i, char *res, char **envcp, int quoted)
 {
     (*i)++; // skip $
 
     if (!str[*i])
         return append_char(res, '$');
 
-    if (str[*i] == '\'')
-        return expand_single_quote_literal(str, i, res);
+    // Gestion de $'' ou $"" (quote ANSI C ou gettext)
+    if ((str[*i] == '\'' || str[*i] == '"') && *i == 1)
+    {
+        char quote = str[*i];
+        (*i)++; // skip opening quote
 
-    if (str[*i] == '"' && *i == 1)
-        return expand_gettext_style(str, i, res);
+        while (str[*i] && str[*i] != quote)
+            res = append_char(res, str[(*i)++]);
 
+        if (str[*i] == quote)
+            (*i)++; // skip closing quote
+
+        return res; // PAS de $ ajouté
+    }
+
+    // Gérer cas "$"
+    if (str[*i] == '"' || str[*i] == '\'')
+    {
+        res = append_char(res, '$'); // on garde le $
+        return res;
+    }
     if (str[*i] == '?')
     {
         (*i)++;
@@ -97,7 +119,7 @@ char *replace_variable_or_special(char *str, int *i, char *res, char **envcp)
         return res;
     }
 
-    return expand_env_variable(str, i, res, envcp);
+    return expand_env_variable(str, i, res, envcp, quoted);
 }
 
 /*
@@ -262,6 +284,7 @@ char *replace_all_variables(char *str, char **envcp)
     char *res = ft_strdup("");
     int in_single_quote = 0;
     int in_double_quote = 0;
+    int quoted = 0;
 
     if (!res || !str)
         return NULL;
@@ -271,16 +294,20 @@ char *replace_all_variables(char *str, char **envcp)
         if (str[i] == '\'' && !in_double_quote)
         {
             in_single_quote = !in_single_quote;
-            i++; // skip quote
+            res = append_char(res, str[i++]);
+            // i++; // skip quote
         }
         else if (str[i] == '"' && !in_single_quote)
         {
             in_double_quote = !in_double_quote;
-            i++; // skip quote
+            res = append_char(res, str[i++]);
+            ;
+            // i++; // skip quote
         }
         else if (str[i] == '$' && !in_single_quote)
         {
-            res = replace_variable_or_special(str, &i, res, envcp);
+            quoted = in_double_quote;
+            res = replace_variable_or_special(str, &i, res, envcp, quoted);
         }
         else
         {

@@ -24,18 +24,36 @@ int check_redirection(char *str, int *i)
     return (0);
 }
 
-    // else if (str[i] == '|')
-    // {
-    //     printf("Erreur : syntax error near unexpected token `%c'\n", str[i]);
-    //     return (-1);
-    // }
-
 int check_pipe(char *str, int i)
 {
-    // Vérifier si le caractère précédent est aussi un pipe
+    int j;
+
+    // Vérifie si on a "||"
     if (str[i] == '|' && str[i + 1] == '|')
     {
+        printf("Erreur : syntax error near unexpected token `||'\n");
+        return -1;
+    }
+    // Verif pipe au debut de commande
+    if (i == 0)
+    {
         printf("Erreur : syntax error near unexpected token `%c'\n", str[i]);
+        return (-1);
+    }
+
+    // Verif pipe en fin de commande
+    j = i + 1;
+    while (str[j] && str[j] == ' ')
+        j++;
+    if (str[j] == '\0')
+    {
+        printf("Erreur : syntax error near unexpected token `%c'\n", str[j]);
+        return (-1);
+    }
+    // Verif double pipe sans commande entre
+    if (str[j] == '|')
+    {
+        printf("Erreur : syntax error near unexpected token `%c'\n", str[j]);
         return (-1);
     }
     return (0);

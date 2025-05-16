@@ -6,7 +6,7 @@
 /*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/15 18:15:22 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/05/16 15:06:55 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ void set_signal_action(void);
 void signal_handler(int sig);
 char *replace_all_variables(char *str, char **envcp);
 void expand_variables(char **args, char **envcp);
-char *replace_variable_or_special(char *str, int *i, char *res, char **envcp);
+char *replace_variable_or_special(char *str, int *i, char *res, char **envcp, int quoted);
 char *append_char(char *res, char c);
 
 // Tokens
@@ -130,7 +130,7 @@ int check_input(char *str, int i);
 int ft_isnumber(char *str);
 
 // Commandes
-void ft_echo(char *str, char **envcp);
+void ft_echo(char **args);
 void ft_cd(char **args, char ***envcp);
 void ft_pwd(char **args);
 void ft_exit(char **args);
@@ -140,6 +140,7 @@ char *get_value_cleaned(char *name, char **envp);
 void ft_set_env(char *key, char *value, char ***envp);
 void ft_env(char **envp);
 int is_valid_name(char *name);
+int is_valid_n_flag(const char *str);
 void ft_unset(char **args, char ***envcp);
 
 // Exec

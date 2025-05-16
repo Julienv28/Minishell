@@ -12,7 +12,7 @@ int count_ags(char **args)
 
 void exec_builting(char **args, char ***envcp)
 {
-    int i;
+    // int i;
 
     if (ft_strcmp(args[0], "exit") == 0)
         ft_exit(args);
@@ -22,44 +22,48 @@ void exec_builting(char **args, char ***envcp)
         ft_pwd(args);
     else if (ft_strcmp(args[0], "echo") == 0)
     {
-        if (parse_args_echo(args) == 1)
-        {
-            return;
-        }
-        if (ft_strcmp(args[1], "-n") != 0)
-        {
-            i = 1;
-            if (count_ags(args) == 2)
-                ft_echo(args[1], *envcp);
-            else if (count_ags(args) > 2)
-            {
-                while (args[i])
-                {
-                    ft_echo(args[i], *envcp);
-                    if (args[i + 1] != NULL)
-                        ft_putchar_fd(' ', 1);
-                    i++;
-                }
-            }
-            ft_putchar_fd('\n', 1);
-        }
-        else
-        {
-            i = 2;
-            if (count_ags(args) == 3)
-                ft_echo(args[2], *envcp);
-            else if (count_ags(args) > 3)
-            {
-                while (args[i])
-                {
-                    ft_echo(args[i], *envcp);
-                    if (args[i + 1] != NULL)
-                        ft_putchar_fd(' ', 1);
-                    i++;
-                }
-            }
-        }
+        ft_echo(args); // Appel direct avec les args
     }
+    // else if (ft_strcmp(args[0], "echo") == 0)
+    // {
+    //     if (parse_args_echo(args) == 1)
+    //     {
+    //         return;
+    //     }
+    //     if (ft_strcmp(args[1], "-n") != 0)
+    //     {
+    //         i = 1;
+    //         if (count_ags(args) == 2)
+    //             ft_echo(args[1], *envcp);
+    //         else if (count_ags(args) > 2)
+    //         {
+    //             while (args[i])
+    //             {
+    //                 ft_echo(args[i], *envcp);
+    //                 if (args[i + 1] != NULL)
+    //                     ft_putchar_fd(' ', 1);
+    //                 i++;
+    //             }
+    //         }
+    //         ft_putchar_fd('\n', 1);
+    //     }
+    //     else
+    //     {
+    //         i = 2;
+    //         if (count_ags(args) == 3)
+    //             ft_echo(args[2], *envcp);
+    //         else if (count_ags(args) > 3)
+    //         {
+    //             while (args[i])
+    //             {
+    //                 ft_echo(args[i], *envcp);
+    //                 if (args[i + 1] != NULL)
+    //                     ft_putchar_fd(' ', 1);
+    //                 i++;
+    //             }
+    //         }
+    //     }
+    // }
     else if (ft_strcmp(args[0], "export") == 0)
     {
         // if (count_ags(args) > 2)
@@ -86,6 +90,22 @@ void exec_builting(char **args, char ***envcp)
         ft_unset(args, envcp);
     else
         return;
+}
+
+int is_valid_n_flag(const char *str)
+{
+    int i = 1;
+
+    if (str[0] != '-' || str[1] != 'n')
+        return 0;
+
+    while (str[i])
+    {
+        if (str[i] != 'n')
+            return 0;
+        i++;
+    }
+    return 1;
 }
 
 char *search_path(char **paths, char *cmd)
