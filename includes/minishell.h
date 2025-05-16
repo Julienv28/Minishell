@@ -6,7 +6,7 @@
 /*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/16 15:06:55 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/05/16 15:42:43 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,7 @@ int is_valid_n_flag(const char *str);
 void ft_unset(char **args, char ***envcp);
 
 // Exec
-void exec_cmd(t_com_list *cmd, char ***envcp);
+void exec_cmd(char **args, char ***envcp);
 int is_builting(char *cmd);
 void exec_builting(char **args, char ***envcp);
 char *get_path(char *cmd, char **envp);

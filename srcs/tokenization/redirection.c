@@ -38,7 +38,6 @@ int handle_redirection(char *str, int *i, t_token **tokens, char **envcp)
 
         word = ft_strndup(str + start, *i - start); // Copier le fichier de redirection
         expanded = replace_all_variables(word, envcp);
-        printf("Redirection vers : %s\n", expanded);
         cleaned = remove_quotes_or_slash(expanded);
         free(expanded);
         word = cleaned;

@@ -6,7 +6,7 @@
 /*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 10:45:02 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/16 14:09:08 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/05/16 15:47:47 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,12 @@ void execute(t_com_list *cmds, char ***envcp)
         return;
     }
     expand_variables(args, *envcp);
+    if (args[0] == NULL || args[0][0] == '\0')
+    {
+        fprintf(stderr, "minishell: command not found\n");
+        free_tab(args);
+        return;
+    }
     if (is_builting(args[0]))
     {
         // PAS DE FORK pour les builtins
@@ -124,7 +130,7 @@ void execute(t_com_list *cmds, char ***envcp)
 
         if (pid == 0) // Enfant
         {
-            exec_cmd(cmds, envcp);
+            exec_cmd(args, envcp);
             exit(g_exit_status);
         }
         else // Parent
@@ -231,7 +237,7 @@ void exec_pipes(t_com_list *cmds, char ***envcp)
             if (is_builting(args[0]))
                 exec_builting(args, envcp); // forké même si builtin
             else
-                exec_cmd(curr, envcp);
+                exec_cmd(args, envcp);
 
             free_tab(args);
             exit(g_exit_status); // Par sécurité

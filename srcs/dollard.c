@@ -46,7 +46,6 @@ char *expand_env_variable(char *str, int *i, char *res, char **envcp, int quoted
 
     if (!env_value)
     {
-        printf("Variable non trouvée : %s\n", var_name);
         env_value = ""; // En cas d'absence de variable
     }
 
