@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 10:45:02 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/20 15:17:33 by opique           ###   ########.fr       */
+/*   Updated: 2025/05/20 17:34:53 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ void execute(t_com_list *cmds, char ***envcp)
         free_tab(args);
         return;
     }
+
     expand_variables(args, *envcp);
     if (args[0] == NULL || args[0][0] == '\0')
     {

@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/20 13:22:53 by opique           ###   ########.fr       */
+/*   Updated: 2025/05/20 17:45:09 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <limits.h>
 #include <signal.h> // gerer les signaux
 
 #define TIMEOUT_ITERATIONS 10000
@@ -89,7 +90,7 @@ typedef struct s_token
 // Signaux
 void set_signal_action(void);
 void signal_handler(int sig);
-char *replace_all_variables(char *str, char **envcp);
+char *replace_all_variables(char *str, char **envcp, int avoid_expand);
 void expand_variables(char **args, char **envcp);
 char *replace_variable_or_special(char *str, int *i, char *res, char **envcp, int quoted);
 char *append_char(char *res, char c);

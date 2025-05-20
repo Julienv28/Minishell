@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 14:23:42 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/20 15:11:33 by opique           ###   ########.fr       */
+/*   Updated: 2025/05/20 16:30:20 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	free_tab(char **tab)
 	i = 0;
 	while (tab[i])
 	{
-		printf("Freeing: %s\n", tab[i]);  // Ajoutez cette ligne pour voir ce que vous libér
+		//printf("Freeing: %s\n", tab[i]);  // Ajoutez cette ligne pour voir ce que vous libér
 		free(tab[i]);
 		i++;
 	}

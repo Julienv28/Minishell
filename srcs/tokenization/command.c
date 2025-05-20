@@ -45,7 +45,7 @@ void free_file_list(t_file_list *list)
         free(tmp);
     }
 }
-
+/*
 char *expand_string(char *str, char **envcp)
 {
     char *tmp;
@@ -71,8 +71,8 @@ char *expand_string(char *str, char **envcp)
         return NULL;
     }
 
-    return res; // 🔁 à libérer après usage
-}
+    return res; // à libérer après usage
+}*/
 
 t_com_list *tokens_to_cmds(t_token *tokens)
 {

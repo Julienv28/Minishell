@@ -2,6 +2,7 @@
 
 int g_exit_status = 0;
 
+
 int has_pipe(t_com_list *command)
 {
     while (command)
@@ -31,12 +32,14 @@ int main(int ac, char **av, char **envp)
     while (1)
     {
         set_signal_action();
+        g_exit_status = 0;
         input = readline(GREEN "minishell$ " RESET);
         if (!input)
         {
-            ft_putstr_fd("exit input\n", STDOUT_FILENO);
+            ft_putstr_fd("exit\n", STDOUT_FILENO);
             exit(g_exit_status);
         }
+
         add_history(input);
         tokens = create_tokens(&input, envcp);
         free(input);

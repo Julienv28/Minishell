@@ -107,8 +107,8 @@ char *replace_variable_or_special(char *str, int *i, char *res, char **envcp, in
         return expand_exit_status(res);
     }
 
-    if (!ft_isalpha(str[*i]) && str[*i] != '_' && !ft_isdigit(str[*i]))
-        return append_char(res, '$');
+    // if (!ft_isalpha(str[*i]) && str[*i] != '_' && !ft_isdigit(str[*i]))
+    //     return append_char(res, '$');
 
     if (ft_isdigit(str[*i]))
     {
@@ -275,7 +275,7 @@ char *replace_all_variables(char *str, char **envcp)
     return res;
 }*/
 
-char *replace_all_variables(char *str, char **envcp)
+char *replace_all_variables(char *str, char **envcp, int avoid_expand)
 {
     int i = 0;
     char *res = ft_strdup("");
@@ -288,6 +288,13 @@ char *replace_all_variables(char *str, char **envcp)
 
     while (str[i])
     {
+        // gerer \$ -> ajouter juste le caractère '$'
+        if (str[i] == '\\' && str[i + 1] == '$')
+        {
+            res = append_char(res, '$');
+            i += 2;
+            continue;
+        }
         if (str[i] == '\'' && !in_double_quote)
         {
             in_single_quote = !in_single_quote;
@@ -301,7 +308,7 @@ char *replace_all_variables(char *str, char **envcp)
             ;
             // i++; // skip quote
         }
-        else if (str[i] == '$' && !in_single_quote)
+        else if (str[i] == '$' && !in_single_quote && !avoid_expand)
         {
             quoted = in_double_quote;
             res = replace_variable_or_special(str, &i, res, envcp, quoted);
@@ -311,6 +318,7 @@ char *replace_all_variables(char *str, char **envcp)
             res = append_char(res, str[i++]);
         }
     }
+    //printf("After variable expansion: %s\n", res);  // Ajout d'un printf ici pour vérifier l'expansion des variables
     return res;
 }
 
@@ -325,7 +333,8 @@ void expand_variables(char **args, char **envcp)
 
     while (args[i])
     {
-        tmp = replace_all_variables(args[i], envcp);
+        tmp = replace_all_variables(args[i], envcp, 0);
+        //printf("Expanded argument: %s\n", tmp);  // Afficher l'argument après expansion
         if (!tmp)
         {
             i++;

@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:36 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/20 10:20:45 by opique           ###   ########.fr       */
+/*   Updated: 2025/05/20 15:53:19 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ void ft_export(char **args, char ***envcp)
     i = 1;
     while (args[i])
     {
-        replaced = replace_all_variables(args[i], *envcp);
+        replaced = replace_all_variables(args[i], *envcp, 1);
         if (!replaced)
         {
             i++;

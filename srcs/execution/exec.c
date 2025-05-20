@@ -53,7 +53,10 @@ void exec_builting(char **args, char ***envcp)
     else if (ft_strcmp(args[0], "unset") == 0)
         ft_unset(args, envcp);
     else
+    {
+        g_exit_status = 1;
         return;
+    }
 }
 
 int is_valid_n_flag(const char *str)
@@ -233,32 +236,17 @@ void exec_cmd(char **args, char ***envcp)
 {
     char *path;
 
-    // if (!args || args[0] == NULL || args[0][0] == '\0')
-    // {
-    //     ft_putstr_fd("minishell: command not found: ", STDERR_FILENO);
-    //     ft_putstr_fd("(null)\n", STDERR_FILENO);
-    //     exit(127);
-    // }
     path = get_path(args[0], *envcp);
 
     //printf("path = %s\n", path);
     if (path == NULL)
     {
-        // ft_putstr_fd("minishell: command not found: ", STDERR_FILENO);
-        // ft_putstr_fd(args[0], STDERR_FILENO);
-        // ft_putstr_fd("\n", STDERR_FILENO);
         g_exit_status = 127;
         exit(127);
     }
     // Dans exec_cmd
     if (execve(path, args, *envcp) == -1)
     {
-        // if (errno == ENOENT)
-        //     fprintf(stderr, "minishell: %s: No such file or directory\n", path);
-        // else if (errno == EACCES)
-        //     fprintf(stderr, "minishell: %s: Permission denied\n", path);
-        // else
-        //     perror("minishell");
         perror("minishell");
         free(path);
         exit(127);
