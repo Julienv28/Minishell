@@ -61,6 +61,15 @@ void ft_cd(char **args, char ***envcp)
         return;
     }
 
+    // Vérifie si c'est bien un répertoire
+    if (!is_directory(path))
+    {
+        ft_putstr_fd("minishell: cd: ", STDERR_FILENO);
+        ft_putstr_fd(path, STDERR_FILENO);
+        ft_putstr_fd(": Not a directory\n", STDERR_FILENO);
+        return;
+    }
+
     // Vérifie si le chemin est accessible (exécutable)
     if (access(path, X_OK) == -1)
     {
@@ -73,7 +82,9 @@ void ft_cd(char **args, char ***envcp)
     // Change de dossier
     if (chdir(path) == -1)
     {
-        perror("cd failed");
+        ft_putstr_fd("minishell: cd: ", STDERR_FILENO);
+        ft_putstr_fd(path, STDERR_FILENO);
+        ft_putstr_fd(": Not a directory\n", STDERR_FILENO);
         return;
     }
 

@@ -103,146 +103,6 @@ char *add_symbol(int type)
         return ft_strdup("2>");
     return (NULL);
 }
-/*
-int ft_redirection(t_com_list *command)
-{
-    int fd = -1;
-    int mem_fd_in = -1;
-    int mem_fd_out = -1;
-    int mem_fd_err = -1;
-    t_file_list *tmp;
-
-    // Redirection entrée (STDIN)
-    if (command->infile)
-    {
-        mem_fd_in = dup(STDIN_FILENO);
-        //if (mem_fd_in == -1)
-        //{
-        //      perror("Erreur lors de la sauvegarde de STDIN");
-        //      return (-1);
-        //}
-
-        // Vérification de l'existence du fichier d'entrée
-        fd = open_file_cmd(command->infile);
-        if (fd == -1)
-        {
-            // Si le fichier d'entrée est introuvable, afficher un message d'erreur
-            close(mem_fd_in);
-            return (-1);
-        }
-        if (dup2(fd, STDIN_FILENO) == -1)
-        {
-            perror("Erreur avec dup2 pour la redirection d'entrée");
-            close(fd);
-            close(mem_fd_in);
-            return (-1);
-        }
-        close(fd);
-        return (mem_fd_in);
-    }
-
-    // Redirection sortie (STDOUT)
-    if (command->outfile || command->all_outfilles)
-    {
-        mem_fd_out = dup(STDOUT_FILENO);
-        if (mem_fd_out == -1)
-        {
-            perror("Erreur lors de la sauvegarde de STDOUT");
-            return (-1);
-        }
-
-        // Vérification et gestion de la redirection de sortie
-        if (command->outfile)
-        {
-            fd = open_outfile(command->outfile, command->flag_out);
-            if (fd == -1)
-            {
-                // Si la redirection échoue, afficher un message d'erreur
-                close(mem_fd_out);
-                return (-1);
-            }
-            if (dup2(fd, STDOUT_FILENO) == -1)
-            {
-                perror("Erreur avec dup2 pour la redirection finale");
-                close(fd);
-                close(mem_fd_out);
-                return (-1);
-            }
-            close(fd);
-        }
-
-        // Traiter les fichiers supplémentaires dans la liste des fichiers de sortie
-        tmp = command->all_outfilles;
-        while (tmp)
-        {
-            fd = open_outfile(tmp->filename, tmp->flag); // Le flag pour les redirections supplémentaires
-            if (fd == -1)
-            {
-                close(mem_fd_out);
-                return (-1);
-            }
-            if (dup2(fd, STDOUT_FILENO) == -1)
-            {
-                perror("Erreur avec dup2 pour la redirection vers fichier supplémentaire");
-                close(fd);
-                close(mem_fd_out);
-                return (-1);
-            }
-            close(fd);
-            tmp = tmp->next;
-        }
-        return (mem_fd_out);
-    }
-
-    // Redirection erreur (STDERR)
-    else if (command->errfile)
-    {
-        mem_fd_err = dup(STDERR_FILENO);
-        if (mem_fd_err == -1)
-        {
-            perror("Erreur lors de la sauvegarde de STDERR");
-            return (-1);
-        }
-
-        fd = open_errfile(command->errfile);
-        if (fd == -1)
-        {
-            close(mem_fd_err);
-            return (-1);
-        }
-        if (dup2(fd, STDERR_FILENO) == -1)
-        {
-            perror("Erreur avec dup2 pour la redirection d'erreur");
-            close(fd);
-            close(mem_fd_err);
-            return (-1);
-        }
-        close(fd);
-        return (mem_fd_err);
-    }
-
-    return (-1);
-}
-
-void putback_direction(t_com_list *command, int mem_fd)
-{
-    if (mem_fd == -1)
-    {
-        perror("Descripteur de fichier invalide (mem_fd) dans putback_direction");
-        return;
-    }
-
-    // Rétablir la redirection de l'entrée (STDIN)
-    if (command->infile)
-        dup2(mem_fd, STDIN_FILENO);
-    // Rétablir la redirection de la sortie (STDOUT)
-    else if (command->outfile)
-        dup2(mem_fd, STDOUT_FILENO);
-    // Rétablir la redirection des erreurs (STDERR)
-    else if (command->errfile)
-        dup2(mem_fd, STDERR_FILENO);
-    close(mem_fd);
-}*/
 
 int ft_redirection(t_com_list *command, int *mem_fd_in, int *mem_fd_out, int *mem_fd_err)
 {
@@ -252,13 +112,15 @@ int ft_redirection(t_com_list *command, int *mem_fd_in, int *mem_fd_out, int *me
     // Gestion de l'entrée
     if (command->infile)
     {
+        printf("Redirection d'entrée: %s\n", command->infile);
         fd = open_file_cmd(command->infile);
         if (fd < 0)
         {
             perror(command->infile);
             return (-1);
         }
-        *mem_fd_in = dup(STDIN_FILENO);
+        if (mem_fd_in)
+            *mem_fd_in = dup(STDIN_FILENO);
         dup2(fd, STDIN_FILENO);
         close(fd);
     }
@@ -266,7 +128,9 @@ int ft_redirection(t_com_list *command, int *mem_fd_in, int *mem_fd_out, int *me
     // Gestion de la sortie principale
     if (command->outfile)
     {
-        *mem_fd_out = dup(STDOUT_FILENO);
+        printf("Redirection de sortie: %s\n", command->outfile);
+        if (mem_fd_out)
+            *mem_fd_out = dup(STDOUT_FILENO);
         fd = open_outfile(command->outfile, command->flag_out);
         if (fd < 0)
         {
@@ -281,6 +145,7 @@ int ft_redirection(t_com_list *command, int *mem_fd_in, int *mem_fd_out, int *me
     tmp = command->all_outfilles;
     while (tmp)
     {
+        printf("Redirection de sortie secondaire: %s\n", tmp->filename);
         fd = open_outfile(tmp->filename, tmp->flag);
         if (fd < 0)
         {
@@ -294,7 +159,8 @@ int ft_redirection(t_com_list *command, int *mem_fd_in, int *mem_fd_out, int *me
     // Gestion de l'erreur standard
     if (command->errfile)
     {
-        *mem_fd_err = dup(STDERR_FILENO);
+        if (mem_fd_err)
+            *mem_fd_err = dup(STDERR_FILENO);
         fd = open_errfile(command->errfile);
         if (fd < 0)
         {

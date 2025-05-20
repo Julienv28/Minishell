@@ -3,19 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   split_args.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:06:45 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/16 15:48:38 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/05/20 15:20:53 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-// static int is_quote(char c)
-// {
-//     return (c == '"' || c == '\'');
-// }
 
 static int count_words(const char *s, char sep)
 {

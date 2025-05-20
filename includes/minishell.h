@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/16 15:42:43 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/05/20 13:22:53 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,6 +119,7 @@ void add_bottom(t_com_list **list, t_com_list *new);
 t_com_list *list_new(char *command);
 int handle_redirection(char *str, int *i, t_token **tokens, char **envcp);
 int prompt_for_quotes(char **str);
+int is_directory(char *path);
 
 // check
 int check_pipe(char *str, int i);

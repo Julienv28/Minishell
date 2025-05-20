@@ -3,29 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:21 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/09 18:12:40 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/05/20 15:16:22 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-/*UNSET = fonction qui supprime une variable de la liste des env.
-exemple :
-COLORTERM=truecolor
-XAUTHORITY=/home/juvitry/.Xauthority
-PWD=/home/juvitry/Documents/minishell/minigit3
-AZ=azerty
--> unset AZ
-COLORTERM=truecolor
-XAUTHORITY=/home/juvitry/.Xauthority
-PWD=/home/juvitry/Documents/minishell/minigit3
-et AZ a disparu !
-unset seul retourne:
-unset: not enough arguments
-*/
 
 // La fonction est longue, il faudra la raccourcir...
 void ft_unset(char **args, char ***envcp)
@@ -67,9 +52,9 @@ void ft_unset(char **args, char ***envcp)
     {
         if (!is_valid_name(args[i]))
         {
-            ft_putstr_fd("bash: unset: `", STDERR_FILENO);
-            ft_putstr_fd(args[i], STDERR_FILENO);
-            ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
+            // ft_putstr_fd("bash: unset: `", STDERR_FILENO);
+            // ft_putstr_fd(args[i], STDERR_FILENO);
+            // ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
             i++;
             continue;
         }
@@ -96,8 +81,3 @@ void ft_unset(char **args, char ***envcp)
         i++;
     }
 }
-/*Le continue ;
-ici dans la boucle while ((*envcp)[i]) signifie :
-
-    « Passe à l’itération suivante de la boucle, sans faire le reste du code
-    (ici, sans copier la ligne dans new_env) »*/

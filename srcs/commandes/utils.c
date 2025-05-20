@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 14:23:42 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/16 15:47:44 by opique           ###   ########.fr       */
+/*   Updated: 2025/05/20 15:11:33 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,17 @@ void	free_tab(char **tab)
 {
 	int	i;
 
+	if (!tab)
+        return;
 	i = 0;
-	while (tab && tab[i])
-		free(tab[i++]);
+	while (tab[i])
+	{
+		printf("Freeing: %s\n", tab[i]);  // Ajoutez cette ligne pour voir ce que vous libér
+		free(tab[i]);
+		i++;
+	}
 	free(tab);
+	tab = NULL;
 }
 
 char	**ft_env_dup(char **envp)

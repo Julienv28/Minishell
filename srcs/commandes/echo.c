@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:42:01 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/16 14:32:55 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/05/20 15:16:03 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,55 +145,3 @@ char *clean_spaces(char *str)
     free(trimmed);
     return (res);
 }
-
-/*
-static int	ft_isupper(int c)
-{
-    if (c >= 65 && c <= 90)
-        return (1);
-    else
-        return (0);
-}
-
-void ft_echo(char *str, char **envp)
-{
-    int i = 0;
-
-    if (!str || str[0] == '\0')
-    {
-        ft_putchar_fd('\n', 1);
-        return ;
-    }
-    if (str[i] == '\'' || str[i] == '\"')
-        i++;
-    while (str[i])
-    {
-        if ((str[i] == '$' && str[0] != '\"') || (str[i] == '$' && str[0] == '\''))
-        {
-            i++;
-            int start = i;
-            while (str[i] && (ft_isupper(str[i]) || str[i] == '_'))
-                i++;
-            int len = i - start;
-            char *var = malloc(len + 1);
-            if (!var)
-                return ;
-            for (int j = 0; j < len; j++)
-                var[j] = str[start + j];
-            var[len] = '\0';
-
-            char *val = get_env_value(var, envp);
-            if (val)
-                ft_putstr_fd(val, 1);
-            free(var);
-        }
-        else if ((str[i] == '\'' && str[0] != '\"') || (str[0] == '\"'
-            && ((str[i] == '\'' || str[i] == '\"') && str[i + 1] == '\0')))
-            i++;
-        else
-        {
-            ft_putchar_fd(str[i], 1);
-            i++;
-        }
-    }
-}*/

@@ -83,6 +83,5 @@ t_token *create_tokens(char **str, char **envcp)
                 break;
         }
     }
-
     return (tokens);
 }

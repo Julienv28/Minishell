@@ -54,33 +54,31 @@ char *expand_env_variable(char *str, int *i, char *res, char **envcp, int quoted
     return tmp;
 }
 
-/*
-char *expand_single_quote_literal(char *str, int *i, char *res)
-{
-    (*i)++; // skip first '
-    while (str[*i] && str[*i] != '\'')
-        res = append_char(res, str[(*i)++]);
-    if (str[*i] == '\'')
-        (*i)++;
-    return res;
-}
-
-char *expand_gettext_style(char *str, int *i, char *res)
-{
-    (*i)++; // skip initial "
-    while (str[*i] && str[*i] != '"')
-        res = append_char(res, str[(*i)++]);
-    if (str[*i] == '"')
-        (*i)++;
-    return res;
-}*/
-
 char *replace_variable_or_special(char *str, int *i, char *res, char **envcp, int quoted)
 {
     (*i)++; // skip $
 
     if (!str[*i])
         return append_char(res, '$');
+
+    // Si la variable est suivie directement de caractères non espacés, gérer correctement l'expansion.
+    if (ft_isalpha(str[*i]) || str[*i] == '_')
+    {
+        return expand_env_variable(str, i, res, envcp, quoted);
+    }
+    // Cas pour $ suivi de 'foo' (exemple $HOMEfoo)
+    if (str[*i] == '{')
+    {
+        (*i)++; // Skip the opening '{'
+        while (str[*i] && str[*i] != '}') {
+            res = append_char(res, str[(*i)++]);
+        }
+        if (str[*i] == '}') {
+            (*i)++; // Skip the closing '}'
+        }
+        return res;
+    }
+
 
     // Gestion de $'' ou $"" (quote ANSI C ou gettext)
     if ((str[*i] == '\'' || str[*i] == '"') && *i == 1)
@@ -370,3 +368,5 @@ void expand_variables(char **args, char **envcp)
     }
     args[i] = NULL;
 }
+
+
