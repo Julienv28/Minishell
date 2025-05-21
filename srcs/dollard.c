@@ -56,32 +56,160 @@ char *expand_env_variable(char *str, int *i, char *res, char **envcp, int quoted
 
 char *replace_variable_or_special(char *str, int *i, char *res, char **envcp, int quoted)
 {
-    (*i)++; // skip $
+    (*i)++; // Skip $
 
     if (!str[*i])
         return append_char(res, '$');
+
+    // Cas pour $"" (chaîne vide entre guillemets) → chaîne vide, donc ne rien ajouter
+    if (str[*i] == '"' && str[*i + 1] == '"')
+    {
+        (*i) += 2;                    // Skip les guillemets vides
+        return append_char(res, '$'); // Garder le $
+    }
+
+    // Cas pour $"" suivi d'un autre " (chaîne vide) → chaîne vide mais $ reste
+    if (str[*i] == '"' && !str[*i + 1])
+    {
+        (*i)++; // Skip
+        return append_char(res, '$');
+    }
+
+    // Cas pour $"..." (gettext avec contenu)
+    if (str[*i] == '"')
+    {
+        (*i)++; // Skip opening "
+        while (str[*i] && str[*i] != '"')
+            res = append_char(res, str[(*i)++]);
+        if (str[*i] == '"')
+            (*i)++; // Skip closing "
+        return res;
+    }
+
+    // Cas pour $'...' (ANSI-C quotes)
+    if (str[*i] == '\'')
+    {
+        (*i)++; // Skip opening '
+        while (str[*i] && str[*i] != '\'')
+            res = append_char(res, str[(*i)++]);
+        if (str[*i] == '\'')
+            (*i)++; // Skip closing '
+        return res;
+    }
+
+    // Cas pour ${VAR}
+    if (str[*i] == '{')
+    {
+        (*i)++; // Skip {
+        char var_name[256];
+        int j = 0;
+        while (str[*i] && str[*i] != '}' && j < 255)
+            var_name[j++] = str[(*i)++];
+        var_name[j] = '\0';
+        if (str[*i] == '}')
+            (*i)++; // Skip closing }
+
+        char *env = get_env_value(var_name, envcp);
+        if (!env)
+            env = "";
+        char *tmp = ft_strjoin(res, env);
+        free(res);
+        return tmp;
+    }
+
+    // Cas pour $HOME, $USER, etc.
+    // Cette section gère les variables d'environnement simples, sans délimiteurs spéciaux.
+    if (ft_isalpha(str[*i]) || str[*i] == '_')
+    {
+        return expand_env_variable(str, i, res, envcp, quoted);
+    }
+
+    // Cas où on a un égal : $=HOME, ce n'est pas une expansion de variable, on garde le $
+    if (str[*i] == '=')
+    {
+        res = append_char(res, '$');
+        res = append_char(res, '=');
+        (*i)++;
+        while (ft_isalnum(str[*i]) || str[*i] == '_')
+            res = append_char(res, str[(*i)++]);
+        return res;
+    }
+
+    // Cas pour $? (status de sortie)
+    if (str[*i] == '?')
+    {
+        (*i)++;
+        return expand_exit_status(res);
+    }
+
+    // Cas pour $ suivi d'un chiffre → pas d'expansion (ex: $1)
+    if (ft_isdigit(str[*i]))
+    {
+        (*i)++;
+        return res;
+    }
+
+    // Cas où on a un $ suivi d'un guillemet et d'une lettre ou d'un caractère spécial
+    if (str[*i] == '"' && (ft_isalpha(str[*i + 1]) || str[*i + 1] == '_'))
+    {
+        // Le $ reste littéral dans ce cas-là (exemple: "$HOME")
+        res = append_char(res, '$');
+        res = append_char(res, str[(*i)++]);
+        return res;
+    }
+
+    return res;
+}
+
+/*
+char *replace_variable_or_special(char *str, int *i, char *res, char **envcp, int quoted)
+{
+    (*i)++; // Skip the $
+
+    if (!str[*i])
+        return append_char(res, '$'); // Si rien ne suit, on garde le $
 
     // Si la variable est suivie directement de caractères non espacés, gérer correctement l'expansion.
     if (ft_isalpha(str[*i]) || str[*i] == '_')
     {
         return expand_env_variable(str, i, res, envcp, quoted);
     }
-    // Cas pour $ suivi de 'foo' (exemple $HOMEfoo)
+    // Cas pour $ suivi de guillemets doubles (doit juste ajouter un $)
+    if (str[*i] == '"')
+    {
+        res = append_char(res, '$'); // On garde le $
+        return res;
+    }
+    // Cas pour $"" (chaîne vide entre guillemets)
+    if (str[*i] == '"' && str[*i + 1] == '"')
+    {
+        (*i) += 2; // Ignorer les guillemets vides et ne rien ajouter
+        return res;
+    }
+
+    // Cas pour $ suivi de guillemets simples (pas d'expansion)
+    if (str[*i] == '\'' || str[*i] == '"')
+    {
+        return res; // On ne fait pas d'expansion ici
+    }
+
+    // Cas pour $ suivi de {foo} (exemple ${HOME})
     if (str[*i] == '{')
     {
         (*i)++; // Skip the opening '{'
-        while (str[*i] && str[*i] != '}') {
+        while (str[*i] && str[*i] != '}')
+        {
             res = append_char(res, str[(*i)++]);
         }
-        if (str[*i] == '}') {
+        if (str[*i] == '}')
+        {
             (*i)++; // Skip the closing '}'
         }
         return res;
     }
 
-
     // Gestion de $'' ou $"" (quote ANSI C ou gettext)
-    if ((str[*i] == '\'' || str[*i] == '"') && *i == 1)
+    if ((str[*i] == '\'' || str[*i] == '"') && (*i == 1 || str[*i - 1] == '$'))
     {
         char quote = str[*i];
         (*i)++; // skip opening quote
@@ -93,6 +221,17 @@ char *replace_variable_or_special(char *str, int *i, char *res, char **envcp, in
             (*i)++; // skip closing quote
 
         return res; // PAS de $ ajouté
+    }
+
+    // Cas pour $=HOME
+    if (str[*i] == '=')
+    {
+        res = append_char(res, '$');
+        res = append_char(res, '=');
+        (*i)++;
+        while (ft_isalnum(str[*i]) || str[*i] == '_')
+            res = append_char(res, str[(*i)++]);
+        return res;
     }
 
     // Gérer cas "$"
@@ -107,9 +246,6 @@ char *replace_variable_or_special(char *str, int *i, char *res, char **envcp, in
         return expand_exit_status(res);
     }
 
-    // if (!ft_isalpha(str[*i]) && str[*i] != '_' && !ft_isdigit(str[*i]))
-    //     return append_char(res, '$');
-
     if (ft_isdigit(str[*i]))
     {
         (*i)++;
@@ -117,109 +253,6 @@ char *replace_variable_or_special(char *str, int *i, char *res, char **envcp, in
     }
 
     return expand_env_variable(str, i, res, envcp, quoted);
-}
-
-/*
-char *replace_variable_or_special(char *str, int *i, char *res, char **envcp)
-{
-    char var_name[256];
-    int j = 0;
-    char *tmp;
-    char *status;
-    char *env_value;
-
-    (*i)++; // Skip the $
-
-    // Cas spécial : $ suivi de quote simple (string literal)
-    if (str[*i] == '\'')
-    {
-        (*i)++; // skip 1er quote (')
-        while (str[*i])
-        {
-            if (str[*i] == '\'')
-            {
-                (*i)++; // skip quote fermante (')
-                // check si une autre quote suit pour cas $'HO''ME'
-                if (str[*i] == '\'')
-                    continue;
-                else
-                    break;
-            }
-            res = append_char(res, str[(*i)++]);
-        }
-        return res;
-    }
-
-    // Gestion gettext-style : $"..."
-    // Si $ est suivi directement de " → gettext style ($"HOME") → remplace par contenu
-    if (str[*i] == '"' && *i == 1) // On n'est pas dans une quote concaténée, genre "$"HOME
-    {
-        (*i)++; // skip le "
-        while (str[*i] && str[*i] != '"')
-            res = append_char(res, str[(*i)++]);
-        if (str[*i] == '"')
-            (*i)++; // skip le " fermant
-        return res;
-    }
-
-    // Fin de chaîne ou $ tout seul
-    if (!str[*i])
-        return append_char(res, '$');
-
-    // Cas : $ suivi d'un caractère non valide (pas une var)
-    if (!ft_isalpha(str[*i]) && str[*i] != '_' && str[*i] != '?' && !ft_isdigit(str[*i]))
-    {
-        res = append_char(res, '$');
-        return res;
-    }
-
-    // Cas spécial : $?
-    // if (str[*i] == '?' && (str[*i + 1] == '\0' || str[*i + 1] == ' '))
-    if (str[*i] == '?')
-    {
-        status = ft_itoa(g_exit_status);
-        if (!status)
-        {
-            free(res);
-            return NULL;
-        }
-        tmp = ft_strjoin(res, status);
-        free(res);
-        free(status);
-        (*i)++;
-        return tmp;
-    }
-    // Cas : $ suivi d'un chiffre ($1, $9...)
-    if (ft_isdigit(str[*i]))
-    {
-        (*i)++;
-        return res; // rien à ajouter
-    }
-
-    // Cas : variable standard ($HOME, etc.)
-    while (str[*i] && (ft_isalnum(str[*i]) || str[*i] == '_'))
-        var_name[j++] = str[(*i)++];
-    var_name[j] = '\0';
-
-    // env_value = getenv(var_name);
-    env_value = get_value_cleaned(var_name, envcp);
-    if (!env_value)
-    {
-        if (ft_strcmp(var_name, "UID") == 0)
-            ft_putstr_fd("UID non défini dans l'environnement\n", STDERR_FILENO);
-        env_value = "";
-    }
-
-    // enlever espace indésirable
-
-    tmp = ft_strjoin(res, env_value);
-    if (!tmp)
-    {
-        free(res);
-        return NULL;
-    }
-    free(res);
-    return tmp;
 }*/
 
 /*
@@ -288,26 +321,27 @@ char *replace_all_variables(char *str, char **envcp, int avoid_expand)
 
     while (str[i])
     {
-        // gerer \$ -> ajouter juste le caractère '$'
+        // Cas \ pour ignorer $
         if (str[i] == '\\' && str[i + 1] == '$')
         {
             res = append_char(res, '$');
             i += 2;
             continue;
         }
+
+        // Gestion des quotes simples
         if (str[i] == '\'' && !in_double_quote)
         {
             in_single_quote = !in_single_quote;
             res = append_char(res, str[i++]);
-            // i++; // skip quote
         }
+        // Gestion des quotes doubles
         else if (str[i] == '"' && !in_single_quote)
         {
             in_double_quote = !in_double_quote;
             res = append_char(res, str[i++]);
-            ;
-            // i++; // skip quote
         }
+        // Cas où $ doit être expansé
         else if (str[i] == '$' && !in_single_quote && !avoid_expand)
         {
             quoted = in_double_quote;
@@ -318,7 +352,7 @@ char *replace_all_variables(char *str, char **envcp, int avoid_expand)
             res = append_char(res, str[i++]);
         }
     }
-    //printf("After variable expansion: %s\n", res);  // Ajout d'un printf ici pour vérifier l'expansion des variables
+
     return res;
 }
 
@@ -334,7 +368,7 @@ void expand_variables(char **args, char **envcp)
     while (args[i])
     {
         tmp = replace_all_variables(args[i], envcp, 0);
-        //printf("Expanded argument: %s\n", tmp);  // Afficher l'argument après expansion
+        // printf("Expanded argument: %s\n", tmp);  // Afficher l'argument après expansion
         if (!tmp)
         {
             i++;
@@ -377,5 +411,3 @@ void expand_variables(char **args, char **envcp)
     }
     args[i] = NULL;
 }
-
-

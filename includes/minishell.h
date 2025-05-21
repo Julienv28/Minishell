@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/20 17:45:09 by opique           ###   ########.fr       */
+/*   Updated: 2025/05/21 12:12:31 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ typedef struct s_com_list
 {
     char *command;
     char **args;
+    char **envcp;
     char *path;
     int is_pipe;
     char *outfile;
@@ -134,7 +135,7 @@ int ft_isnumber(char *str);
 // Commandes
 void ft_echo(char **args);
 void ft_cd(char **args, char ***envcp);
-void ft_pwd(char **args);
+void ft_pwd(char **args, char ***envcp);
 void ft_exit(char **args);
 void ft_export(char **arg, char ***envcp);
 char *get_env_value(char *name, char **envp);

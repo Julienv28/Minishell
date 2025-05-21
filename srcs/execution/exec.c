@@ -19,7 +19,7 @@ void exec_builting(char **args, char ***envcp)
     else if (ft_strcmp(args[0], "cd") == 0)
         ft_cd(args, envcp);
     else if (ft_strcmp(args[0], "pwd") == 0)
-        ft_pwd(args);
+        ft_pwd(args, envcp);
     else if (ft_strcmp(args[0], "echo") == 0)
     {
         ft_echo(args); // Appel direct avec les args
@@ -114,62 +114,6 @@ int is_directory(char *path)
         return (1);                                  // Si chemin trouver c'est un repertoire
     return (0);
 }
-/*
-char *get_path(char *cmd, char **envp)
-{
-    char **paths;
-    char *path;
-    int line;
-
-    // Si la commande est déjà un chemin absolu et exécutable
-    if (access(cmd, F_OK) == 0) // On vérifie d'abord si le fichier existe
-    {
-        if (is_directory(cmd)) // Vérification si c'est un répertoire
-        {
-            ft_putstr_fd("minishell: ", STDERR_FILENO);
-            ft_putstr_fd(cmd, STDERR_FILENO);
-            ft_putstr_fd(": is a directory\n", STDERR_FILENO);
-            return (NULL);
-        }
-        if (access(cmd, X_OK) == 0)  // Vérification si c'est exécutable
-            return (ft_strdup(cmd)); // Commande trouvée et exécutable
-        else
-        {
-            ft_putstr_fd("minishell: ", STDERR_FILENO);
-            ft_putstr_fd(cmd, STDERR_FILENO);
-            ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
-            return (NULL); // Commande trouvée mais pas exécutable
-        }
-    }
-
-    // Recherche de la commande dans les chemins spécifiés dans PATH
-    line = find_line(envp, "PATH");
-    if (!envp[line]) // Si le PATH n'est pas trouvé
-        return (NULL);
-
-    // Découper le chemin du PATH en différents répertoires
-    paths = ft_split(envp[line] + 5, ':');
-    // Recherche dans les répertoires du PATH
-    path = search_path(paths, cmd);
-
-    if (path == NULL) // Commande non trouvée dans les chemins de PATH
-    {
-        ft_putstr_fd("minishell: command not found: ", STDERR_FILENO); // Commande introuvable
-        ft_putstr_fd(cmd, STDERR_FILENO);
-        ft_putstr_fd("\n", STDERR_FILENO);
-    }
-    else if (access(path, X_OK) != 0) // Vérification si le fichier est exécutable
-    {
-        ft_putstr_fd("minishell: ", STDERR_FILENO);
-        ft_putstr_fd(cmd, STDERR_FILENO);
-        ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
-        free(path);  // Libération de la mémoire allouée pour path
-        path = NULL; // Remise à NULL pour indiquer l'échec
-    }
-
-    free_tab(paths); // Libération de la mémoire allouée pour les chemins
-    return (path);   // Retourne NULL si la commande n'est pas trouvée ou pas exécutable
-}*/
 
 char *get_path(char *cmd, char **envp)
 {
@@ -182,6 +126,7 @@ char *get_path(char *cmd, char **envp)
     {
         if (access(cmd, F_OK) != 0)
         {
+            // chemin fichier non valid
             ft_putstr_fd("minishell: ", STDERR_FILENO);
             ft_putstr_fd(cmd, STDERR_FILENO);
             ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
@@ -206,14 +151,18 @@ char *get_path(char *cmd, char **envp)
 
     // Sinon : on cherche dans le PATH
     line = find_line(envp, "PATH");
-    if (!envp[line])
+    if (!envp[line] || line == -1)
+    {
+        ft_putstr_fd("minishell: PATH not set\n", STDERR_FILENO);
         return (NULL);
+    }
 
     paths = ft_split(envp[line] + 5, ':');
     path = search_path(paths, cmd);
 
     if (path == NULL)
     {
+        // - ; echo ; $? ; export; env
         ft_putstr_fd("minishell: command not found: ", STDERR_FILENO);
         ft_putstr_fd(cmd, STDERR_FILENO);
         ft_putstr_fd("\n", STDERR_FILENO);
@@ -231,16 +180,18 @@ char *get_path(char *cmd, char **envp)
     return (path);
 }
 
-
 void exec_cmd(char **args, char ***envcp)
 {
     char *path;
 
     path = get_path(args[0], *envcp);
 
-    //printf("path = %s\n", path);
+    // printf("path = %s\n", path);
     if (path == NULL)
     {
+        ft_putstr_fd("minishell: ", STDERR_FILENO);
+        ft_putstr_fd(args[0], STDERR_FILENO);
+        ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
         g_exit_status = 127;
         exit(127);
     }

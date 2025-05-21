@@ -2,7 +2,6 @@
 
 int g_exit_status = 0;
 
-
 int has_pipe(t_com_list *command)
 {
     while (command)
