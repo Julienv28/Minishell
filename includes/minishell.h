@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/22 14:28:12 by opique           ###   ########.fr       */
+/*   Updated: 2025/05/22 16:27:38 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,9 @@ typedef struct s_token
 // Message prompt + history (Oceane) ==> a ameliorer
 int handle_heredoc(char *limiter, char **envcp);
 int limiter_is_quoted(const char *str);
+void fake_exit_builtin(char **args);
+int is_valid_numeric_argument(char *str);
+unsigned long long ft_atoull(const char *str);
 
 
 // Signaux
@@ -140,7 +143,7 @@ int ft_isnumber(char *str);
 void ft_echo(char **args);
 void ft_cd(char **args, char ***envcp);
 void ft_pwd(char **args, char ***envcp);
-void ft_exit(char **args);
+void ft_exit(char **args, int in_child);
 void ft_export(char **arg, char ***envcp);
 char *get_env_value(char *name, char **envp);
 char *get_value_cleaned(char *name, char **envp);

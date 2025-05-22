@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 10:45:02 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/22 12:05:32 by opique           ###   ########.fr       */
+/*   Updated: 2025/05/22 16:33:40 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,13 @@ void execute(t_com_list *cmds, char ***envcp)
         return;
     }
     printf("command expand %s\n", cmds->command);
-    if (is_builting(args[0]))
+    if (is_builting(args[0]) && ft_strcmp(args[0], "exit") == 0)
     {
-        // PAS DE FORK pour les builtins
+        ft_exit(args, 0);
+        //exec_builting(args, envcp);
+    }
+    else if (is_builting(args[0]))
+    {
         exec_builting(args, envcp);
     }
     else
@@ -76,6 +80,24 @@ static void wait_children(void)
         pid = wait(&status);
     }
 }
+void fake_exit_builtin(char **args)
+{
+    long long exit_value = 0;
+
+    if (!args[1]) // Aucun argument -> exit 0
+        exit(0);
+
+    if (!is_valid_numeric_argument(args[1]))
+    {
+        fprintf(stderr, "minishell: exit: %s: numeric argument required\n", args[1]);
+        exit(255); // quitter avec code d'erreur, comme Bash
+    }
+
+    // Convertir et tronquer à 8 bits comme Bash
+    exit_value = ft_atoull(args[1]);
+    exit((unsigned char)(exit_value));
+}
+
 
 void exec_pipes(t_com_list *cmds, char ***envcp)
 {
@@ -143,9 +165,12 @@ void exec_pipes(t_com_list *cmds, char ***envcp)
             if (!args || !args[0])
                 exit(1);
 
-
-            if (is_builting(args[0]))
-                exec_builting(args, envcp); // builtin dans le child
+            if (is_builting(args[0]) && ft_strcmp(args[0], "exit") == 0)
+                fake_exit_builtin(args);
+            else if (is_builting(args[0]))
+                exec_builting(args, envcp);
+            //if (is_builting(args[0]))
+            //    exec_builting(args, envcp); // builtin dans le child
             else
                 exec_cmd(args, envcp);
 

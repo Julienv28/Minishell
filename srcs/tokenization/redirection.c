@@ -37,6 +37,7 @@ int handle_redirection(char *str, int *i, t_token **tokens, char **envcp)
         }
 
         word = ft_strndup(str + start, *i - start); // Copier le fichier de redirection
+  
         // Si c'est un heredoc et que le limiter est entre guillemets, on ne le nettoie pas
         if (type == HEREDOC && limiter_is_quoted(word) == 0)
         {

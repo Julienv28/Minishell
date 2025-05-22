@@ -56,7 +56,7 @@ int limiter_is_quoted(const char *str)
         return (0);
     return (1);
 }
-
+/*
 int handle_heredoc(char *limiter,char **envcp)
 {
     int pipefd[2];
@@ -101,6 +101,74 @@ int handle_heredoc(char *limiter,char **envcp)
     }
     close(pipefd[1]);
     return (pipefd[0]);
+}*/
+
+int handle_heredoc(char *limiter, char **envcp)
+{
+    int pipefd[2];
+    char *line = NULL;
+    char *expanded_line = NULL;
+    char *expanded_limiter = NULL;
+    char *cleaned_limiter = NULL;
+    int is_heredoc;
+
+    // Expansion du limiter (si pas entre quotes)
+    if (limiter_is_quoted(limiter))
+        is_heredoc = 1;  // quoted → pas d'expansion
+    else
+        is_heredoc = 0;  // pas quoted → expansion des variables
+
+    // Expand + clean le limiter
+    expanded_limiter = replace_all_variables(limiter, envcp, 0);  // is_heredoc = 0 pour expansion complète
+    cleaned_limiter = remove_quotes_or_slash(expanded_limiter);
+    if (!cleaned_limiter)
+    cleaned_limiter = ft_strdup("");
+    free(expanded_limiter);
+
+    if (pipe(pipefd) == -1)
+    {
+        perror("pipe");
+        free(cleaned_limiter);
+        return -1;
+    }
+
+    printf("detection HEREDOC\n");
+    printf("filename = %s\n", cleaned_limiter);
+    printf("limiteur quote = %s et heredoc = %d\n", limiter, is_heredoc);
+
+    while (1)
+    {
+        line = readline("> ");
+        if (!line)
+            break;
+
+        printf("DEBUG: readline retourné: \"%s\"\n", line);
+        printf("DEBUG: line=\"%s\" (%zu chars), limiter=\"%s\" (%zu chars)\n",
+               line, ft_strlen(line),
+               cleaned_limiter, ft_strlen(cleaned_limiter));
+
+        // Fin du heredoc ?
+        if (ft_strcmp(line, cleaned_limiter) == 0)
+        {
+            free(line);
+            break;
+        }
+
+
+        expanded_line = replace_all_variables(line, envcp, is_heredoc);
+        printf("before expanded = %s\n", line);
+        printf("after expanded = %s\n", expanded_line);
+
+        write(pipefd[1], expanded_line, ft_strlen(expanded_line));
+        write(pipefd[1], "\n", 1);
+
+        free(line);
+        free(expanded_line);
+    }
+
+    free(cleaned_limiter);
+    close(pipefd[1]);
+    return pipefd[0];
 }
 
 t_com_list *tokens_to_cmds(t_token *tokens, char **envcp)
