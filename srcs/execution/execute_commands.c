@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_commands.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 10:45:02 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/21 16:51:07 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/05/22 12:05:32 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,7 @@ void execute(t_com_list *cmds, char ***envcp)
         free_tab(args);
         return;
     }
-
-    expand_variables(args, *envcp);
+    printf("command expand %s\n", cmds->command);
     if (is_builting(args[0]))
     {
         // PAS DE FORK pour les builtins
@@ -103,11 +102,13 @@ void exec_pipes(t_com_list *cmds, char ***envcp)
 
         if (pid == 0) // === CHILD ===
         {
+            printf("DEBUG: PID %d - Start of child process\n", getpid());
             // Redirection de l'entrée depuis le pipe précédent
             if (prev_fd != -1)
             {
                 dup2(prev_fd, STDIN_FILENO);
                 close(prev_fd);
+                printf("DEBUG: PID %d - Redirection de l'entrée depuis le pipe précédent\n", getpid());
             }
 
             // Redirection de la sortie vers le pipe suivant
@@ -116,16 +117,19 @@ void exec_pipes(t_com_list *cmds, char ***envcp)
                 dup2(pipefd[1], STDOUT_FILENO);
                 close(pipefd[1]);
                 close(pipefd[0]);
+                printf("DEBUG: PID %d - Redirection de la sortie vers le pipe suivant\n", getpid());
             }
             else
             {
                 close(pipefd[0]);
                 close(pipefd[1]);
+                printf("DEBUG: PID %d - Dernière commande, fermeture des pipes\n", getpid());
             }
 
             // Redirections fichiers (même dans les pipes !)
-            if (curr->infile || curr->outfile || curr->errfile || curr->all_outfilles)
+            if (curr->infile || curr->outfile || curr->errfile || curr->all_outfilles || curr->heredoc_fd > 0)
             {
+                printf("DEBUG: PID %d - Détection heredoc, redirection de l'entrée\n", getpid());
                 if (ft_redirection(curr, NULL, NULL, NULL) < 0)
                 {
                     perror("redirection");
@@ -134,11 +138,11 @@ void exec_pipes(t_com_list *cmds, char ***envcp)
             }
 
             // Préparation et exécution de la commande
+            printf("DEBUG: PID %d - Découpage des arguments: %s\n", getpid(), curr->command);
             char **args = split_args(curr->command, ' ');
             if (!args || !args[0])
                 exit(1);
 
-            expand_variables(args, *envcp);
 
             if (is_builting(args[0]))
                 exec_builting(args, envcp); // builtin dans le child

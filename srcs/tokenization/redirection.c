@@ -37,11 +37,19 @@ int handle_redirection(char *str, int *i, t_token **tokens, char **envcp)
         }
 
         word = ft_strndup(str + start, *i - start); // Copier le fichier de redirection
-        expanded = replace_all_variables(word, envcp, 0);
-        cleaned = remove_quotes_or_slash(expanded);
-        free(expanded);
-        word = cleaned;
-        add_token(tokens, word, ARG); // Ajouter le fichier comme argument
+        // Si c'est un heredoc et que le limiter est entre guillemets, on ne le nettoie pas
+        if (type == HEREDOC && limiter_is_quoted(word) == 0)
+        {
+            add_token(tokens, word, ARG); // Ajouter le fichier comme argument
+        }
+        else
+        {
+            expanded = replace_all_variables(word, envcp, 0);
+            cleaned = remove_quotes_or_slash(expanded);
+            free(expanded);
+            word = cleaned;
+            add_token(tokens, word, ARG); // Ajouter le fichier comme argument
+        }
         free(word);
         return (1); // Redirection traitée
     }
@@ -108,6 +116,18 @@ int ft_redirection(t_com_list *command, int *mem_fd_in, int *mem_fd_out, int *me
 {
     int fd;
     t_file_list *tmp;
+
+    printf("DEBUG: ft_redirection - Démarrage pour la commande: %s\n", command->command);
+    printf("DEBUG: ft_redirection - heredoc_fd = %d\n", command->heredoc_fd);
+
+    if (command->heredoc_fd > 0)
+    {
+        if (mem_fd_in)
+            *mem_fd_in = dup(STDIN_FILENO);
+        printf("DEBUG: ft_redirection - Redirection heredoc vers l'entrée standard\n");
+        dup2(command->heredoc_fd, STDIN_FILENO);
+        close(command->heredoc_fd);
+    }
 
     // Gestion de l'entrée
     if (command->infile)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/21 12:12:31 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/05/22 14:28:12 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ typedef struct s_com_list
     char *outfile;
     char *infile;
     char *errfile;
+    int heredoc_fd;
     int flag_in; // 1 si redirection >>, 0 sinon
     int flag_out;
     t_file_list *all_outfilles;
@@ -87,12 +88,15 @@ typedef struct s_token
 } t_token;
 
 // Message prompt + history (Oceane) ==> a ameliorer
+int handle_heredoc(char *limiter, char **envcp);
+int limiter_is_quoted(const char *str);
+
 
 // Signaux
 void set_signal_action(void);
 void signal_handler(int sig);
 char *replace_all_variables(char *str, char **envcp, int avoid_expand);
-void expand_variables(char **args, char **envcp);
+void expand_variables(char **args, char **envcp, int is_heredoc);
 char *replace_variable_or_special(char *str, int *i, char *res, char **envcp, int quoted);
 char *append_char(char *res, char c);
 
@@ -101,7 +105,7 @@ t_token *add_token(t_token **head, char *str, int type);
 t_token *create_tokens(char **str, char **envcp);
 void print_tokens(t_token *tokens);
 void free_tokens(t_token *tokens);
-t_com_list *tokens_to_cmds(t_token *tokens);
+t_com_list *tokens_to_cmds(t_token *tokens, char **envcp);
 char *concat_command(char *current_command, char *new_part);
 int parse_redirection(char *str, int *i);
 char *add_symbol(int type);

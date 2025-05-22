@@ -8,6 +8,7 @@ char *append_char(char *res, char c)
 
     current[0] = c;
     current[1] = '\0';
+    printf("Appending char: '%c'\n", c);
     tmp = ft_strjoin(res, current);
     free(res);
     return tmp;
@@ -20,6 +21,7 @@ char *expand_exit_status(char *res)
 
     if (!status)
         return NULL;
+    printf("Expanding exit status: %s\n", status);
     tmp = ft_strjoin(res, status);
     free(res);
     free(status);
@@ -38,6 +40,7 @@ char *expand_env_variable(char *str, int *i, char *res, char **envcp, int quoted
         var_name[j++] = str[(*i)++];
     var_name[j] = '\0';
 
+    printf("Expanding env variable: %s\n", var_name); 
     // Choix entre get_env_value ou get_value_cleaned selon le flag quoted
     if (quoted)
         env_value = get_env_value(var_name, envcp); // On garde les espaces dans le cas de la citation
@@ -54,13 +57,25 @@ char *expand_env_variable(char *str, int *i, char *res, char **envcp, int quoted
     return tmp;
 }
 
-char *replace_variable_or_special(char *str, int *i, char *res, char **envcp, int quoted)
+char *replace_variable_or_special(char *str, int *i, char *res, char **envcp, int is_heredoc)
 {
+    printf("is_heredoc = %d\n", is_heredoc);
     (*i)++; // Skip $
 
     if (!str[*i])
         return append_char(res, '$');
-
+    printf("Processing char after $: '%c'\n", str[*i]);
+    // Si c'est un heredoc, sans guillemet
+    if (is_heredoc && str[*i] != '"')
+    {
+        return expand_env_variable(str, i, res, envcp, is_heredoc);
+    }
+    if (is_heredoc)
+    {
+        printf("Heredoc mode with quotes, no variable expansion\n");
+        return append_char(res, '$');
+    }
+    
     // Cas pour $"" (chaîne vide entre guillemets) → chaîne vide, donc ne rien ajouter
     if (str[*i] == '"' && str[*i + 1] == '"')
     {
@@ -121,7 +136,7 @@ char *replace_variable_or_special(char *str, int *i, char *res, char **envcp, in
     // Cette section gère les variables d'environnement simples, sans délimiteurs spéciaux.
     if (ft_isalpha(str[*i]) || str[*i] == '_')
     {
-        return expand_env_variable(str, i, res, envcp, quoted);
+        return expand_env_variable(str, i, res, envcp, is_heredoc);
     }
 
     // Cas où on a un égal : $=HOME, ce n'est pas une expansion de variable, on garde le $
@@ -308,7 +323,7 @@ char *replace_all_variables(char *str, char **envcp)
     return res;
 }*/
 
-char *replace_all_variables(char *str, char **envcp, int avoid_expand)
+char *replace_all_variables(char *str, char **envcp, int is_heredoc)
 {
     int i = 0;
     char *res = ft_strdup("");
@@ -321,6 +336,7 @@ char *replace_all_variables(char *str, char **envcp, int avoid_expand)
 
     while (str[i])
     {
+        printf("Processing char: '%c'\n", str[i]);
         // Cas \ pour ignorer $
         if (str[i] == '\\' && str[i + 1] == '$')
         {
@@ -342,7 +358,8 @@ char *replace_all_variables(char *str, char **envcp, int avoid_expand)
             res = append_char(res, str[i++]);
         }
         // Cas où $ doit être expansé
-        else if (str[i] == '$' && !in_single_quote && !avoid_expand)
+        // Si on est dans un heredoc, on évite l'expansion des variables
+        else if (str[i] == '$' && !in_single_quote && !is_heredoc)
         {
             quoted = in_double_quote;
             res = replace_variable_or_special(str, &i, res, envcp, quoted);
@@ -352,22 +369,23 @@ char *replace_all_variables(char *str, char **envcp, int avoid_expand)
             res = append_char(res, str[i++]);
         }
     }
-
+    printf("Final expanded string: '%s'\n", res);
     return res;
 }
 
 // Fonction pour remplacer toutes les variables d'environnement dans un tableau d'arguments
-void expand_variables(char **args, char **envcp)
+void expand_variables(char **args, char **envcp, int is_heredoc)
 {
     int i = 0;
     int j = 0;
     char *tmp;
     char *res;
     char *new_args[1024]; // à adapter
-
+    
     while (args[i])
     {
-        tmp = replace_all_variables(args[i], envcp, 0);
+        tmp = replace_all_variables(args[i], envcp, is_heredoc);
+        printf("Expanded argument: '%s'\n", tmp); 
         // printf("Expanded argument: %s\n", tmp);  // Afficher l'argument après expansion
         if (!tmp)
         {

@@ -30,11 +30,13 @@ int main(int ac, char **av, char **envp)
 
     while (1)
     {
+        printf("\n==================== NOUVELLE BOUCLE ====================\n");
         set_signal_action();
         g_exit_status = 0;
         input = readline(GREEN "minishell$ " RESET);
         if (!input)
         {
+            printf("DEBUG: readline a retourné NULL, on va quitter\n");
             ft_putstr_fd("exit\n", STDOUT_FILENO);
             exit(g_exit_status);
         }
@@ -48,7 +50,7 @@ int main(int ac, char **av, char **envp)
             free_tokens(tokens);
             continue;
         }
-        command = tokens_to_cmds(tokens);
+        command = tokens_to_cmds(tokens, envcp);
         while (command)
         {
             has_redir_error = 0;
@@ -56,7 +58,7 @@ int main(int ac, char **av, char **envp)
             // Si aucune commande, mais redirection présente
             if (command->command == NULL)
             {
-                if (command->infile || command->outfile || command->errfile)
+                if (command->infile || command->outfile || command->errfile || command->heredoc_fd > 0)
                 {
                     has_redir_error = ft_redirection(command, &mem_fd_in, &mem_fd_out, &mem_fd_err);
                     restore_redirections(mem_fd_in, mem_fd_out, mem_fd_err);
@@ -67,8 +69,11 @@ int main(int ac, char **av, char **envp)
             }
 
             // Appliquer les redirections
-            if (command->infile || command->outfile || command->errfile)
+            if (command->infile || command->outfile || command->errfile || command->heredoc_fd > 0)
+            {
+                printf("redirection detecter\n");
                 has_redir_error = ft_redirection(command, &mem_fd_in, &mem_fd_out, &mem_fd_err);
+            }
 
             if (has_redir_error)
             {
@@ -78,13 +83,17 @@ int main(int ac, char **av, char **envp)
             if (has_pipe(command))
             {
                 exec_pipes(command, &envcp);
+                printf("DEBUG: g_exit_status après exec_pipes = %d\n", g_exit_status);
                 break;
             }
             else
+            {
                 execute(command, &envcp);
+                printf("DEBUG: g_exit_status après execute = %d\n", g_exit_status);
+            }
             // Restauration des redirections
 
-            if ((command->infile || command->outfile || command->errfile) && has_redir_error >= 0)
+            if ((command->infile || command->outfile || command->errfile || command->heredoc_fd > 0) && has_redir_error >= 0)
             {
                 restore_redirections(mem_fd_in, mem_fd_out, mem_fd_err);
                 mem_fd_in = mem_fd_out = mem_fd_err = -1;
