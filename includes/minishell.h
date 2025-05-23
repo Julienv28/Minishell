@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/22 16:27:38 by opique           ###   ########.fr       */
+/*   Updated: 2025/05/23 13:02:50 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,11 +164,7 @@ void exec_pipes(t_com_list *cmds, char ***envcp);
 void execute(t_com_list *cmds, char ***envcp);
 
 // Pipes (revoir les args pour pipex)
-////void complex_pipex(t_com_list *command, int ac, char **args, char **envcp);
-// void pipex_simple(t_com_list *command, char **args, char **envcp);
-// int simplified_gnl(char **line);
 char **split_pipe_respect_quotes(const char *line);
-// void pipes_manager(t_com_list *command, int count, char **args, char **envcp);
 int parse_pipes(char **args);
 
 // Utils

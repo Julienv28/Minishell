@@ -51,7 +51,12 @@ void exec_builting(char **args, char ***envcp)
             ft_env(*envcp);
     }
     else if (ft_strcmp(args[0], "unset") == 0)
-        ft_unset(args, envcp);
+    {
+        if (check_events(args[1]) == 0)
+            ft_unset(args, envcp);
+        else
+            return ;
+    }
     else
     {
         g_exit_status = 1;

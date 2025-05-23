@@ -30,9 +30,6 @@ SRCS        = $(SRC_DIR)/main.c \
 				$(SRC_DIR)/tokenization/check_cmd.c \
 				$(SRC_DIR)/tokenization/arguments.c \
 				$(SRC_DIR)/dollard.c \
-				$(SRC_DIR)/pipes/pipex_full.c \
-				$(SRC_DIR)/pipes/pipex_simple.c \
-				$(SRC_DIR)/pipes/pipex_utils.c \
 				$(SRC_DIR)/commandes/echo.c \
 				$(SRC_DIR)/commandes/cd_and_pwd.c \
 				$(SRC_DIR)/commandes/exit.c \

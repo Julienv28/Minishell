@@ -64,7 +64,7 @@ char *replace_variable_or_special(char *str, int *i, char *res, char **envcp, in
 
     if (!str[*i])
         return append_char(res, '$');
-    printf("Processing char after $: '%c'\n", str[*i]);
+    // printf("Processing char after $: '%c'\n", str[*i]);
     // Si c'est un heredoc, sans guillemet
     if (is_heredoc && str[*i] != '"')
     {
@@ -73,7 +73,7 @@ char *replace_variable_or_special(char *str, int *i, char *res, char **envcp, in
     if (is_heredoc)
     {
         printf("Heredoc mode with quotes, no variable expansion\n");
-        return append_char(res, '$');
+        // return append_char(res, '$');
     }
     
     // Cas pour $"" (chaîne vide entre guillemets) → chaîne vide, donc ne rien ajouter
@@ -135,9 +135,7 @@ char *replace_variable_or_special(char *str, int *i, char *res, char **envcp, in
     // Cas pour $HOME, $USER, etc.
     // Cette section gère les variables d'environnement simples, sans délimiteurs spéciaux.
     if (ft_isalpha(str[*i]) || str[*i] == '_')
-    {
         return expand_env_variable(str, i, res, envcp, is_heredoc);
-    }
 
     // Cas où on a un égal : $=HOME, ce n'est pas une expansion de variable, on garde le $
     if (str[*i] == '=')
@@ -336,7 +334,7 @@ char *replace_all_variables(char *str, char **envcp, int is_heredoc)
 
     while (str[i])
     {
-        printf("Processing char: '%c'\n", str[i]);
+        // printf("Processing char: '%c'\n", str[i]);
         // Cas \ pour ignorer $
         if (str[i] == '\\' && str[i + 1] == '$')
         {
@@ -385,7 +383,6 @@ void expand_variables(char **args, char **envcp, int is_heredoc)
     while (args[i])
     {
         tmp = replace_all_variables(args[i], envcp, is_heredoc);
-        printf("Expanded argument: '%s'\n", tmp); 
         // printf("Expanded argument: %s\n", tmp);  // Afficher l'argument après expansion
         if (!tmp)
         {
