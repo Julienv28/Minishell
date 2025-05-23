@@ -8,7 +8,7 @@ char *append_char(char *res, char c)
 
     current[0] = c;
     current[1] = '\0';
-    printf("Appending char: '%c'\n", c);
+    // printf("Appending char: '%c'\n", c);
     tmp = ft_strjoin(res, current);
     free(res);
     return tmp;
@@ -321,33 +321,31 @@ char *replace_all_variables(char *str, char **envcp)
     return res;
 }*/
 
-char *replace_all_variables(char *str, char **envcp, int is_heredoc)
+char	*replace_all_variables(char *str, char **envcp, int is_heredoc)
 {
-    int i = 0;
-    char *res = ft_strdup("");
-    int in_single_quote = 0;
-    int in_double_quote = 0;
-    int quoted = 0;
+	int		i = 0;
+	char	*res = ft_strdup("");
+	int		in_single_quote = 0;
+	int		in_double_quote = 0;
+	int		quoted = 0;
 
-    if (!res || !str)
-        return NULL;
-
-    while (str[i])
-    {
-        // printf("Processing char: '%c'\n", str[i]);
-        // Cas \ pour ignorer $
-        if (str[i] == '\\' && str[i + 1] == '$')
-        {
-            res = append_char(res, '$');
-            i += 2;
-            continue;
-        }
-
+	if (!res || !str)
+		return (NULL);
+	while (str[i])
+	{
+		// printf("Processing char: '%c'\n", str[i]);
+		// Cas \ pour ignorer $
+		if (str[i] == '\\' && str[i + 1] == '$')
+		{
+			res = append_char(res, '$');
+			i += 2;
+			continue ;
+		}
         // Gestion des quotes simples
-        if (str[i] == '\'' && !in_double_quote)
-        {
-            in_single_quote = !in_single_quote;
-            res = append_char(res, str[i++]);
+		if (str[i] == '\'' && !in_double_quote)
+		{
+			in_single_quote = !in_single_quote;
+			res = append_char(res, str[i++]);
         }
         // Gestion des quotes doubles
         else if (str[i] == '"' && !in_single_quote)

@@ -1,60 +1,72 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   command.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/23 16:08:55 by juvitry           #+#    #+#             */
+/*   Updated: 2025/05/23 16:16:29 by juvitry          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 // ANALYSE DES COMMANDES
 
 // Concaténer deux chaînes de caractères (une CMD et un nouvel ARG)
-char *concat_command(char *current_command, char *new_part)
+char	*concat_command(char *current_command, char *new_part)
 {
-    char *new_command;
-    int len_current;
-    int len_new;
+	char	*new_command;
+	int		len_current;
+	int		len_new;
 
-    if (current_command)
-        len_current = ft_strlen(current_command);
-    else
-        len_current = 0;
-    len_new = ft_strlen(new_part);
-
-    new_command = malloc(len_current + len_new + 2); // +2 pour l'espace et '\0'
-    if (new_command == NULL)
-        return (NULL);
+	if (current_command)
+		len_current = ft_strlen(current_command);
+	else
+		len_current = 0;
+	len_new = ft_strlen(new_part);
+	new_command = malloc(len_current + len_new + 2); // +2 pour l'espace et '\0'
+	if (new_command == NULL)
+		return (NULL);
     // Copier l'ancienne commande si elle existe
-    if (current_command)
-    {
-        ft_strcpy(new_command, current_command);
-        ft_strcat(new_command, " "); // Ajoute un espace entre les commandes
-    }
-    else
-        new_command[0] = '\0'; // Initialiser à une chaîne vide si `current_command` est NULL
-
-    ft_strcat(new_command, new_part); // Ajouter le nouvel element
-    free(current_command);
-    return (new_command);
+	if (current_command)
+	{
+		ft_strcpy(new_command, current_command);
+		ft_strcat(new_command, " "); // Ajoute un espace entre les commandes
+	}
+	else
+		new_command[0] = '\0'; // Initialiser à une chaîne vide si `current_command` est NULL
+	ft_strcat(new_command, new_part); // Ajouter le nouvel element
+	free(current_command);
+	return (new_command);
 }
 
-void free_file_list(t_file_list *list)
+void	free_file_list(t_file_list *list)
 {
-    t_file_list *tmp;
+	t_file_list	*tmp;
 
-    while (list)
-    {
-        tmp = list;
-        list = list->next;
-        if (tmp->filename)
-            free(tmp->filename);
-        free(tmp);
-    }
+	while (list)
+	{
+		tmp = list;
+		list = list->next;
+		if (tmp->filename)
+			free(tmp->filename);
+		free(tmp);
+	}
 }
 
-int limiter_is_quoted(const char *str)
+int	limiter_is_quoted(const char *str)
 {
-    int len;
-    if (!str)
-        return 0;
-    len = ft_strlen(str);
-    if ((str[0] == '"' && str[len - 1] == '"') || (str[0] == '\'' && str[len - 1] == '\''))
-        return (0);
-    return (1);
+	int	len;
+
+	if (!str)
+		return (0);
+	len = ft_strlen(str);
+	if ((str[0] == '"' && str[len - 1] == '"')
+		|| (str[0] == '\'' && str[len - 1] == '\''))
+		return (1);
+	return (0);
 }
 /*
 int handle_heredoc(char *limiter,char **envcp)
@@ -119,7 +131,7 @@ int handle_heredoc(char *limiter, char **envcp)
         is_heredoc = 0;  // pas quoted → expansion des variables
 
     // Expand + clean le limiter
-    expanded_limiter = replace_all_variables(limiter, envcp, 0);  // is_heredoc = 0 pour expansion complète
+    expanded_limiter = replace_all_variables(limiter, envcp, is_heredoc);  // is_heredoc = 0 pour expansion complète
     cleaned_limiter = remove_quotes_or_slash(expanded_limiter);
     if (!cleaned_limiter)
     cleaned_limiter = ft_strdup("");
@@ -135,26 +147,21 @@ int handle_heredoc(char *limiter, char **envcp)
     printf("detection HEREDOC\n");
     printf("filename = %s\n", cleaned_limiter);
     printf("limiteur quote = %s et heredoc = %d\n", limiter, is_heredoc);
-
     while (1)
     {
         line = readline("> ");
         if (!line)
             break;
-
         printf("DEBUG: readline retourné: \"%s\"\n", line);
         printf("DEBUG: line=\"%s\" (%zu chars), limiter=\"%s\" (%zu chars)\n",
                line, ft_strlen(line),
                cleaned_limiter, ft_strlen(cleaned_limiter));
-
         // Fin du heredoc ?
         if (ft_strcmp(line, cleaned_limiter) == 0)
         {
             free(line);
             break;
         }
-
-
         expanded_line = replace_all_variables(line, envcp, is_heredoc);
         printf("before expanded = %s\n", line);
         printf("after expanded = %s\n", expanded_line);
@@ -165,13 +172,12 @@ int handle_heredoc(char *limiter, char **envcp)
         free(line);
         free(expanded_line);
     }
-
     free(cleaned_limiter);
     close(pipefd[1]);
     return pipefd[0];
 }
 
-t_com_list *tokens_to_cmds(t_token *tokens, char **envcp)
+t_com_list	*tokens_to_cmds(t_token *tokens, char **envcp)
 {
     t_com_list *cmd_list = NULL;
     t_com_list *current_cmd = NULL;
@@ -188,43 +194,45 @@ t_com_list *tokens_to_cmds(t_token *tokens, char **envcp)
     t_file_list *pending_all_outfiles = NULL;
     int fd;
 
-    while (tmp)
-    {
-        // Affiche la valeur du token pour débogage
-        if (tmp->type == CMD)
-        {
-            if (!tmp->value) // Vérifie si la valeur du token est NULL
-            {
-                fprintf(stderr, "Erreur : token CMD avec valeur NULL\n");
-                tmp = tmp->next;
-                continue;
-            }
-            new_cmd = list_new(tmp->value);
-            if (pending_outfile)
-            {
-                new_cmd->outfile = pending_outfile;
-                new_cmd->flag_out = pending_flag_out;
-                add_outfile(&new_cmd->all_outfilles, pending_outfile, pending_flag_out);
-                pending_outfile = NULL;
-                pending_flag_out = -1;
-            }
-
-            if (pending_infile)
-            {
-                new_cmd->infile = pending_infile;
-                new_cmd->flag_in = pending_flag_in;
-                pending_infile = NULL;
-                pending_flag_in = -1;
-            }
-
-            if (!cmd_list)
-                cmd_list = new_cmd;
-            else
-                add_bottom(&cmd_list, new_cmd);
-            current_cmd = new_cmd;
-        }
-        else if (tmp->type == ARG && current_cmd)
-            current_cmd->command = concat_command(current_cmd->command, tmp->value);
+	while (tmp)
+	{
+		// Affiche la valeur du token pour débogage
+		if (tmp->type == CMD)
+		{
+			if (!tmp->value) // Vérifie si la valeur du token est NULL
+			{
+				fprintf(stderr, "Erreur : token CMD avec valeur NULL\n");
+				tmp = tmp->next;
+				continue ;
+			}
+			new_cmd = list_new(tmp->value);
+			if (pending_outfile)
+			{
+				new_cmd->outfile = pending_outfile;
+				new_cmd->flag_out = pending_flag_out;
+				add_outfile(&new_cmd->all_outfilles, pending_outfile, pending_flag_out);
+				pending_outfile = NULL;
+				pending_flag_out = -1;
+			}
+			if (pending_infile)
+			{
+				new_cmd->infile = pending_infile;
+				new_cmd->flag_in = pending_flag_in;
+				pending_infile = NULL;
+				pending_flag_in = -1;
+			}
+			if (!cmd_list)
+				cmd_list = new_cmd;
+			else
+				add_bottom(&cmd_list, new_cmd);
+			current_cmd = new_cmd;
+		}
+		else if (tmp->type == ARG && current_cmd)
+		{
+			char	*expanded = replace_all_variables(tmp->value, envcp, 0);
+			current_cmd->command = concat_command(current_cmd->command, expanded);
+			free (expanded);
+		}
         else if (tmp->type == PIPE)
         {
             if (current_cmd)
@@ -364,6 +372,7 @@ t_com_list *tokens_to_cmds(t_token *tokens, char **envcp)
             new_cmd->outfile = pending_outfile;
             new_cmd->flag_out = pending_flag_out;
             new_cmd->all_outfilles = pending_all_outfiles;
+			new_cmd->heredoc_fd = -1;
             // add_outfile(&new_cmd->all_outfilles, pending_outfile, pending_flag_out);
         }
         if (pending_infile)
@@ -382,8 +391,14 @@ t_com_list *tokens_to_cmds(t_token *tokens, char **envcp)
     return (cmd_list);
 }
 
-int is_builting(char *cmd)
+int	is_builting(char *cmd)
 {
-    return (
-        ft_strcmp(cmd, "exit") == 0 || ft_strcmp(cmd, "cd") == 0 || ft_strcmp(cmd, "pwd") == 0 || ft_strcmp(cmd, "echo") == 0 || ft_strcmp(cmd, "env") == 0 || ft_strcmp(cmd, "export") == 0 || ft_strcmp(cmd, "unset") == 0);
+	return (
+		ft_strcmp(cmd, "exit") == 0
+		|| ft_strcmp(cmd, "cd") == 0
+		|| ft_strcmp(cmd, "pwd") == 0
+		|| ft_strcmp(cmd, "echo") == 0
+		|| ft_strcmp(cmd, "env") == 0
+		|| ft_strcmp(cmd, "export") == 0
+		|| ft_strcmp(cmd, "unset") == 0);
 }
