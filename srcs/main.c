@@ -87,7 +87,7 @@ int main(int ac, char **av, char **envp)
             }
             if (has_pipe(command))
             {
-                exec_pipes(command, &envcp);
+                exec_pipes(command, envcp);
                 printf("DEBUG: g_exit_status après exec_pipes = %d\n", g_exit_status);
                 break;
             }
