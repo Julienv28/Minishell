@@ -12,23 +12,24 @@
 
 #include "libft.h"
 
-char *ft_strndup(char *src, size_t n)
+char	*ft_strndup(char *src, size_t n)
 {
-    char *str;
-    size_t i;
-    size_t len = 0;
+	char	*str;
+	size_t	i;
+	size_t	len;
 
-    while (src[len] && len < n)
-        len++;
-    str = malloc(len + 1);
-    if (!str)
-        return (NULL);
-    i = 0;
-    while (i < len)
-    {
-        str[i] = src[i];
-        i++;
-    }
-    str[len] = '\0';
-    return (str);
+	len = 0;
+	while (src[len] && len < n)
+		len++;
+	str = malloc(len + 1);
+	if (!str)
+		return (NULL);
+	i = 0;
+	while (i < len)
+	{
+		str[i] = src[i];
+		i++;
+	}
+	str[len] = '\0';
+	return (str);
 }

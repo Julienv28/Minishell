@@ -3,25 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strcpy.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 17:26:11 by juvitry           #+#    #+#             */
-/*   Updated: 2025/03/28 13:18:30 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/05/26 12:06:35 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char *ft_strcpy(char *s1, char *s2)
+char	*ft_strcpy(char *s1, char *s2)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    while (s2[i])
-    {
-        s1[i] = s2[i];
-        i++;
-    }
-    s1[i] = '\0';
-    return (s1);
+	i = 0;
+	while (s2[i])
+	{
+		s1[i] = s2[i];
+		i++;
+	}
+	s1[i] = '\0';
+	return (s1);
 }
