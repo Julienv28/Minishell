@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 10:45:02 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/26 13:15:56 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/05/26 15:12:34 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,11 @@ void execute(t_com_list *cmds, char ***envcp)
         free_tab(args);
         return;
     }
-    printf("command expand %s\n", cmds->command);
+    // printf("command expand %s\n", cmds->command);
     if (is_builting(args[0]) && ft_strcmp(args[0], "exit") == 0)
     {
         ft_exit(args, 0);
-        //exec_builting(args, envcp);
+        // exec_builting(args, envcp);
     }
     else if (is_builting(args[0]))
     {
@@ -53,15 +53,37 @@ void execute(t_com_list *cmds, char ***envcp)
         }
         else // Parent
         {
-			int status;
-			waitpid(pid, &status, 0);
-			if (WIFEXITED(status))
-				g_exit_status = WEXITSTATUS(status);
-			else if (WIFSIGNALED(status))
-				g_exit_status = 128 + WTERMSIG(status);
-		}
-	}
-	free_tab(args);
+            int status;
+
+            // Ignorer SIGTSTP dans les processus enfants
+            signal(SIGTSTP, SIG_IGN);
+
+            // Le parent ignore temporairement les signaux pendant que l'enfant s'exécute
+            signal(SIGINT, SIG_IGN);
+            signal(SIGQUIT, SIG_IGN);
+
+            waitpid(pid, &status, 0);
+
+            // Réactiver les handlers après l'exécution de l'enfant
+            signal(SIGINT, handler_sigint);
+            signal(SIGQUIT, SIG_IGN);
+
+            if (WIFEXITED(status))
+            {
+                g_exit_status = WEXITSTATUS(status);
+                // printf("DEBUG: g_exit_status après execute = %d\n", g_exit_status);
+            }
+            else if (WIFSIGNALED(status))
+            {
+                g_exit_status = 128 + WTERMSIG(status);
+                if (WTERMSIG(status) == SIGINT)
+                    write(1, "\n", 1); // pour garder comportement visuel de bash
+                else if (WTERMSIG(status) == SIGQUIT)
+                    write(1, "Quit (core dumped)\n", 20);
+            }
+        }
+    }
+    free_tab(args);
 }
 
 static void	wait_children(void)
@@ -227,6 +249,11 @@ void	exec_pipes(t_com_list *cmds, char **envcp)
 		}
 		if (pid == 0) // ---CHILD---
 		{
+			// Ignorer SIGTSTP dans les processus enfants
+            signal(SIGTSTP, SIG_IGN);
+            // Processus enfant : rétablir comportement par défaut pour SIGINT et SIGQUIT
+            signal(SIGINT, SIG_DFL);
+            signal(SIGQUIT, SIG_DFL);
 			if (prev_fd != -1)
 			{
 				dup2(prev_fd, STDIN_FILENO);
@@ -252,6 +279,8 @@ void	exec_pipes(t_com_list *cmds, char **envcp)
 			exit(g_exit_status);
 		}
 		//---PARENT---
+		signal(SIGINT, SIG_IGN);
+		signal(SIGQUIT, SIG_IGN);
 		if (prev_fd != -1)
 			close (prev_fd);
 		if (curr->next)
@@ -268,4 +297,6 @@ void	exec_pipes(t_com_list *cmds, char **envcp)
 		curr = curr->next;
 	}
 	wait_children();
+	signal(SIGINT, handler_sigint);
+	signal(SIGQUIT, SIG_IGN);
 }

@@ -2,15 +2,15 @@
 
 int g_exit_status = 0;
 
-int has_pipe(t_com_list *command)
+int	has_pipe(t_com_list *command)
 {
-    while (command)
-    {
-        if (command->is_pipe)
-            return (1);
-        command = command->next;
-    }
-    return (0);
+	while (command)
+	{
+		if (command->is_pipe)
+			return (1);
+		command = command->next;
+	}
+	return (0);
 }
 
 int main(int ac, char **av, char **envp)
@@ -27,12 +27,17 @@ int main(int ac, char **av, char **envp)
     (void)av;
 
     envcp = ft_env_dup(envp);
+    // Ignorer SIGTSTP (signal envoyé par Ctrl+Z) dans le shell principal
+    signal(SIGTSTP, SIG_IGN);
 
+    // Signaux pour readline
+    signal(SIGINT, handler_sigint); // pour readline seulement
+    signal(SIGQUIT, SIG_IGN);       // on ignore Ctrl+
     while (1)
     {
-        printf("\n==================== NOUVELLE BOUCLE ====================\n");
         set_signal_action();
-        g_exit_status = 0;
+        // printf("\n==================== NOUVELLE BOUCLE ====================\n");
+
         input = readline(GREEN "minishell$ " RESET);
         if (!input)
         {
@@ -82,14 +87,14 @@ int main(int ac, char **av, char **envp)
             }
             if (has_pipe(command))
             {
-                exec_pipes(command, envcp);
+                exec_pipes(command, &envcp);
                 printf("DEBUG: g_exit_status après exec_pipes = %d\n", g_exit_status);
                 break;
             }
             else
             {
                 execute(command, &envcp);
-                printf("DEBUG: g_exit_status après execute = %d\n", g_exit_status);
+                // printf("DEBUG: g_exit_status après execute = %d\n", g_exit_status);
             }
             // Restauration des redirections
 
