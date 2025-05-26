@@ -87,9 +87,11 @@ int main(int ac, char **av, char **envp)
             }
             if (has_pipe(command))
             {
-                exec_pipes(command, envcp);
+				exec_pipes(command, envcp);
+				restore_redirections(mem_fd_in, mem_fd_out, mem_fd_err);
+				mem_fd_in = mem_fd_out = mem_fd_err = -1;
                 printf("DEBUG: g_exit_status après exec_pipes = %d\n", g_exit_status);
-                break;
+				break ;
             }
             else
             {
