@@ -13,11 +13,15 @@ LIBFT = $(addprefix $(LIBFT_DIR)/, $(LIBFT_FILE))
 
 #=== Compiler & Flags
 CC          = gcc
-CFLAGS      = -Wall -Wextra -Werror -I $(INC_DIR) -I $(LIBFT_DIR) -I$(shell brew --prefix readline)/include
-LDFLAGS     = -L$(shell brew --prefix readline)/lib -lreadline -L$(LIBFT_DIR) -lft
+
+READLINE_INCLUDE = /usr/include
+READLINE_LIB = /usr/lib
+
+CFLAGS      = -Wall -Wextra -Werror -I $(INC_DIR) -I $(LIBFT_DIR) -I$(READLINE_INCLUDE)
+LDFLAGS     = -L$(READLINE_LIB) -lreadline -L$(LIBFT_DIR) -lft
 
 #=== Source Files ===
-SRCS        = $(SRC_DIR)/main.c \
+SRCS        = 	$(SRC_DIR)/main.c \
 				$(SRC_DIR)/pipes_manager.c \
 				$(SRC_DIR)/initialisation_args.c \
 				$(SRC_DIR)/split_args.c \
@@ -42,16 +46,12 @@ SRCS        = $(SRC_DIR)/main.c \
 				$(SRC_DIR)/split_pipes.c
 
 #=== Object Files ===
-OBJ = ${SRCS:.c=.o}
-OBJS = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
+OBJS = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
 #=== Compilation Rules ===
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
-
-$(OBJ_DIR):
-	mkdir -p $(OBJ_DIR)
 
 #=== Build Targets ===
 

@@ -3,38 +3,38 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 09:58:13 by juvitry           #+#    #+#             */
-/*   Updated: 2025/04/23 12:20:39 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/05/26 12:09:42 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int ft_totlen(const char *s1, const char *s2)
+static int	ft_totlen(const char *s1, const char *s2)
 {
-    int a;
-    int b;
-    int c;
+	int	a;
+	int	b;
+	int	c;
 
-    a = ft_strlen(s1);
-    b = ft_strlen(s2);
-    c = a + b;
-    return (c);
+	a = ft_strlen(s1);
+	b = ft_strlen(s2);
+	c = a + b;
+	return (c);
 }
 
-char *ft_strjoin(const char *s1, const char *s2)
+char	*ft_strjoin(const char *s1, const char *s2)
 {
-    char *result;
+	char	*result;
 
-    result = malloc(sizeof(char) * ft_totlen(s1, s2) + 1);
-    if (!result)
-        return (NULL);
-    *result = 0;
-    ft_strcat(result, (char *)s1);
-    ft_strcat(result, (char *)s2);
-    return (result);
+	result = malloc(sizeof(char) * ft_totlen(s1, s2) + 1);
+	if (!result)
+		return (NULL);
+	*result = 0;
+	ft_strcat(result, (char *)s1);
+	ft_strcat(result, (char *)s2);
+	return (result);
 }
 
 /*#include <stdio.h>

@@ -3,34 +3,32 @@
 /*                                                        :::      ::::::::   */
 /*   ft_memchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 11:07:12 by juvitry           #+#    #+#             */
-/*   Updated: 2025/03/26 14:16:35 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/05/26 12:00:58 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <string.h>
 
-void *ft_memchr(const void *s, int c, size_t n)
+void	*ft_memchr(const void *s, int c, size_t n)
 {
-    unsigned char *p;
-    unsigned char *find;
-    // int				i;
+	unsigned char	*p;
+	unsigned char	*find;
 
-    p = (unsigned char *)s;
-    find = 0;
-    // i = 0;
-    while (s && (n--))
-    {
-        if (*p == (unsigned char)c)
-        {
-            find = p;
-            break;
-        }
-        p++;
-    }
-    return (find);
+	p = (unsigned char *)s;
+	find = 0;
+	while (s && (n--))
+	{
+		if (*p == (unsigned char)c)
+		{
+			find = p;
+			break ;
+		}
+		p++;
+	}
+	return (find);
 }
 
 /*#include <stdio.h>

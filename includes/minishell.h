@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/23 13:02:50 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/05/26 13:15:16 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,7 +160,7 @@ void exec_builting(char **args, char ***envcp);
 char *get_path(char *cmd, char **envp);
 int find_line(char **envp, char *path);
 char *search_path(char **paths, char *cmd);
-void exec_pipes(t_com_list *cmds, char ***envcp);
+void exec_pipes(t_com_list *cmds, char **envcp);
 void execute(t_com_list *cmds, char ***envcp);
 
 // Pipes (revoir les args pour pipex)

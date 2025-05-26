@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 17:23:35 by juvitry           #+#    #+#             */
-/*   Updated: 2025/03/26 12:34:43 by opique           ###   ########.fr       */
+/*   Updated: 2025/05/26 12:05:56 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,18 @@
 
 int	ft_strcmp(const char *s1, const char *s2)
 {
-    int i = 0;
-    int res;
+	int	i;
+	int	res;
 
-    while (s1[i] || s2[i])
-    {
-        if (s1[i] != s2[i])
-        {
-            res = s1[i] - s2[i];
-            return (res);
-        }
-        i++;
-    }
-    return (0);
+	i = 0;
+	while (s1[i] || s2[i])
+	{
+		if (s1[i] != s2[i])
+		{
+			res = s1[i] - s2[i];
+			return (res);
+		}
+		i++;
+	}
+	return (0);
 }
