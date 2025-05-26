@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/26 13:15:16 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/05/26 15:07:11 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,7 @@ t_com_list *list_new(char *command);
 int handle_redirection(char *str, int *i, t_token **tokens, char **envcp);
 int prompt_for_quotes(char **str);
 int is_directory(char *path);
+void handler_sigint(int sig);
 
 // check
 int check_pipe(char *str, int i);

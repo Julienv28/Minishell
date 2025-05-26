@@ -1,13 +1,13 @@
 #include "../includes/minishell.h"
 
-int count_ags(char **args)
+int	count_ags(char **args)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    while (args[i])
-        i++;
-    return (i);
+	i = 0;
+	while (args[i])
+		i++;
+	return (i);
 }
 
 void exec_builting(char **args, char ***envcp)
@@ -15,7 +15,7 @@ void exec_builting(char **args, char ***envcp)
     // int i;
 
     if (ft_strcmp(args[0], "exit") == 0)
-        ft_exit(args, 1); // 
+        ft_exit(args, 1); //
     else if (ft_strcmp(args[0], "cd") == 0)
         ft_cd(args, envcp);
     else if (ft_strcmp(args[0], "pwd") == 0)
@@ -55,7 +55,7 @@ void exec_builting(char **args, char ***envcp)
         if (check_events(args[1]) == 0)
             ft_unset(args, envcp);
         else
-            return ;
+            return;
     }
     else
     {
@@ -64,60 +64,64 @@ void exec_builting(char **args, char ***envcp)
     }
 }
 
-int is_valid_n_flag(const char *str)
+int	is_valid_n_flag(const char *str)
 {
-    int i = 1;
+	int	i;
 
-    if (str[0] != '-' || str[1] != 'n')
-        return 0;
-
-    while (str[i])
-    {
-        if (str[i] != 'n')
-            return 0;
-        i++;
-    }
-    return 1;
+	i = 1;
+	if (str[0] != '-' || str[1] != 'n')
+		return (0);
+	while (str[i])
+	{
+		if (str[i] != 'n')
+			return (0);
+		i++;
+	}
+	return (1);
 }
 
-char *search_path(char **paths, char *cmd)
+char	*search_path(char **paths, char *cmd)
 {
-    int i;
-    char *path;
-    char *part_path;
+	int		i;
+	char	*path;
+	char	*part_path;
 
-    i = 0;
-    while (paths[i])
-    {
-        part_path = ft_strjoin(paths[i], "/");
-        path = ft_strjoin(part_path, cmd);
-        free(part_path);
-        if (access(path, F_OK) == 0)
-            return (path);
-        free(path);
-        i++;
-    }
-    return (0);
+	i = 0;
+	while (paths[i])
+	{
+		part_path = ft_strjoin(paths[i], "/");
+		path = ft_strjoin(part_path, cmd);
+		free(part_path);
+		if (access(path, F_OK) == 0)
+			return (path);
+		free(path);
+		i++;
+	}
+	return (0);
 }
 
-int find_line(char **envp, char *path)
+int	find_line(char **envp, char *path)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    while (envp[i] && ft_strncmp(path, envp[i], ft_strlen(path)) != 0)
-        i++;
-    return (i);
+	i = 0;
+	while (envp[i] && ft_strncmp(path, envp[i], ft_strlen(path)) != 0)
+		i++;
+	return (i);
 }
 
 // determine si un chemin passé a path est un repertoire ou non
 //  S_ISDIR = Macro pour savoir si c'est un repertoire
-int is_directory(char *path)
+// utilisation structure stat pour stocker les infos d'un repertoire
+// Passer le chemin et un ptr ver la structure pour remplir les infos
+// Si chemin trouver c'est un repertoire
+int	is_directory(char *path)
 {
-    struct stat sb;                                  // utilisation structure stat pour stocker les infos d'un repertoire
-    if (stat(path, &sb) == 0 && S_ISDIR(sb.st_mode)) // Passer le chemin et un ptr ver la structure pour remplir les infos
-        return (1);                                  // Si chemin trouver c'est un repertoire
-    return (0);
+	struct stat	sb;
+
+	if (stat(path, &sb) == 0 && S_ISDIR(sb.st_mode))
+		return (1);
+	return (0);
 }
 
 char *get_path(char *cmd, char **envp)
@@ -185,31 +189,31 @@ char *get_path(char *cmd, char **envp)
     return (path);
 }
 
-void exec_cmd(char **args, char ***envcp)
+void	exec_cmd(char **args, char ***envcp)
 {
-    char *path;
+	char	*path;
 
-    path = get_path(args[0], *envcp);
-
+	path = get_path(args[0], *envcp);
     // printf("path = %s\n", path);
-    if (path == NULL)
-    {
-        ft_putstr_fd("minishell: ", STDERR_FILENO);
-        ft_putstr_fd(args[0], STDERR_FILENO);
-        ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
-        g_exit_status = 127;
-        exit(127);
-    }
-    // Dans exec_cmd
-    if (execve(path, args, *envcp) == -1)
-    {
-        perror("minishell");
-        free(path);
-        exit(127);
-    }
-
-    execve(path, args, *envcp);
-    perror("execve failed");
-    free(path);
-    exit(1);
+	if (path == NULL)
+	{
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		ft_putstr_fd(args[0], STDERR_FILENO);
+		ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+		g_exit_status = 127;
+		exit(127);
+	}
+	// Rétablir comportement par défaut dans l'enfant
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+	if (execve(path, args, *envcp) == -1)
+	{
+		perror("minishell");
+		free(path);
+		exit(127);
+	}
+	execve(path, args, *envcp);
+	perror("execve failed");
+	free(path);
+	exit(1);
 }
