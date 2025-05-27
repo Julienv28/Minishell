@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 16:08:55 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/23 16:16:29 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/05/27 12:30:49 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -387,6 +387,16 @@ t_com_list	*tokens_to_cmds(t_token *tokens, char **envcp)
             cmd_list = new_cmd;
         else
             add_bottom(&cmd_list, new_cmd);
+    }
+    t_com_list  *iter = cmd_list;
+    while (iter)
+    {
+        if (iter->args && iter->args[0])
+        {
+            free(iter->command);
+            iter->command = ft_strdup(iter->args[0]);
+        }
+        iter = iter->next;
     }
     return (cmd_list);
 }
