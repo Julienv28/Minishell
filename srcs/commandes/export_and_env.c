@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:36 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/27 14:21:36 by opique           ###   ########.fr       */
+/*   Updated: 2025/05/27 16:18:36 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,12 +61,13 @@ void ft_set_env(char *key, char *value, char ***envcp)
     *envcp = new_env;
 }
 
-void ft_export(char **args, char ***envcp)
+int ft_export(char **args, char ***envcp)
 {
     char *key;
     char *value;
     char *equal_sign;
     char *replaced;
+    int exit_status = 0;
     int i;
     int j;
 
@@ -91,7 +92,7 @@ void ft_export(char **args, char ***envcp)
                 printf("\n");
             i++;
         }
-        return;
+        return (0);
     }
     i = 1;
     while (args[i])
@@ -106,6 +107,7 @@ void ft_export(char **args, char ***envcp)
         {
             ft_putstr_fd("export: `': not a valid identifier\n", STDERR_FILENO);
             free(replaced);
+            exit_status = 1;
             i++;
             continue;
         }
@@ -113,6 +115,7 @@ void ft_export(char **args, char ***envcp)
         {
             printf("bash: export: -%c: invalid option\n", replaced[1]);
             free(replaced);
+            exit_status = 2;
             i++;
             continue;
         }
@@ -132,6 +135,7 @@ void ft_export(char **args, char ***envcp)
             ft_putstr_fd("export: `", STDERR_FILENO);
             ft_putstr_fd(replaced, STDERR_FILENO);
             ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
+            exit_status = 1;
             free(key);
             free(replaced);
             i++;
@@ -147,6 +151,7 @@ void ft_export(char **args, char ***envcp)
         free(replaced);
         i++;
     }
+    return (exit_status);
 }
 
 void ft_env(char **envcp)

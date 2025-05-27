@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/27 13:37:58 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/05/27 16:33:35 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,22 +141,22 @@ int ft_isnumber(char *str);
 
 // Commandes
 void ft_echo(char **args);
-void ft_cd(char **args, char ***envcp);
-void ft_pwd(char **args, char ***envcp);
+int ft_cd(char **args, char ***envcp);
+int ft_pwd(char **args, char ***envcp);
 void ft_exit(char **args, int in_child);
-void ft_export(char **arg, char ***envcp);
+int ft_export(char **arg, char ***envcp);
 char *get_env_value(char *name, char **envp);
 char *get_value_cleaned(char *name, char **envp);
 void ft_set_env(char *key, char *value, char ***envp);
 void ft_env(char **envp);
 int is_valid_name(char *name);
 int is_valid_n_flag(const char *str);
-void ft_unset(char **args, char ***envcp);
+int ft_unset(char **args, char ***envcp);
 
 // Exec
 void exec_cmd(char **args, char ***envcp);
 int is_builting(char *cmd);
-void exec_builting(char **args, char ***envcp);
+int exec_builting(char **args, char ***envcp);
 char *get_path(char *cmd, char **envp);
 int find_line(char **envp, char *path);
 char *search_path(char **paths, char *cmd);
