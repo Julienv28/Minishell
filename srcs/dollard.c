@@ -341,13 +341,15 @@ char	*replace_all_variables(char *str, char **envcp, int is_heredoc)
 		if (str[i] == '\'' && !in_double_quote)
 		{
 			in_single_quote = !in_single_quote;
-			res = append_char(res, str[i++]);
+            i++;
+			continue ;
         }
         // Gestion des quotes doubles
         else if (str[i] == '"' && !in_single_quote)
         {
             in_double_quote = !in_double_quote;
-            res = append_char(res, str[i++]);
+            i++;
+			continue ;
         }
         // Cas où $ doit être expansé
         // Si on est dans un heredoc, on évite l'expansion des variables

@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 10:45:02 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/27 13:42:36 by opique           ###   ########.fr       */
+/*   Updated: 2025/05/27 13:52:38 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ int execute(t_com_list *cmds, char ***envcp)
         if (pid == 0) // Enfant
         {
             exec_cmd(args, envcp);
-			//g_exit_status = 0;
             exit(g_exit_status);
         }
         else // Parent

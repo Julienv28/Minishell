@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 16:08:55 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/23 16:16:29 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/05/27 13:58:01 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,14 +198,22 @@ t_com_list	*tokens_to_cmds(t_token *tokens, char **envcp)
 	{
 		// Affiche la valeur du token pour débogage
 		if (tmp->type == CMD)
-		{
-			if (!tmp->value) // Vérifie si la valeur du token est NULL
-			{
-				fprintf(stderr, "Erreur : token CMD avec valeur NULL\n");
-				tmp = tmp->next;
-				continue ;
-			}
-			new_cmd = list_new(tmp->value);
+        {
+            if (!tmp->value)
+            {
+                fprintf(stderr, "Erreur : token CMD avec valeur NULL\n");
+                tmp = tmp->next;
+                continue;
+            }
+            char *expanded = replace_all_variables(tmp->value, envcp, 0);
+            new_cmd = list_new(expanded);
+            new_cmd->args = malloc(sizeof(char*) * MAX_ARGS);
+            if (!new_cmd->args)
+                return (NULL);
+            new_cmd->args[0] = ft_strdup(expanded);
+            new_cmd->args[1] = NULL;
+            free(expanded);
+            new_cmd->heredoc_fd = -1;
 			if (pending_outfile)
 			{
 				new_cmd->outfile = pending_outfile;
@@ -230,9 +238,13 @@ t_com_list	*tokens_to_cmds(t_token *tokens, char **envcp)
 		else if (tmp->type == ARG && current_cmd)
 		{
 			char	*expanded = replace_all_variables(tmp->value, envcp, 0);
-			current_cmd->command = concat_command(current_cmd->command, expanded);
+            int     i = 0;
+            while (current_cmd->args[i])
+                i++;
+			current_cmd->args[i] = ft_strdup(expanded);
+            current_cmd->args[i+1] = NULL;
 			free (expanded);
-		}
+ 		}
         else if (tmp->type == PIPE)
         {
             if (current_cmd)
@@ -367,6 +379,7 @@ t_com_list	*tokens_to_cmds(t_token *tokens, char **envcp)
     if ((pending_outfile || pending_infile) && !current_cmd)
     {
         new_cmd = list_new(NULL); // Pas de commande
+        new_cmd->heredoc_fd = -1;
         if (pending_outfile)
         {
             new_cmd->outfile = pending_outfile;
@@ -388,6 +401,16 @@ t_com_list	*tokens_to_cmds(t_token *tokens, char **envcp)
         else
             add_bottom(&cmd_list, new_cmd);
     }
+    // t_com_list  *iter = cmd_list;
+    // while (iter)
+    // {
+    //     if (iter->args && iter->args[0])
+    //     {
+    //         free(iter->command);
+    //         iter->command = ft_strdup(iter->args[0]);
+    //     }
+    //     iter = iter->next;
+    // }
     return (cmd_list);
 }
 

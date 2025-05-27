@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/27 12:16:55 by opique           ###   ########.fr       */
+/*   Updated: 2025/05/27 13:37:58 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@
 #include <limits.h>
 #include <signal.h> // gerer les signaux
 
-#define TIMEOUT_ITERATIONS 10000
+#define MAX_ARGS 1024
 
 // Définition des types de tokens
 #define INPUT 1
