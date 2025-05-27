@@ -16,10 +16,14 @@ int handle_redirection(char *str, int *i, t_token **tokens, char **envcp)
     {
         symbol = add_symbol(type);       // Créer le symbole de redirection
         add_token(tokens, symbol, type); // Ajouter le token de redirection
+        
         free(symbol);
 
         if (check_redirection(str, i) == -1)
+        {
+            g_exit_status = 2;
             return (-1);
+        }
 
         // Sauter les espaces entre > et le fichier
         while (str[*i] == ' ')
@@ -191,7 +195,6 @@ int ft_redirection(t_com_list *command, int *mem_fd_in, int *mem_fd_out, int *me
         dup2(fd, STDERR_FILENO);
         close(fd);
     }
-
     return (0);
 }
 

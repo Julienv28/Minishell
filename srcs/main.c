@@ -16,7 +16,6 @@ int	has_pipe(t_com_list *command)
 int main(int ac, char **av, char **envp)
 {
     char *input;
-    // char **args = NULL;
     char **envcp;
     t_token *tokens;
     t_com_list *command;
@@ -48,6 +47,11 @@ int main(int ac, char **av, char **envp)
 
         add_history(input);
         tokens = create_tokens(&input, envcp);
+        if (tokens == NULL)
+        {
+           g_exit_status = 2;
+        }
+        
         free(input);
 
         if (!tokens)
@@ -84,7 +88,7 @@ int main(int ac, char **av, char **envp)
             {
                 command = command->next;
                 continue;
-            }
+             }
             if (has_pipe(command))
             {
 				exec_pipes(command, envcp);
@@ -96,7 +100,7 @@ int main(int ac, char **av, char **envp)
             else
             {
                 execute(command, &envcp);
-                // printf("DEBUG: g_exit_status après execute = %d\n", g_exit_status);
+                printf("DEBUG: g_exit_status après execute = %d\n", g_exit_status);
             }
             // Restauration des redirections
 
