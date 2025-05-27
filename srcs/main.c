@@ -88,7 +88,7 @@ int main(int ac, char **av, char **envp)
             {
                 command = command->next;
                 continue;
-            }
+             }
             if (has_pipe(command))
             {
 				exec_pipes(command, envcp);

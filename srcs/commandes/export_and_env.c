@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:36 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/27 12:27:34 by opique           ###   ########.fr       */
+/*   Updated: 2025/05/27 14:21:36 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,6 @@ void ft_export(char **args, char ***envcp)
             ft_putstr_fd("export: `': not a valid identifier\n", STDERR_FILENO);
             free(replaced);
             i++;
-            g_exit_status = 1;
             continue;
         }
         if (replaced[0] == '-')
@@ -115,7 +114,6 @@ void ft_export(char **args, char ***envcp)
             printf("bash: export: -%c: invalid option\n", replaced[1]);
             free(replaced);
             i++;
-            g_exit_status = 2;
             continue;
         }
         equal_sign = ft_strchr(replaced, '=');
