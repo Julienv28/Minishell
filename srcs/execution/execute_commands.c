@@ -111,7 +111,6 @@ static void	wait_children(pid_t last_pid)
 	}
 	if (WTERMSIG(status) == SIGQUIT)             
 		write(1, "Quit (core dumped)\n", 20);
-			
 }
 
 /*
