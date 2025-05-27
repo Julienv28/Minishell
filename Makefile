@@ -1,4 +1,4 @@
-#=== Project MName ===
+#=== Project Name ===
 NAME        = minishell
 
 #=== Directories ===
@@ -11,7 +11,7 @@ OBJ_DIR		= ./obj
 LIBFT_FILE = libft.a
 LIBFT = $(addprefix $(LIBFT_DIR)/, $(LIBFT_FILE))
 
-#=== Compiler & Flags
+#=== Compiler & Flags ===
 CC          = gcc
 
 READLINE_INCLUDE = /usr/include
