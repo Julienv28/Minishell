@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 10:45:02 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/27 13:52:38 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/05/27 14:42:08 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,15 @@ int execute(t_com_list *cmds, char ***envcp)
 
     if (!cmds)
         return (-1);
-    args = split_args(cmds->command, ' ');
-    if (!args || !args[0])
+    args = cmds->args;
+    if (!args || !args[0] || args[0][0] == '\0')
     {
-        free_tab(args);
-        return (-1);
+        ft_putstr_fd("minishell: ", STDERR_FILENO);
+		ft_putstr_fd(args && args[0] ? args[0] : "", STDERR_FILENO);
+		ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+		g_exit_status = 127;
+		free_tab(args);
+		return (-1);
     }
     // printf("command expand %s\n", cmds->command);
     if (is_builting(args[0]) && ft_strcmp(args[0], "exit") == 0)
@@ -35,7 +39,7 @@ int execute(t_com_list *cmds, char ***envcp)
     else if (is_builting(args[0]))
     {
         exec_builting(args, envcp);
-		g_exit_status = 0;
+		    g_exit_status = 0;
     }
     else
     {
@@ -274,21 +278,20 @@ int	exec_pipes(t_com_list *cmds, char **envcp)
 				dup2(pipefd[1], STDOUT_FILENO);
 				close(pipefd[1]);
 			}
-			char	**args = split_args(curr->command, ' ');
-			if (!args || !args[0])
-				exit (1);
-			expand_variables(args, envcp, 0);
+			char	**args = curr->args;
+			if (!args || !args[0] || args[0][0] == '\0')
+			{
+				ft_putstr_fd("minishell: ", STDERR_FILENO);
+				ft_putstr_fd(args && args[0] ? args[0] : "", STDERR_FILENO);
+				ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+				exit(127);
+			}
 			if (is_builting(args[0]) && ft_strcmp(args[0], "exit") == 0)
 				fake_exit_builtin(args);
 			else if (is_builting(args[0]))
-			{
 				exec_builting(args, &envcp);
-			}
 			else
-			{			
 				exec_cmd(args, &envcp);
-			}
-			free_tab(args);
 			exit(g_exit_status);
 		}
 		//---PARENT---
