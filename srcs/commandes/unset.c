@@ -3,28 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:21 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/23 16:08:41 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/05/27 16:48:15 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-// La fonction est longue, il faudra la raccourcir...
-void ft_unset(char **args, char ***envcp)
+
+// La fonction est longue, il faudrna la raccourcir...
+int ft_unset(char **args, char ***envcp)
 {
     int i;
     int j;
     int k;
     int size;
     char **new_env;
-
+    int exit_status = 0;
+;
     if (!args[1])
     {
         // ft_putstr_fd("unset: not enough arguments\n", STDOUT_FILENO);
-        return;
+        return (0);
     }
 
     i = 1;
@@ -35,7 +37,8 @@ void ft_unset(char **args, char ***envcp)
             ft_putstr_fd("bash: ", STDERR_FILENO);
             ft_putstr_fd(args[i], STDERR_FILENO);
             ft_putstr_fd(": invalid option\n", STDERR_FILENO);
-            return;
+            g_exit_status = 2;
+            return (g_exit_status);
         }
         // Cas special avec !
         if (strchr(args[i], '!')) // Si un '!' est trouvé dans le nom de la variable
@@ -43,7 +46,8 @@ void ft_unset(char **args, char ***envcp)
             ft_putstr_fd("bash: unset: `", STDERR_FILENO);
             ft_putstr_fd(args[i], STDERR_FILENO);
             ft_putstr_fd("': event not found\n", STDERR_FILENO);
-            return;
+            g_exit_status = 1;
+            return (g_exit_status);
         }
         i++;
     }
@@ -52,9 +56,10 @@ void ft_unset(char **args, char ***envcp)
     {
         if (!is_valid_name(args[i]))
         {
-            // ft_putstr_fd("bash: unset: `", STDERR_FILENO);
-            // ft_putstr_fd(args[i], STDERR_FILENO);
-            // ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
+            ft_putstr_fd("bash: unset: `", STDERR_FILENO);
+            ft_putstr_fd(args[i], STDERR_FILENO);
+            ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
+            exit_status = 1;
             i++;
             continue;
         }
@@ -64,7 +69,7 @@ void ft_unset(char **args, char ***envcp)
             size++;
         new_env = malloc(sizeof(char *) * size);
         if (!new_env)
-            return;
+            return (0);
         j = 0;
         k = 0;
         while ((*envcp)[j])
@@ -80,4 +85,5 @@ void ft_unset(char **args, char ***envcp)
         *envcp = new_env;
         i++;
     }
+    return (exit_status);
 }

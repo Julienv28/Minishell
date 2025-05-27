@@ -11,32 +11,42 @@ int	count_ags(char **args)
 	return (i);
 }
 
-void exec_builting(char **args, char ***envcp)
+int exec_builting(char **args, char ***envcp)
 {
 
     if (ft_strcmp(args[0], "exit") == 0)
-        ft_exit(args, 1); //
+    {        
+        ft_exit(args, 1); 
+        return (0);
+    }
     else if (ft_strcmp(args[0], "cd") == 0)
-        ft_cd(args, envcp);
-    else if (ft_strcmp(args[0], "pwd") == 0)
-        ft_pwd(args, envcp);
-    else if (ft_strcmp(args[0], "echo") == 0)
     {
+        return (ft_cd(args, envcp));
+    }
+    else if (ft_strcmp(args[0], "pwd") == 0)
+    {
+        return (ft_pwd(args, envcp));
+    }
+    else if (ft_strcmp(args[0], "echo") == 0)
+    { 
         ft_echo(args); // Appel direct avec les args
+        return (0);
     }
     else if (ft_strcmp(args[0], "export") == 0)
     {
         if (!args[1]) // Aucun argument : afficher l'environnement
         {
             ft_env(*envcp); // Affiche les variables d'environnement
-            return;
+            return (0);
         }
         else
         {
             if (check_events(args[1]) == 0)
-                ft_export(args, envcp);
+            {                
+                return (ft_export(args, envcp));
+            }
             else
-                return;
+                return (1);
         }
     }
     else if (ft_strcmp(args[0], "env") == 0)
@@ -45,23 +55,25 @@ void exec_builting(char **args, char ***envcp)
         if (args[1] && args[1][0] == '-')
         {
             printf("bash: env: -%c: invalid option\n", args[1][1]);
-            return;
+            g_exit_status = 2;
+            return (g_exit_status);
         }
         else
+        {
             ft_env(*envcp);
+            return (0);
+        }
     }
     else if (ft_strcmp(args[0], "unset") == 0)
     {
         if (check_events(args[1]) == 0)
-            ft_unset(args, envcp);
+        {
+            return (ft_unset(args, envcp));
+        }
         else
-            return;
+            return (1);
     }
-    else
-    {
-        g_exit_status = 1;
-        return;
-    }
+    return (g_exit_status);
 }
 
 int	is_valid_n_flag(const char *str)
@@ -234,5 +246,5 @@ void	exec_cmd(char **args, char ***envcp)
     // else
 	//     perror("execve failed");
 	// free(path);
-	// exit(1);
+	exit(1);
 }
