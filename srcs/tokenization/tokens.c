@@ -61,8 +61,10 @@ t_token *create_tokens(char **str, char **envcp)
         else if ((*str)[i] == '&' || (*str)[i] == ':' || (*str)[i] == '!' || (*str)[i] == '#' || (*str)[i] == ';')
         {
             if (check_input(*str, i) == -1)
+            {
                 return (NULL);
-        }
+            }
+         }
         // Gestion de la redirection
         else
         {
