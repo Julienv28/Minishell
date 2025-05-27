@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 10:45:02 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/26 15:12:34 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/05/27 13:52:38 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ void execute(t_com_list *cmds, char ***envcp)
         if (pid == 0) // Enfant
         {
             exec_cmd(args, envcp);
+			
             exit(g_exit_status);
         }
         else // Parent

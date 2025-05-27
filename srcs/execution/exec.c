@@ -1,4 +1,5 @@
 #include "../includes/minishell.h"
+#include <errno.h>
 
 int	count_ags(char **args)
 {
@@ -208,12 +209,29 @@ void	exec_cmd(char **args, char ***envcp)
 	signal(SIGQUIT, SIG_DFL);
 	if (execve(path, args, *envcp) == -1)
 	{
-		perror("minishell");
+        if (errno == EISDIR)
+        {
+            ft_putstr_fd("minishell: ", STDERR_FILENO);
+            ft_putstr_fd(path, STDERR_FILENO);
+            ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
+            g_exit_status = 126;
+        }
+        else
+        {
+            perror("minishell");
+            g_exit_status = 1;
+        }
 		free(path);
-		exit(127);
+		exit(g_exit_status);
 	}
-	execve(path, args, *envcp);
-	perror("execve failed");
-	free(path);
-	exit(1);
+	// execve(path, args, *envcp);
+    // if (errno == EISDIR)
+    // {
+    //     ft_putstr_fd(args[0], STDERR_FILENO);
+    //     ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
+    // }
+    // else
+	//     perror("execve failed");
+	// free(path);
+	// exit(1);
 }
