@@ -20,7 +20,6 @@ int check_redirection(char *str, int *i)
             printf("Erreur : syntax error near unexpected token `%c'\n", str[*i]);
         return (-1);
     }
-
     return (0);
 }
 

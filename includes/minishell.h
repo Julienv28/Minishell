@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/26 15:07:11 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/05/27 12:16:55 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,6 @@ unsigned long long ft_atoull(const char *str);
 
 // Signaux
 void set_signal_action(void);
-void signal_handler(int sig);
 char *replace_all_variables(char *str, char **envcp, int avoid_expand);
 void expand_variables(char **args, char **envcp, int is_heredoc);
 char *replace_variable_or_special(char *str, int *i, char *res, char **envcp, int quoted);
@@ -161,8 +160,8 @@ void exec_builting(char **args, char ***envcp);
 char *get_path(char *cmd, char **envp);
 int find_line(char **envp, char *path);
 char *search_path(char **paths, char *cmd);
-void exec_pipes(t_com_list *cmds, char **envcp);
-void execute(t_com_list *cmds, char ***envcp);
+int exec_pipes(t_com_list *cmds, char **envcp);
+int execute(t_com_list *cmds, char ***envcp);
 
 // Pipes (revoir les args pour pipex)
 char **split_pipe_respect_quotes(const char *line);

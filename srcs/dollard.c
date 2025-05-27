@@ -48,9 +48,7 @@ char *expand_env_variable(char *str, int *i, char *res, char **envcp, int quoted
         env_value = get_value_cleaned(var_name, envcp); // On nettoie les espaces si non cité
 
     if (!env_value)
-    {
         env_value = ""; // En cas d'absence de variable
-    }
 
     tmp = ft_strjoin(res, env_value); // Concaténation avec le résultat
     free(res);
@@ -67,9 +65,7 @@ char *replace_variable_or_special(char *str, int *i, char *res, char **envcp, in
     // printf("Processing char after $: '%c'\n", str[*i]);
     // Si c'est un heredoc, sans guillemet
     if (is_heredoc && str[*i] != '"')
-    {
         return expand_env_variable(str, i, res, envcp, is_heredoc);
-    }
     if (is_heredoc)
     {
         printf("Heredoc mode with quotes, no variable expansion\n");

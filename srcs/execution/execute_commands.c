@@ -3,28 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   execute_commands.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 10:45:02 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/26 15:12:34 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/05/27 13:42:36 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 #include <errno.h>
 
-void execute(t_com_list *cmds, char ***envcp)
+int execute(t_com_list *cmds, char ***envcp)
 {
     char **args;
     pid_t pid;
 
     if (!cmds)
-        return;
+        return (-1);
     args = split_args(cmds->command, ' ');
     if (!args || !args[0])
     {
         free_tab(args);
-        return;
+        return (-1);
     }
     // printf("command expand %s\n", cmds->command);
     if (is_builting(args[0]) && ft_strcmp(args[0], "exit") == 0)
@@ -35,6 +35,7 @@ void execute(t_com_list *cmds, char ***envcp)
     else if (is_builting(args[0]))
     {
         exec_builting(args, envcp);
+		g_exit_status = 0;
     }
     else
     {
@@ -44,11 +45,12 @@ void execute(t_com_list *cmds, char ***envcp)
         {
             perror("fork");
             free_tab(args);
-            return;
+            return (-1);
         }
         if (pid == 0) // Enfant
         {
             exec_cmd(args, envcp);
+			//g_exit_status = 0;
             exit(g_exit_status);
         }
         else // Parent
@@ -84,9 +86,10 @@ void execute(t_com_list *cmds, char ***envcp)
         }
     }
     free_tab(args);
+	return (g_exit_status);
 }
 
-static void	wait_children(void)
+static void	wait_children(pid_t last_pid)
 {
 	int		status;
 	pid_t	pid;
@@ -94,12 +97,18 @@ static void	wait_children(void)
 	pid = wait(&status);
 	while (pid > 0)
 	{
-		if (WIFEXITED(status))
-			g_exit_status = WEXITSTATUS(status);
-		else if (WIFSIGNALED(status))
-			g_exit_status = 128 + WTERMSIG(status);
+		if (pid == last_pid)
+		{
+			if (WIFEXITED(status))
+				g_exit_status = WEXITSTATUS(status);
+			else if (WIFSIGNALED(status))
+				g_exit_status = 128 + WTERMSIG(status);
+		}
 		pid = wait(&status);
 	}
+	if (WTERMSIG(status) == SIGQUIT)             
+		write(1, "Quit (core dumped)\n", 20);
+			
 }
 
 /*
@@ -219,12 +228,13 @@ void	fake_exit_builtin(char **args)
 // 	wait_children();
 // }
 
-void	exec_pipes(t_com_list *cmds, char **envcp)
+int	exec_pipes(t_com_list *cmds, char **envcp)
 {
 	t_com_list	*curr = cmds;
 	pid_t		pid;
 	int			pipefd[2];
 	int			prev_fd = -1;
+	pid_t		last_pid = -1;
 
 	while (curr)
 	{
@@ -233,7 +243,7 @@ void	exec_pipes(t_com_list *cmds, char **envcp)
 			if (pipe(pipefd) == -1)
 			{
 				perror("pipe");
-				return ;
+				return (-1);
 			}
 		}
 		else
@@ -245,7 +255,7 @@ void	exec_pipes(t_com_list *cmds, char **envcp)
 		if (pid < 0)
 		{
 			perror("fork");
-			return ;
+			return (-1);
 		}
 		if (pid == 0) // ---CHILD---
 		{
@@ -272,9 +282,13 @@ void	exec_pipes(t_com_list *cmds, char **envcp)
 			if (is_builting(args[0]) && ft_strcmp(args[0], "exit") == 0)
 				fake_exit_builtin(args);
 			else if (is_builting(args[0]))
+			{
 				exec_builting(args, &envcp);
+			}
 			else
+			{			
 				exec_cmd(args, &envcp);
+			}
 			free_tab(args);
 			exit(g_exit_status);
 		}
@@ -290,13 +304,15 @@ void	exec_pipes(t_com_list *cmds, char **envcp)
 		}
 		else
 		{
+			last_pid = pid;
 			if (pipefd[0] != -1)
 				close(pipefd[0]);
 			prev_fd = -1;
 		}
 		curr = curr->next;
 	}
-	wait_children();
+	wait_children(last_pid);
 	signal(SIGINT, handler_sigint);
 	signal(SIGQUIT, SIG_IGN);
+	return (g_exit_status);
 }

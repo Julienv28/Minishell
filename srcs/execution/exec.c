@@ -12,7 +12,6 @@ int	count_ags(char **args)
 
 void exec_builting(char **args, char ***envcp)
 {
-    // int i;
 
     if (ft_strcmp(args[0], "exit") == 0)
         ft_exit(args, 1); //
@@ -139,6 +138,7 @@ char *get_path(char *cmd, char **envp)
             ft_putstr_fd("minishell: ", STDERR_FILENO);
             ft_putstr_fd(cmd, STDERR_FILENO);
             ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+            g_exit_status = 127;
             return (NULL);
         }
         if (is_directory(cmd))
@@ -146,6 +146,7 @@ char *get_path(char *cmd, char **envp)
             ft_putstr_fd("minishell: ", STDERR_FILENO);
             ft_putstr_fd(cmd, STDERR_FILENO);
             ft_putstr_fd(": is a directory\n", STDERR_FILENO);
+            g_exit_status = 126;
             return (NULL);
         }
         if (access(cmd, X_OK) != 0)
@@ -153,6 +154,7 @@ char *get_path(char *cmd, char **envp)
             ft_putstr_fd("minishell: ", STDERR_FILENO);
             ft_putstr_fd(cmd, STDERR_FILENO);
             ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
+            g_exit_status = 126;
             return (NULL);
         }
         return (ft_strdup(cmd));
@@ -175,12 +177,14 @@ char *get_path(char *cmd, char **envp)
         ft_putstr_fd("minishell: command not found: ", STDERR_FILENO);
         ft_putstr_fd(cmd, STDERR_FILENO);
         ft_putstr_fd("\n", STDERR_FILENO);
+        g_exit_status = 127;
     }
     else if (access(path, X_OK) != 0)
     {
         ft_putstr_fd("minishell: ", STDERR_FILENO);
         ft_putstr_fd(cmd, STDERR_FILENO);
         ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
+        g_exit_status = 126;
         free(path);
         path = NULL;
     }
@@ -197,11 +201,8 @@ void	exec_cmd(char **args, char ***envcp)
     // printf("path = %s\n", path);
 	if (path == NULL)
 	{
-		ft_putstr_fd("minishell: ", STDERR_FILENO);
-		ft_putstr_fd(args[0], STDERR_FILENO);
-		ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
-		g_exit_status = 127;
-		exit(127);
+		//g_exit_status = 127;
+		exit(g_exit_status);
 	}
 	// Rétablir comportement par défaut dans l'enfant
 	signal(SIGINT, SIG_DFL);
