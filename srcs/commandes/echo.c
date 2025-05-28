@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:42:01 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/20 15:16:03 by opique           ###   ########.fr       */
+/*   Updated: 2025/05/28 11:43:20 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,16 @@
 
 void ft_echo(char **args)
 {
-    int i = 1;
-    int newline = 1;
+    int i;
+    int newline;
 
-    // Gère tous les -n consécutifs
+    i = 1;
+    newline = 1;
     while (args[i] && is_valid_n_flag(args[i]))
     {
         newline = 0;
         i++;
     }
-
     while (args[i])
     {
         ft_putstr_fd(args[i], STDOUT_FILENO);
@@ -31,7 +31,6 @@ void ft_echo(char **args)
             ft_putchar_fd(' ', STDOUT_FILENO);
         i++;
     }
-
     if (newline)
         ft_putchar_fd('\n', STDOUT_FILENO);
 }
@@ -40,9 +39,7 @@ char *get_value_cleaned(char *name, char **envp)
 {
     char *raw;
 
-    // printf("Recherche de : %s\n", name);
     raw = get_env_value(name, envp);
-    // printf("Valeur trouvée : %s\n", raw);
     if (!raw)
         return (NULL);
     return (clean_spaces(raw));
@@ -104,24 +101,26 @@ int parse_args_echo(char **args)
 // Trimmer les variables et nettoyer les espaces inutiles
 char *clean_spaces(char *str)
 {
-    int i = 0, j = 0;
-    int in_space = 0;
+    int i;
+    int j;
+    int in_space;
     char *trimmed;
     char *res;
 
+    i = 0;
+    j = 0;
+    in_space = 0;
     while (str[i] && ft_isspace(str[i]))
         i++;
     trimmed = ft_strdup(str + i);
     if (!trimmed)
         return (NULL);
-
     res = malloc(ft_strlen(trimmed) + 1); // +1 pour le \0
     if (!res)
     {
         free(trimmed);
         return (NULL);
     }
-
     i = 0;
     while (trimmed[i])
     {
@@ -138,7 +137,6 @@ char *clean_spaces(char *str)
         }
         i++;
     }
-
     if (j > 0 && res[j - 1] == ' ')
         j--;
     res[j] = '\0';

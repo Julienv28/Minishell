@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/27 16:33:35 by opique           ###   ########.fr       */
+/*   Updated: 2025/05/28 10:17:18 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,6 @@ void fake_exit_builtin(char **args);
 int is_valid_numeric_argument(char *str);
 unsigned long long ft_atoull(const char *str);
 
-
 // Signaux
 void set_signal_action(void);
 char *replace_all_variables(char *str, char **envcp, int avoid_expand);
@@ -143,7 +142,7 @@ int ft_isnumber(char *str);
 void ft_echo(char **args);
 int ft_cd(char **args, char ***envcp);
 int ft_pwd(char **args, char ***envcp);
-void ft_exit(char **args, int in_child);
+int ft_exit(char **args, int in_child);
 int ft_export(char **arg, char ***envcp);
 char *get_env_value(char *name, char **envp);
 char *get_value_cleaned(char *name, char **envp);

@@ -2,15 +2,15 @@
 
 int g_exit_status = 0;
 
-int	has_pipe(t_com_list *command)
+int has_pipe(t_com_list *command)
 {
-	while (command)
-	{
-		if (command->is_pipe)
-			return (1);
-		command = command->next;
-	}
-	return (0);
+    while (command)
+    {
+        if (command->is_pipe)
+            return (1);
+        command = command->next;
+    }
+    return (0);
 }
 
 int main(int ac, char **av, char **envp)
@@ -49,9 +49,9 @@ int main(int ac, char **av, char **envp)
         tokens = create_tokens(&input, envcp);
         if (tokens == NULL)
         {
-           g_exit_status = 2;
+            g_exit_status = 2;
         }
-        
+
         free(input);
 
         if (!tokens)
@@ -70,6 +70,10 @@ int main(int ac, char **av, char **envp)
                 if (command->infile || command->outfile || command->errfile || command->heredoc_fd > 0)
                 {
                     has_redir_error = ft_redirection(command, &mem_fd_in, &mem_fd_out, &mem_fd_err);
+                    if (has_redir_error != 0)
+                        g_exit_status = 1;
+                    else
+                        g_exit_status = 0;
                     restore_redirections(mem_fd_in, mem_fd_out, mem_fd_err);
                     mem_fd_in = mem_fd_err = -1;
                 }
@@ -88,14 +92,14 @@ int main(int ac, char **av, char **envp)
             {
                 command = command->next;
                 continue;
-             }
+            }
             if (has_pipe(command))
             {
-				exec_pipes(command, envcp);
-				restore_redirections(mem_fd_in, mem_fd_out, mem_fd_err);
-				mem_fd_in = mem_fd_out = mem_fd_err = -1;
+                exec_pipes(command, envcp);
+                restore_redirections(mem_fd_in, mem_fd_out, mem_fd_err);
+                mem_fd_in = mem_fd_out = mem_fd_err = -1;
                 printf("DEBUG: g_exit_status après exec_pipes = %d\n", g_exit_status);
-				break ;
+                break;
             }
             else
             {

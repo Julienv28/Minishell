@@ -1,8 +1,6 @@
 #include "../includes/minishell.h"
 
 // CRÉATION ET GESTION DES TOKENS
-
-// Ajouter un token à la liste
 t_token *add_token(t_token **head, char *str, int type)
 {
     t_token *new;
@@ -14,8 +12,6 @@ t_token *add_token(t_token **head, char *str, int type)
     new->value = ft_strdup(str); // Copie la valeur du token
     new->type = type;            // Lui assigne un type
     new->next = NULL;
-
-    // printf("Ajout token \"%s\" -> type: %d\n", str, type);
     if (!*head)
         *head = new;
     else
@@ -28,6 +24,66 @@ t_token *add_token(t_token **head, char *str, int type)
     return (new);
 }
 
+int handle_token_type(char **str, int *i, t_token **tokens, char **envcp)
+{
+    int status;
+
+    status = handle_redirection(*str, i, tokens, envcp);
+    if (status == -1)
+        return (-1);
+    if (status == 1)
+        return (0);
+    return (0);
+}
+
+int handle_special_char(char **str, int *i, t_token **tokens, int *expect_cmd)
+{
+    if ((*str)[*i] == '|')
+    {
+        if (check_pipe(*str, *i) == -1)
+            return (-1);
+        add_token(tokens, "|", PIPE);
+        (*i)++;
+        *expect_cmd = 1;
+        return (1);
+    }
+    if ((*str)[*i] == '&' || (*str)[*i] == ':' || (*str)[*i] == '!' || (*str)[*i] == '#' || (*str)[*i] == ';')
+        return (check_input(*str, *i) == -1 ? -1 : 1);
+    return (0);
+}
+
+// Analyser la ligne de commande et créer des tokens
+t_token *create_tokens(char **str, char **envcp)
+{
+    t_token *tokens;
+    int i;
+    int expect_cmd;
+    int status;
+
+    tokens = NULL;
+    i = 0;
+    expect_cmd = 1;
+    while ((*str)[i])
+    {
+        while ((*str)[i] == ' ')
+            i++;
+        if (!(*str)[i])
+            break;
+        status = handle_special_char(str, &i, &tokens, &expect_cmd);
+        if (status == -1)
+            return (free_tokens(tokens), NULL);
+        if (status == 1)
+            continue;
+        status = handle_token_type(str, &i, &tokens, envcp);
+        if (status == -1)
+            return (free_tokens(tokens), NULL);
+        if (handle_word(str, &i, &tokens, &expect_cmd) == -1)
+            return (free_tokens(tokens), NULL);
+    }
+    return (tokens);
+}
+
+/*
 // Analyser la ligne de commande et créer des tokens
 t_token *create_tokens(char **str, char **envcp)
 {
@@ -39,16 +95,12 @@ t_token *create_tokens(char **str, char **envcp)
     i = 0;
     tokens = NULL;
     expect_cmd = 1; // On attend une CMD en premier
-
     while ((*str)[i])
     {
         while ((*str)[i] == ' ') // Sauter les espaces
             i++;
-
         if (!(*str)[i]) // Fin de la chaîne
             break;
-
-        // Détection des pipes
         if ((*str)[i] == '|')
         {
             if (check_pipe(*str, i) == -1)
@@ -61,11 +113,8 @@ t_token *create_tokens(char **str, char **envcp)
         else if ((*str)[i] == '&' || (*str)[i] == ':' || (*str)[i] == '!' || (*str)[i] == '#' || (*str)[i] == ';')
         {
             if (check_input(*str, i) == -1)
-            {
                 return (NULL);
-            }
-         }
-        // Gestion de la redirection
+        }
         else
         {
             redirection_status = handle_redirection(*str, &i, &tokens, envcp);
@@ -75,15 +124,10 @@ t_token *create_tokens(char **str, char **envcp)
                 return (NULL);
             }
             if (redirection_status == 1)
-            {
-                // expect_cmd = 0; // Après redirection, on attend pas spécialement une CMD
                 continue; // Redirection traitée, boucle suivante
-            }
-            // Après avoir traité la redirection, on devrait ajouter la commande suivante
-            // La fonction handle_word permet de gérer correctement les commandes et leurs arguments
             if (handle_word(str, &i, &tokens, &expect_cmd) == -1)
                 break;
         }
     }
     return (tokens);
-}
+}*/

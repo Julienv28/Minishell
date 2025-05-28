@@ -1,49 +1,43 @@
 #include "../includes/minishell.h"
 
 // Ouvrir le fichiers d'entrée d'une commande
-int open_file_cmd(char *infile)
+int	open_file_cmd(char *infile)
 {
-    int fd;
+	int	fd;
 
-    if (!infile || !*infile)
-        return (-1);
-
-    fd = open(infile, O_RDONLY);
-    if (fd == -1)
-        return (-1);
-
-    return fd;
+	if (!infile || !*infile)
+		return (-1);
+	fd = open(infile, O_RDONLY);
+	if (fd == -1)
+		return (-1);
+	return (fd);
 }
 
 // Ouvrir le fichiers de sortie d'une commande
-int open_outfile(char *outfile, int append)
+int	open_outfile(char *outfile, int append)
 {
-    int fd;
+	int	fd;
 
-    if (!outfile || !*outfile)
-        return (-1);
-    if (append)
-        fd = open(outfile, O_WRONLY | O_CREAT | O_APPEND, 0644);
-    else
-        fd = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-
-    if (fd == -1)
-        return (-1);
-
-    return fd;
+	if (!outfile || !*outfile)
+		return (-1);
+	if (append)
+		fd = open(outfile, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	else
+		fd = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (fd == -1)
+		return (-1);
+	return (fd);
 }
 
-
 // Ouvrir le fichiers d'erreur d'une commande
-int open_errfile(char *errfile)
+int	open_errfile(char *errfile)
 {
-    int fd;
+	int	fd;
 
-    if (!errfile || !*errfile)
-        return (-1);
-    fd = open(errfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-
-    if (fd == -1)
-        return (-1);
-    return fd;
+	if (!errfile || !*errfile)
+		return (-1);
+	fd = open(errfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (fd == -1)
+		return (-1);
+	return (fd);
 }
