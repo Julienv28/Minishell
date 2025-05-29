@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 10:25:54 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/29 11:04:37 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/05/29 13:37:11 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ void	add_outfile(t_file_list **list, char *filename, int flag)
 		*list = new;
 	else
 	{
-        tmp = *list;
+		tmp = *list;
 		while (tmp->next)
 			tmp = tmp->next;
 		tmp->next = new;

@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 16:08:55 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/29 11:41:46 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/05/29 13:39:25 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,12 +173,12 @@ int	handle_heredoc(char *limiter, char **envcp)
     return pipefd[0];
 }
 
-t_com_list *tokens_to_cmds(t_token *tokens, char **envcp)
+t_com_list	*tokens_to_cmds(t_token *tokens, char **envcp)
 {
-    t_com_list *cmd_list = NULL;
-    t_com_list *current_cmd = NULL;
-    t_token *tmp = tokens;
-    t_com_list *new_cmd;
+	t_com_list	*cmd_list = NULL;
+	t_com_list	*current_cmd = NULL;
+	t_token		*tmp = tokens;
+	t_com_list	*new_cmd;
     char *filename;
     char *pending_outfile = NULL;
     int pending_flag_out = -1;
@@ -190,45 +190,45 @@ t_com_list *tokens_to_cmds(t_token *tokens, char **envcp)
     t_file_list *pending_all_outfiles = NULL;
     int fd;
 
-    while (tmp)
-    {
+	while (tmp)
+	{
         // Affiche la valeur du token pour débogage
-        if (tmp->type == CMD)
-        {
-            if (!tmp->value)
-            {
-                fprintf(stderr, "Erreur : token CMD avec valeur NULL\n");
-                tmp = tmp->next;
-                continue;
-            }
-            char *expanded = replace_all_variables(tmp->value, envcp, 0);
-            new_cmd = list_new(expanded);
-            new_cmd->args = malloc(sizeof(char *) * MAX_ARGS);
-            if (!new_cmd->args)
-                return (NULL);
-            new_cmd->args[0] = ft_strdup(expanded);
-            new_cmd->args[1] = NULL;
-            free(expanded);
-            new_cmd->heredoc_fd = -1;
-            if (pending_outfile)
-            {
-                new_cmd->outfile = pending_outfile;
-                new_cmd->flag_out = pending_flag_out;
-                add_outfile(&new_cmd->all_outfilles, pending_outfile, pending_flag_out);
-                pending_outfile = NULL;
-                pending_flag_out = -1;
-            }
-            if (pending_infile)
-            {
-                new_cmd->infile = pending_infile;
-                new_cmd->flag_in = pending_flag_in;
-                pending_infile = NULL;
-                pending_flag_in = -1;
-            }
-            if (!cmd_list)
+		if (tmp->type == CMD)
+		{
+			if (!tmp->value)
+			{
+				fprintf(stderr, "Erreur : token CMD avec valeur NULL\n");
+				tmp = tmp->next;
+				continue ;
+			}
+			char *expanded = replace_all_variables(tmp->value, envcp, 0);
+			new_cmd = list_new(expanded);
+			new_cmd->args = malloc(sizeof(char *) * MAX_ARGS);
+			if (!new_cmd->args)
+				return (NULL);
+			new_cmd->args[0] = ft_strdup(expanded);
+			new_cmd->args[1] = NULL;
+			free(expanded);
+			new_cmd->heredoc_fd = -1;
+			if (pending_outfile)
+			{
+				new_cmd->outfile = pending_outfile;
+				new_cmd->flag_out = pending_flag_out;
+				add_outfile(&new_cmd->all_outfilles, pending_outfile, pending_flag_out);
+				pending_outfile = NULL;
+				pending_flag_out = -1;
+			}
+			if (pending_infile)
+			{
+				new_cmd->infile = pending_infile;
+				new_cmd->flag_in = pending_flag_in;
+				pending_infile = NULL;
+				pending_flag_in = -1;
+			}
+			if (!cmd_list)
                 cmd_list = new_cmd;
-            else
-                add_bottom(&cmd_list, new_cmd);
+			else
+				add_bottom(&cmd_list, new_cmd);
             current_cmd = new_cmd;
         }
         else if (tmp->type == ARG && current_cmd)

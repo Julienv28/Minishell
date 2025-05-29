@@ -2,64 +2,58 @@
 
 int g_exit_status = 0;
 
-int has_pipe(t_com_list *command)
+int	has_pipe(t_com_list *command)
 {
-    while (command)
-    {
-        if (command->is_pipe)
-            return (1);
-        command = command->next;
-    }
-    return (0);
+	while (command)
+	{
+		if (command->is_pipe)
+			return (1);
+		command = command->next;
+	}
+	return (0);
 }
 
-int main(int ac, char **av, char **envp)
+int	main(int ac, char **av, char **envp)
 {
-    char *input;
-    char **envcp;
-    t_token *tokens;
-    t_com_list *command;
+	char		*input;
+	char		**envcp;
+	t_token		*tokens;
+	t_com_list	*command;
     int mem_fd_in = -1, mem_fd_out = -1, mem_fd_err = -1;
     int has_redir_error = 0;
 
-    (void)ac;
-    (void)av;
-
-    envcp = ft_env_dup(envp);
+	(void)ac;
+	(void)av;
+	envcp = ft_env_dup(envp);
     // Ignorer SIGTSTP (signal envoyé par Ctrl+Z) dans le shell principal
-    signal(SIGTSTP, SIG_IGN);
+	signal(SIGTSTP, SIG_IGN);
 
     // Signaux pour readline
-    signal(SIGINT, handler_sigint); // pour readline seulement
-    signal(SIGQUIT, SIG_IGN);       // on ignore Ctrl+
-    while (1)
-    {
-        set_signal_action();
+	signal(SIGINT, handler_sigint); // pour readline seulement
+	signal(SIGQUIT, SIG_IGN);       // on ignore Ctrl+
+	while (1)
+	{
+		set_signal_action();
         // printf("\n==================== NOUVELLE BOUCLE ====================\n");
-
-        input = readline(GREEN "minishell$ " RESET);
-        if (!input)
-        {
+		input = readline(GREEN "minishell$ " RESET);
+		if (!input)
+		{
             printf("DEBUG: readline a retourné NULL, on va quitter\n");
             ft_putstr_fd("exit\n", STDOUT_FILENO);
-            exit(g_exit_status);
-        }
+			exit(g_exit_status);
+		}
 
-        add_history(input);
-        tokens = create_tokens(&input, envcp);
-        if (tokens == NULL)
-        {
-            g_exit_status = 2;
-        }
-
-        free(input);
-
-        if (!tokens)
-        {
-            free_tokens(tokens);
-            continue;
-        }
-        command = tokens_to_cmds(tokens, envcp);
+		add_history(input);
+		tokens = create_tokens(&input, envcp);
+		if (tokens == NULL)
+			g_exit_status = 2;
+		free(input);
+		if (!tokens)
+		{
+			free_tokens(tokens);
+			continue ;
+		}
+		command = tokens_to_cmds(tokens, envcp);
         while (command)
         {
             has_redir_error = 0;
