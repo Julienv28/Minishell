@@ -3,49 +3,49 @@
 /*                                                        :::      ::::::::   */
 /*   arguments.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:06:51 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/28 13:49:16 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/05/29 13:27:18 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
 // Vérification des guillemets
-int check_mismatched_quotes(char *str)
+int	check_mismatched_quotes(char *str)
 {
-    int single_quote;
-    int double_quote;
-    int i;
+	int	single_quote;
+	int	double_quote;
+	int	i;
 
-    single_quote = 0;
-    double_quote = 0;
-    i = 0;
-    while (str[i])
-    {
-        if (str[i] == '\'' && !double_quote)
-            single_quote = !single_quote;
-        else if (str[i] == '\"' && !single_quote)
-            double_quote = !double_quote;
-        i++;
-    }
-    if (single_quote || double_quote)
-        return (1);
-    return (0);
+	single_quote = 0;
+	double_quote = 0;
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '\'' && !double_quote)
+			single_quote = !single_quote;
+		else if (str[i] == '\"' && !single_quote)
+			double_quote = !double_quote;
+		i++;
+	}
+	if (single_quote || double_quote)
+		return (1);
+	return (0);
 }
 
-int ensure_newline_at_end(char **str)
+int	ensure_newline_at_end(char **str)
 {
-    char *tmp;
+	char	*tmp;
 
-    if ((*str)[ft_strlen(*str) - 1] != '\n')
-    {
-        tmp = ft_strjoin(*str, "\n");
-        free(*str);
-        *str = tmp;
-    }
-    return 0;
+	if ((*str)[ft_strlen(*str) - 1] != '\n')
+	{
+		tmp = ft_strjoin(*str, "\n");
+		free(*str);
+		*str = tmp;
+	}
+	return (0);
 }
 
 int prompt_for_quotes(char **str)
@@ -85,57 +85,58 @@ int prompt_for_quotes(char **str)
     return (g_exit_status);
 }
 
-int handle_quotes(char **str)
+int	handle_quotes(char **str)
 {
-    if (check_mismatched_quotes(*str) == 1)
-    {
-        if (prompt_for_quotes(str) == -1)
-            return (-1);
-    }
-    return 0;
+	if (check_mismatched_quotes(*str) == 1)
+	{
+		if (prompt_for_quotes(str) == -1)
+			return (-1);
+	}
+	return (0);
 }
 
-int extract_word(char **str, int *i, char **word, int *start)
+int	extract_word(char **str, int *i, char **word, int *start)
 {
-    while ((*str)[*i] && (*str)[*i] != ' ' && (*str)[*i] != '|' &&
-           (*str)[*i] != '<' && (*str)[*i] != '>')
-    {
-        if ((*str)[*i] == '\'')
-        {
-            (*i)++;
-            while ((*str)[*i] && (*str)[*i] != '\'')
-                (*i)++;
-            (*i)++;
-        }
-        else if ((*str)[*i] == '\"')
-        {
-            (*i)++;
-            while ((*str)[*i] && (*str)[*i] != '\"')
-                (*i)++;
-            (*i)++;
-        }
-        else
-            (*i)++;
-    }
-    *word = ft_strndup(*str + *start, *i - *start);
-    return 0;
+	while ((*str)[*i] && (*str)[*i] != ' ' && (*str)[*i] != '|' &&
+			(*str)[*i] != '<' && (*str)[*i] != '>')
+	{
+		if ((*str)[*i] == '\'')
+		{
+			(*i)++;
+			while ((*str)[*i] && (*str)[*i] != '\'')
+				(*i)++;
+			(*i)++;
+		}
+		else if ((*str)[*i] == '\"')
+		{
+			(*i)++;
+			while ((*str)[*i] && (*str)[*i] != '\"')
+				(*i)++;
+			(*i)++;
+		}
+		else
+			(*i)++;
+	}
+	*word = ft_strndup(*str + *start, *i - *start);
+	return (0);
 }
-int handle_word(char **str, int *i, t_token **tokens, int *expect_cmd)
-{
-    int start;
-    int type;
-    char *word;
 
-    start = *i;
-    if (handle_quotes(str) == -1)
-        return (-1);
-    extract_word(str, i, &word, &start);
-    if (*expect_cmd)
-        type = CMD;
-    else
-        type = ARG;
-    add_token(tokens, word, type);
-    free(word);
-    *expect_cmd = 0;
-    return 0;
+int	handle_word(char **str, int *i, t_token **tokens, int *expect_cmd)
+{
+	int		start;
+	int		type;
+	char	*word;
+
+	start = *i;
+	if (handle_quotes(str) == -1)
+		return (-1);
+	extract_word(str, i, &word, &start);
+	if (*expect_cmd)
+		type = CMD;
+	else
+		type = ARG;
+	add_token(tokens, word, type);
+	free(word);
+	*expect_cmd = 0;
+	return (0);
 }

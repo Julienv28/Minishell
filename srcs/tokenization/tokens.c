@@ -55,34 +55,34 @@ int	handle_special_char(char **str, int *i, t_token **tokens, int *expect_cmd)
 }
 
 // Analyser la ligne de commande et créer des tokens
-t_token *create_tokens(char **str, char **envcp)
+t_token	*create_tokens(char **str, char **envcp)
 {
-    t_token *tokens;
-    int i;
-    int expect_cmd;
-    int status;
+	t_token	*tokens;
+	int		i;
+	int		expect_cmd;
+	int		status;
 
-    tokens = NULL;
-    i = 0;
-    expect_cmd = 1;
-    while ((*str)[i])
-    {
-        while ((*str)[i] == ' ')
-            i++;
-        if (!(*str)[i])
-            break;
-        status = handle_special_char(str, &i, &tokens, &expect_cmd);
-        if (status == -1)
-            return (free_tokens(tokens), NULL);
-        if (status == 1)
-            continue;
-        status = handle_token_type(str, &i, &tokens, envcp);
-        if (status == -1)
-            return (free_tokens(tokens), NULL);
-        if (handle_word(str, &i, &tokens, &expect_cmd) == -1)
-            return (free_tokens(tokens), NULL);
-    }
-    return (tokens);
+	tokens = NULL;
+	i = 0;
+	expect_cmd = 1;
+	while ((*str)[i])
+	{
+		while ((*str)[i] == ' ')
+			i++;
+		if (!(*str)[i])
+			break ;
+		status = handle_special_char(str, &i, &tokens, &expect_cmd);
+		if (status == -1)
+			return (free_tokens(tokens), NULL);
+		if (status == 1) // Pertinent ici ? Parce que de toute facon on a 1 et -1, nothing else.
+			continue ;
+		status = handle_token_type(str, &i, &tokens, envcp);
+		if (status == -1)
+			return (free_tokens(tokens), NULL);
+		if (handle_word(str, &i, &tokens, &expect_cmd) == -1)
+			return (free_tokens(tokens), NULL);
+	}
+	return (tokens);
 }
 
 /*

@@ -149,7 +149,7 @@ char	*add_symbol(int type)
 	else if (type == TRUNC)
 		return (ft_strdup(">"));
 	else if (type == ERR_REDIR)
-		return ft_strdup("2>");
+		return (ft_strdup("2>"));
 	return (NULL);
 }
 
