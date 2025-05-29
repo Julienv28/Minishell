@@ -1,22 +1,22 @@
 #include "../includes/minishell.h"
 #include <errno.h>
 
-int count_ags(char **args)
+int	count_ags(char **args)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    while (args[i])
-        i++;
-    return (i);
+	i = 0;
+	while (args[i])
+		i++;
+	return (i);
 }
 
-int exec_builting(char **args, char ***envcp)
+int	exec_builting(char **args, char ***envcp)
 {
-    if (ft_strcmp(args[0], "exit") == 0)
-        return (ft_exit(args, 1), 0);
-    else if (ft_strcmp(args[0], "cd") == 0)
-        return (ft_cd(args, envcp));
+	if (ft_strcmp(args[0], "exit") == 0)
+		return (ft_exit(args, 1), 0);
+	else if (ft_strcmp(args[0], "cd") == 0)
+		return (ft_cd(args, envcp));
     else if (ft_strcmp(args[0], "pwd") == 0)
         return (ft_pwd(args, envcp));
     else if (ft_strcmp(args[0], "echo") == 0)
@@ -54,59 +54,59 @@ int exec_builting(char **args, char ***envcp)
     return (g_exit_status);
 }
 
-int is_valid_n_flag(const char *str)
+int	is_valid_n_flag(const char *str)
 {
-    int i;
+	int	i;
 
-    i = 1;
-    if (str[0] != '-' || str[1] != 'n')
-        return (0);
-    while (str[i])
-    {
-        if (str[i] != 'n')
-            return (0);
-        i++;
-    }
-    return (1);
+	i = 1;
+	if (str[0] != '-' || str[1] != 'n')
+		return (0);
+	while (str[i])
+	{
+		if (str[i] != 'n')
+			return (0);
+		i++;
+	}
+	return (1);
 }
 
-char *search_path(char **paths, char *cmd)
+char	*search_path(char **paths, char *cmd)
 {
-    int i;
-    char *path;
-    char *part_path;
+	int		i;
+	char	*path;
+	char	*part_path;
 
-    i = 0;
-    while (paths[i])
-    {
-        part_path = ft_strjoin(paths[i], "/");
-        path = ft_strjoin(part_path, cmd);
-        free(part_path);
-        if (access(path, F_OK) == 0)
-            return (path);
-        free(path);
-        i++;
-    }
-    return (0);
+	i = 0;
+	while (paths[i])
+	{
+		part_path = ft_strjoin(paths[i], "/");
+		path = ft_strjoin(part_path, cmd);
+		free(part_path);
+		if (access(path, F_OK) == 0)
+			return (path);
+		free(path);
+		i++;
+	}
+	return (0);
 }
 
-int find_line(char **envp, char *path)
+int	find_line(char **envp, char *path)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    while (envp[i] && ft_strncmp(path, envp[i], ft_strlen(path)) != 0)
-        i++;
-    return (i);
+	i = 0;
+	while (envp[i] && ft_strncmp(path, envp[i], ft_strlen(path)) != 0)
+		i++;
+	return (i);
 }
 
-int is_directory(char *path)
+int	is_directory(char *path)
 {
-    struct stat sb;
+	struct stat	sb;
 
-    if (stat(path, &sb) == 0 && S_ISDIR(sb.st_mode))
-        return (1);
-    return (0);
+	if (stat(path, &sb) == 0 && S_ISDIR(sb.st_mode))
+		return (1);
+	return (0);
 }
 char *path_error_message(char *cmd)
 {
@@ -130,6 +130,7 @@ char *path_error_message(char *cmd)
     }
     return (ft_strdup(cmd));
 }
+
 char *get_path(char *cmd, char **envp)
 {
     char **paths;

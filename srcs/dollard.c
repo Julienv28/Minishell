@@ -1,31 +1,32 @@
 #include "../includes/minishell.h"
 
 // Ajoute un caractère simple à la chaîne résultante
-char *append_char(char *res, char c)
+// printf("Appending char: '%c'\n", c);
+char	*append_char(char *res, char c)
 {
-    char current[2];
-    char *tmp;
+	char	current[2];
+	char	*tmp;
 
-    current[0] = c;
-    current[1] = '\0';
-    // printf("Appending char: '%c'\n", c);
-    tmp = ft_strjoin(res, current);
-    free(res);
-    return tmp;
+	current[0] = c;
+	current[1] = '\0';
+	tmp = ft_strjoin(res, current);
+	free(res);
+	return (tmp);
 }
 
-char *expand_exit_status(char *res)
+char	*expand_exit_status(char *res)
 {
-    char *status = ft_itoa(g_exit_status);
-    char *tmp;
+	char	*status;
+	char	*tmp;
 
-    if (!status)
-        return NULL;
+	status = ft_itoa(g_exit_status);
+	if (!status)
+		return (NULL);
     printf("Expanding exit status: %s\n", status);
-    tmp = ft_strjoin(res, status);
-    free(res);
-    free(status);
-    return tmp;
+	tmp = ft_strjoin(res, status);
+	free(res);
+	free(status);
+	return (tmp);
 }
 
 char *expand_env_variable(char *str, int *i, char *res, char **envcp, int quoted)
@@ -83,7 +84,7 @@ char *replace_variable_or_special(char *str, int *i, char *res, char **envcp, in
     if (str[*i] == '"' && !str[*i + 1])
     {
         (*i)++; // Skip
-        return append_char(res, '$');
+        return (append_char(res, '$'));
     }
 
     // Cas pour $"..." (gettext avec contenu)

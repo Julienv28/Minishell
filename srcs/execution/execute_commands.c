@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_commands.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 10:45:02 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/28 11:32:43 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/05/29 10:31:15 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,25 +92,25 @@ int execute(t_com_list *cmds, char ***envcp)
     return (g_exit_status);
 }
 
-static void wait_children(pid_t last_pid)
+static void	wait_children(pid_t last_pid)
 {
-    int status;
-    pid_t pid;
+	int		status;
+	pid_t	pid;
 
-    pid = wait(&status);
-    while (pid > 0)
-    {
-        if (pid == last_pid)
-        {
-            if (WIFEXITED(status))
-                g_exit_status = WEXITSTATUS(status);
-            else if (WIFSIGNALED(status))
-                g_exit_status = 128 + WTERMSIG(status);
-        }
-        pid = wait(&status);
-    }
-    if (WTERMSIG(status) == SIGQUIT)
-        write(1, "Quit (core dumped)\n", 20);
+	pid = wait(&status);
+	while (pid > 0)
+	{
+		if (pid == last_pid)
+		{
+			if (WIFEXITED(status))
+				g_exit_status = WEXITSTATUS(status);
+			else if (WIFSIGNALED(status))
+				g_exit_status = 128 + WTERMSIG(status);
+		}
+		pid = wait(&status);
+	}
+	if (WTERMSIG(status) == SIGQUIT)
+		write(1, "Quit (core dumped)\n", 20);
 }
 
 /*
@@ -118,21 +118,21 @@ if (!args[1]) = Aucun argument -> exit 0
 exit(255); = quitter avec code d'erreur, comme Bash
 2 dernieres lignes = Convertir et tronquer à 8 bits comme Bash
 */
-void fake_exit_builtin(char **args)
+void	fake_exit_builtin(char **args)
 {
-    long long exit_value;
+	long long	exit_value;
 
-    exit_value = 0;
-    if (!args[1])
-        exit(0);
-    if (!is_valid_numeric_argument(args[1]))
-    {
-        fprintf(stderr, "minishell: exit: %s: numeric argument required\n",
-                args[1]);
-        exit(255);
-    }
-    exit_value = ft_atoull(args[1]);
-    exit((unsigned char)(exit_value));
+	exit_value = 0;
+	if (!args[1])
+		exit(0);
+	if (!is_valid_numeric_argument(args[1]))
+	{
+		fprintf(stderr, "minishell: exit: %s: numeric argument required\n", \
+				args[1]);
+		exit(255);
+	}
+	exit_value = ft_atoull(args[1]);
+	exit((unsigned char)(exit_value));
 }
 
 // void	exec_pipes(t_com_list *cmds, char ***envcp)

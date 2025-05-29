@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 16:08:55 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/28 11:45:17 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/05/29 11:41:46 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,30 +39,31 @@ char *concat_command(char *current_command, char *new_part)
     return (new_command);
 }
 
-void free_file_list(t_file_list *list)
+void	free_file_list(t_file_list *list)
 {
-    t_file_list *tmp;
+	t_file_list	*tmp;
 
-    while (list)
-    {
-        tmp = list;
-        list = list->next;
-        if (tmp->filename)
-            free(tmp->filename);
-        free(tmp);
-    }
+	while (list)
+	{
+		tmp = list;
+		list = list->next;
+		if (tmp->filename)
+			free(tmp->filename);
+		free(tmp);
+	}
 }
 
-int limiter_is_quoted(const char *str)
+int	limiter_is_quoted(const char *str)
 {
-    int len;
+	int	len;
 
-    if (!str)
-        return (0);
-    len = ft_strlen(str);
-    if ((str[0] == '"' && str[len - 1] == '"') || (str[0] == '\'' && str[len - 1] == '\''))
-        return (1);
-    return (0);
+	if (!str)
+		return (0);
+	len = ft_strlen(str);
+	if ((str[0] == '"' && str[len - 1] == '"')
+		|| (str[0] == '\'' && str[len - 1] == '\''))
+		return (1);
+	return (0);
 }
 /*
 int handle_heredoc(char *limiter,char **envcp)
@@ -111,7 +112,7 @@ int handle_heredoc(char *limiter,char **envcp)
     return (pipefd[0]);
 }*/
 
-int handle_heredoc(char *limiter, char **envcp)
+int	handle_heredoc(char *limiter, char **envcp)
 {
     int pipefd[2];
     char *line = NULL;
@@ -125,7 +126,6 @@ int handle_heredoc(char *limiter, char **envcp)
         is_heredoc = 1; // quoted → pas d'expansion
     else
         is_heredoc = 0; // pas quoted → expansion des variables
-
     // Expand + clean le limiter
     expanded_limiter = replace_all_variables(limiter, envcp, is_heredoc); // is_heredoc = 0 pour expansion complète
     cleaned_limiter = remove_quotes_or_slash(expanded_limiter);
@@ -410,8 +410,14 @@ t_com_list *tokens_to_cmds(t_token *tokens, char **envcp)
     return (cmd_list);
 }
 
-int is_builting(char *cmd)
+int	is_builting(char *cmd)
 {
-    return (
-        ft_strcmp(cmd, "exit") == 0 || ft_strcmp(cmd, "cd") == 0 || ft_strcmp(cmd, "pwd") == 0 || ft_strcmp(cmd, "echo") == 0 || ft_strcmp(cmd, "env") == 0 || ft_strcmp(cmd, "export") == 0 || ft_strcmp(cmd, "unset") == 0);
+	return (
+		ft_strcmp(cmd, "exit") == 0
+		|| ft_strcmp(cmd, "cd") == 0
+		|| ft_strcmp(cmd, "pwd") == 0
+		|| ft_strcmp(cmd, "echo") == 0
+		|| ft_strcmp(cmd, "env") == 0
+		|| ft_strcmp(cmd, "export") == 0
+		|| ft_strcmp(cmd, "unset") == 0);
 }

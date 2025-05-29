@@ -6,98 +6,100 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 10:25:54 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/23 16:08:22 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/05/29 11:04:37 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
 // Crée une nouvelle commande dans la liste de commande
-t_com_list *list_new(char *command)
+t_com_list	*list_new(char *command)
 {
-    t_com_list *new;
+	t_com_list	*new;
 
-    new = malloc(sizeof(t_com_list));
-    if (!new)
-        return (NULL);
-    if (command)
-        new->command = ft_strdup(command);
-    else    
-        new->command = NULL;
-    new->is_pipe = 0;
-    new->next = NULL;
-    new->all_outfilles = NULL;
-    init_cmds(new);
-    return (new);
+	new = malloc(sizeof(t_com_list));
+	if (!new)
+		return (NULL);
+	if (command)
+		new->command = ft_strdup(command);
+	else
+		new->command = NULL;
+	new->is_pipe = 0;
+	new->next = NULL;
+	new->all_outfilles = NULL;
+	init_cmds(new);
+	return (new);
 }
 
 // Trouve le dernier élément de la liste de commandes
-t_com_list *get_last(t_com_list *list)
+t_com_list	*get_last(t_com_list *list)
 {
-    while (list && list->next != NULL)
-        list = list->next;
-    return (list);
+	while (list && list->next != NULL)
+		list = list->next;
+	return (list);
 }
 
 // Ajoute une nouvelle commande à la fin de la liste des commandes
-void add_bottom(t_com_list **list, t_com_list *new)
+void	add_bottom(t_com_list **list, t_com_list *new)
 {
-    t_com_list *end_new;
+	t_com_list	*end_new;
 
-    if (!new)
-        return;
-    if (!*list)
-    {
-        *list = new;
-        return;
-    }
-    end_new = get_last(*list);
-    end_new->next = new;
+	if (!new)
+		return ;
+	if (!*list)
+	{
+		*list = new;
+		return ;
+	}
+	end_new = get_last(*list);
+	end_new->next = new;
 }
 
-t_com_list *fill_values(char **commands)
+t_com_list	*fill_values(char **commands)
 {
-    t_com_list *list;
-    int i;
+	t_com_list	*list;
+	int			i;
 
-    i = 0;
-    if (commands[i] == NULL)
-        return (0);
-    while (commands[i] != NULL)
-    {
-        if (i == 0)
-            list = list_new(commands[i]);
-        else
-            add_bottom(&list, list_new(commands[i]));
-        i++;
-    }
-    return (list);
+	i = 0;
+	if (commands[i] == NULL)
+		return (0);
+	while (commands[i] != NULL)
+	{
+		if (i == 0)
+			list = list_new(commands[i]);
+		else
+			add_bottom(&list, list_new(commands[i]));
+		i++;
+	}
+	return (list);
 }
 
 // ajouter un fichier à la liste
-void add_outfile(t_file_list **list, char *filename, int flag)
+void	add_outfile(t_file_list **list, char *filename, int flag)
 {
-    t_file_list *new = malloc(sizeof(t_file_list));
-    new->filename = ft_strdup(filename);
-    new->flag = flag;
-    new->next = NULL;
+	t_file_list	*new;
+	t_file_list	*tmp;
 
-    if (*list == NULL)
-        *list = new;
-    else
-    {
-        t_file_list *tmp = *list;
-        while (tmp->next)
-            tmp = tmp->next;
-        tmp->next = new;
-    }
+	new = malloc(sizeof(t_file_list));
+	new->filename = ft_strdup(filename);
+	new->flag = flag;
+	new->next = NULL;
+	if (*list == NULL)
+		*list = new;
+	else
+	{
+        tmp = *list;
+		while (tmp->next)
+			tmp = tmp->next;
+		tmp->next = new;
+	}
 }
 
-void init_cmds(t_com_list *command)
+void	init_cmds(t_com_list *command)
 {
-    command->outfile = NULL;
-    command->infile = NULL;
-    command->errfile = NULL;
-    command->flag_in = 0;
-    command->flag_out = 0;
+	command->outfile = NULL;
+	command->infile = NULL;
+	command->errfile = NULL;
+	command->flag_in = 0;
+	command->flag_out = 0;
 }
