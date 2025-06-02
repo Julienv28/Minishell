@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 16:08:55 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/29 13:39:25 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/02 14:35:24 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,66 +112,130 @@ int handle_heredoc(char *limiter,char **envcp)
     return (pipefd[0]);
 }*/
 
-int	handle_heredoc(char *limiter, char **envcp)
+static char	*generate_tmp_filename(void)
 {
-    int pipefd[2];
-    char *line = NULL;
-    char *expanded_line = NULL;
-    char *expanded_limiter = NULL;
-    char *cleaned_limiter = NULL;
-    int is_heredoc;
+	static int	counter;
+	char		*prefix;
+	char		*pid_str;
+	char		*count_str;
 
-    // Expansion du limiter (si pas entre quotes)
-    if (limiter_is_quoted(limiter))
-        is_heredoc = 1; // quoted → pas d'expansion
-    else
-        is_heredoc = 0; // pas quoted → expansion des variables
-    // Expand + clean le limiter
-    expanded_limiter = replace_all_variables(limiter, envcp, is_heredoc); // is_heredoc = 0 pour expansion complète
-    cleaned_limiter = remove_quotes_or_slash(expanded_limiter);
-    if (!cleaned_limiter)
-        cleaned_limiter = ft_strdup("");
-    free(expanded_limiter);
-
-    if (pipe(pipefd) == -1)
-    {
-        perror("pipe");
-        free(cleaned_limiter);
-        return -1;
-    }
-
-    printf("detection HEREDOC\n");
-    printf("filename = %s\n", cleaned_limiter);
-    printf("limiteur quote = %s et heredoc = %d\n", limiter, is_heredoc);
-    while (1)
-    {
-        line = readline("> ");
-        if (!line)
-            break;
-        printf("DEBUG: readline retourné: \"%s\"\n", line);
-        printf("DEBUG: line=\"%s\" (%zu chars), limiter=\"%s\" (%zu chars)\n",
-               line, ft_strlen(line),
-               cleaned_limiter, ft_strlen(cleaned_limiter));
-        // Fin du heredoc ?
-        if (ft_strcmp(line, cleaned_limiter) == 0)
-        {
-            free(line);
-            break;
-        }
-        expanded_line = replace_all_variables(line, envcp, is_heredoc);
-        printf("before expanded = %s\n", line);
-        printf("after expanded = %s\n", expanded_line);
-
-        write(pipefd[1], expanded_line, ft_strlen(expanded_line));
-        write(pipefd[1], "\n", 1);
-
-        free(line);
-        free(expanded_line);
-    }
-    free(cleaned_limiter);
-    close(pipefd[1]);
-    return pipefd[0];
+	counter = 0;
+	prefix = ft_strdup("/tmp/.heredoc_");
+	pid_str = ft_itoa(getpid());
+	count_str = ft_itoa(counter++);
+	if (!prefix || !pid_str || !count_str)
+	{
+		free(prefix);
+		free(pid_str);
+		free(count_str);
+		return (NULL);
+	}
+	char	*tmp = ft_strjoin(prefix, pid_str);
+	char	*final = ft_strjoin(tmp, count_str);
+	free(prefix);
+	free(pid_str);
+	free(count_str);
+	free (tmp);
+	return (final);
 }
+
+char	*handle_heredoc(char *limiter, char **envcp, int expand_var)
+{
+	int		heredoc_fd;
+	char	*filename;
+	char	*line;
+	char	*cleaned_limiter;
+	char	*processed;
+
+	filename = generate_tmp_filename();
+	heredoc_fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (heredoc_fd == -1)
+		return(free(filename), NULL);
+	while (1)
+	{
+		line = readline("> ");
+		if (!line)
+			break ;
+		cleaned_limiter = remove_quotes_or_slash(ft_strdup(limiter));
+		if (ft_strcmp(line, cleaned_limiter) == 0)
+		{
+			free(cleaned_limiter);
+			free(line);
+			break ;
+		}
+		free (cleaned_limiter);
+		processed = (expand_var) 
+			? replace_all_variables(line, envcp, 1)
+			: line;
+		write(heredoc_fd, processed, ft_strlen(processed));
+		write(heredoc_fd, "\n", 1);
+		if (expand_var)
+			free(processed);
+	}
+	close (heredoc_fd);
+	return (filename);
+}
+
+// int	handle_heredoc(char *limiter, char **envcp)
+// {
+//     int pipefd[2];
+//     char *line = NULL;
+//     char *expanded_line = NULL;
+//     char *expanded_limiter = NULL;
+//     char *cleaned_limiter = NULL;
+//     int is_heredoc;
+
+//     // Expansion du limiter (si pas entre quotes)
+//     if (limiter_is_quoted(limiter))
+//         is_heredoc = 1; // quoted → pas d'expansion
+//     else
+//         is_heredoc = 0; // pas quoted → expansion des variables
+//     // Expand + clean le limiter
+//     expanded_limiter = replace_all_variables(limiter, envcp, is_heredoc); // is_heredoc = 0 pour expansion complète
+//     cleaned_limiter = remove_quotes_or_slash(expanded_limiter);
+//     if (!cleaned_limiter)
+//         cleaned_limiter = ft_strdup("");
+//     free(expanded_limiter);
+
+//     if (pipe(pipefd) == -1)
+//     {
+//         perror("pipe");
+//         free(cleaned_limiter);
+//         return -1;
+//     }
+
+//     printf("detection HEREDOC\n");
+//     printf("filename = %s\n", cleaned_limiter);
+//     printf("limiteur quote = %s et heredoc = %d\n", limiter, is_heredoc);
+//     while (1)
+//     {
+//         line = readline("> ");
+//         if (!line)
+//             break;
+//         printf("DEBUG: readline retourné: \"%s\"\n", line);
+//         printf("DEBUG: line=\"%s\" (%zu chars), limiter=\"%s\" (%zu chars)\n",
+//                line, ft_strlen(line),
+//                cleaned_limiter, ft_strlen(cleaned_limiter));
+//         // Fin du heredoc ?
+//         if (ft_strcmp(line, cleaned_limiter) == 0)
+//         {
+//             free(line);
+//             break;
+//         }
+//         expanded_line = replace_all_variables(line, envcp, is_heredoc);
+//         printf("before expanded = %s\n", line);
+//         printf("after expanded = %s\n", expanded_line);
+
+//         write(pipefd[1], expanded_line, ft_strlen(expanded_line));
+//         write(pipefd[1], "\n", 1);
+
+//         free(line);
+//         free(expanded_line);
+//     }
+//     free(cleaned_limiter);
+//     close(pipefd[1]);
+//     return pipefd[0];
+// }
 
 t_com_list	*tokens_to_cmds(t_token *tokens, char **envcp)
 {
@@ -257,73 +321,51 @@ t_com_list	*tokens_to_cmds(t_token *tokens, char **envcp)
                 flag = (redir_type == APPEND || redir_type == HEREDOC) ? 1 : 0;
                 fd = -1;
                 // if (redir_type == INPUT || redir_type == HEREDOC)
-                // {
-                //     fd = open_file_cmd(filename);
-                //     if (fd < 0)
-                //     {
-                //         perror(filename);
-                //         free(filename);
-                //         return NULL;
-                //     }
-                //     close(fd);
-                //     if (current_cmd)
-                //     {
-                //         current_cmd->infile = filename;
-                //         current_cmd->flag_in = flag;
-                //     }
-                //     else
-                //     {
-                //         pending_infile = filename;
-                //         pending_flag_in = flag;
-                //     }
-                // }
 
                 if (redir_type == HEREDOC)
-                {
-                    printf("detection HEREDOC\n");
-                    printf("filename = %s\n", filename);
-                    fd = handle_heredoc(filename, envcp); // Fonction pour gérer le heredoc
-                    if (fd < 0)
-                    {
-                        perror(filename);
-                        free(filename);
-                        return NULL;
-                    }
-                    free(filename);
-                    // close(fd);
-                    if (current_cmd)
-                    {
-                        current_cmd->heredoc_fd = fd;
-                        printf("DEBUG: heredoc_fd assigné : %d\n", current_cmd->heredoc_fd);
-                        current_cmd->flag_in = 1; // Flag spécifique pour HEREDOC
-                    }
-                    else // heredoc avant une commande
-                    {
-                        pending_infile = filename;
-                        pending_flag_in = 1;
-                    }
-                }
-                else if (redir_type == INPUT)
-                {
-                    fd = open_file_cmd(filename);
-                    if (fd < 0)
-                    {
-                        perror(filename);
-                        free(filename);
-                        return NULL;
-                    }
-                    close(fd);
-                    if (current_cmd)
-                    {
-                        current_cmd->infile = filename;
-                        current_cmd->flag_in = flag;
-                    }
-                    else
-                    {
-                        pending_infile = filename;
-                        pending_flag_in = flag;
-                    }
-                }
+				{
+                //     printf("detection HEREDOC\n");
+					char *lim = tmp->value;
+        			int expand = !limiter_is_quoted(lim);
+        			char *expanded = replace_all_variables(lim, envcp, 0);
+        			char *filename = handle_heredoc(expanded, envcp, expand);
+
+        			free(expanded);
+					if (!filename)
+						return(free_and_return_null(&pending_infile, &pending_outfile));
+					if (!current_cmd)
+						pending_infile = ft_strdup(filename);
+					else
+					{
+						free(current_cmd->infile);
+						current_cmd->infile = ft_strdup(filename);
+					}
+					free(filename);
+				}
+				else if (tmp->type == INPUT || tmp->type == APPEND)
+				{
+					t_token *file_token = tmp->next;
+					if (!file_token)
+						return (syntax_error(), NULL);
+					char *expanded = replace_all_variables(file_token->value, envcp, 0);
+					if (!current_cmd)
+					{
+						if(tmp->type == INPUT)
+						{
+							free(pending_infile);
+							pending_infile = ft_strdup(expanded);
+						}
+						else
+						{
+							free(pending_outfile);
+							pending_outfile = ft_strdup(expanded);
+						}
+					}
+					else
+						apply_redirection(current_cmd, expanded, tmp->type);
+					free (expanded);
+					tmp = file_token;
+				}
                 else if (redir_type == ERR_REDIR)
                 {
                     fd = open_errfile(filename);
@@ -421,3 +463,70 @@ int	is_builting(char *cmd)
 		|| ft_strcmp(cmd, "export") == 0
 		|| ft_strcmp(cmd, "unset") == 0);
 }
+
+                // if (redir_type == INPUT || redir_type == HEREDOC)
+                // {
+                //     fd = open_file_cmd(filename);
+                //     if (fd < 0)
+                //     {
+                //         perror(filename);
+                //         free(filename);
+                //         return NULL;
+                //     }
+                //     close(fd);
+                //     if (current_cmd)
+                //     {
+                //         current_cmd->infile = filename;
+                //         current_cmd->flag_in = flag;
+                //     }
+                //     else
+                //     {
+                //         pending_infile = filename;
+                //         pending_flag_in = flag;
+                //     }
+                // }
+
+               //     printf("detection HEREDOC\n");
+                //     printf("filename = %s\n", filename);
+                //     fd = handle_heredoc(filename, envcp); // Fonction pour gérer le heredoc
+                //     if (fd < 0)
+                //     {
+                //         perror(filename);
+                //         free(filename);
+                //         return NULL;
+                //     }
+                //     free(filename);
+                //     // close(fd);
+                //     if (current_cmd)
+                //     {
+                //         current_cmd->heredoc_fd = fd;
+                //         printf("DEBUG: heredoc_fd assigné : %d\n", current_cmd->heredoc_fd);
+                //         current_cmd->flag_in = 1; // Flag spécifique pour HEREDOC
+                //     }
+                //     else // heredoc avant une commande
+                //     {
+                //         pending_infile = filename;
+                //         pending_flag_in = 1;
+                //     }
+                // }
+                // else if (redir_type == INPUT)
+                // {
+                //     fd = open_file_cmd(filename);
+                //     if (fd < 0)
+                //     {
+                //         perror(filename);
+                //         free(filename);
+                //         return NULL;
+                //     }
+                //     close(fd);
+                //     if (current_cmd)
+                //     {
+                //         current_cmd->infile = filename;
+                //         current_cmd->flag_in = flag;
+                //     }
+                //     else
+                //     {
+                //         pending_infile = filename;
+                //         pending_flag_in = flag;
+                //     }
+                // }

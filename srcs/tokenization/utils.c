@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 10:39:23 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/29 10:42:03 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/02 14:26:11 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,4 +46,28 @@ void	free_cmd(t_com_list *command)
 		free(command);
 		command = tmp;
 	}
+}
+
+void apply_redirection(t_com_list *curr_cmd, char *expanded, int redir_type)
+{
+    if (!curr_cmd || !expanded)
+        return ;
+
+    if (redir_type == INPUT)
+    {
+        // Libérer l'ancien infile s'il existe
+        if (curr_cmd->infile)
+            free(curr_cmd->infile);
+        curr_cmd->infile = strdup(expanded);
+    }
+    else if (redir_type == APPEND)
+    {
+        // Libérer l'ancien outfile s'il existe
+        if (curr_cmd->outfile)
+            free(curr_cmd->outfile);
+        curr_cmd->outfile = strdup(expanded);
+
+        // Définir le mode append ou écriture simple
+        curr_cmd->append_mode = (redir_type == APPEND) ? 1 : 0;
+    }
 }
