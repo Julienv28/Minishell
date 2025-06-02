@@ -24,7 +24,6 @@ int	main(int ac, char **av, char **envp)
 
     (void)ac;
     (void)av;
-
     envcp = ft_env_dup(envp);
     signal(SIGTSTP, SIG_IGN);
     signal(SIGINT, handler_sigint); // pour readline seulement
