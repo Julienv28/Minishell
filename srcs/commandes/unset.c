@@ -3,47 +3,42 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:21 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/23 16:08:41 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/02 10:46:42 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
 // La fonction est longue, il faudra la raccourcir...
-void ft_unset(char **args, char ***envcp)
+int ft_unset(char **args, char ***envcp)
 {
     int i;
     int j;
     int k;
     int size;
     char **new_env;
+    int exit_status = 0;
 
     if (!args[1])
-    {
-        // ft_putstr_fd("unset: not enough arguments\n", STDOUT_FILENO);
-        return;
-    }
-
+        return (0);
     i = 1;
     while (args[i])
     {
         if (args[i][0] == '-' && args[i][1] != '\0') // Si l'argument commence par '-'
         {
-            ft_putstr_fd("bash: ", STDERR_FILENO);
-            ft_putstr_fd(args[i], STDERR_FILENO);
-            ft_putstr_fd(": invalid option\n", STDERR_FILENO);
-            return;
+            printf("minishell: %s: invalid option\n", args[i]);
+            g_exit_status = 2;
+            return (g_exit_status);
         }
         // Cas special avec !
         if (strchr(args[i], '!')) // Si un '!' est trouvé dans le nom de la variable
         {
-            ft_putstr_fd("bash: unset: `", STDERR_FILENO);
-            ft_putstr_fd(args[i], STDERR_FILENO);
-            ft_putstr_fd("': event not found\n", STDERR_FILENO);
-            return;
+            printf("minishell: unset: `%s': event not found\n", args[i]);
+            g_exit_status = 1;
+            return (g_exit_status);
         }
         i++;
     }
@@ -52,9 +47,8 @@ void ft_unset(char **args, char ***envcp)
     {
         if (!is_valid_name(args[i]))
         {
-            // ft_putstr_fd("bash: unset: `", STDERR_FILENO);
-            // ft_putstr_fd(args[i], STDERR_FILENO);
-            // ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
+            printf("minishell: unset: `%s': not a valid identifier\n", args[i]);
+            exit_status = 1;
             i++;
             continue;
         }
@@ -64,7 +58,7 @@ void ft_unset(char **args, char ***envcp)
             size++;
         new_env = malloc(sizeof(char *) * size);
         if (!new_env)
-            return;
+            return (0);
         j = 0;
         k = 0;
         while ((*envcp)[j])
@@ -80,4 +74,5 @@ void ft_unset(char **args, char ***envcp)
         *envcp = new_env;
         i++;
     }
+    return (exit_status);
 }

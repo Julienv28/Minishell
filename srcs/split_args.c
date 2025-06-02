@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   split_args.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:06:45 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/26 15:59:55 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/02 10:37:52 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static int	count_words(const char *s, char sep)
+static int count_words(const char *s, char sep)
 {
     int i = 0;
     int count = 0;
@@ -40,29 +40,35 @@ static int	count_words(const char *s, char sep)
     return (count);
 }
 
-static char	*word_dup(const char *s, int start, int end)
+static char *word_dup(const char *s, int start, int end)
 {
-	char	*res;
-	int		i;
+    char *res;
+    int i;
 
-	res = malloc(end - start + 1);
-	i = 0;
-	if (!res)
-		return (NULL);
-	while (start < end)
-		res[i++] = s[start++];
-	res[i] = '\0';
-	return (res);
+    res = malloc(end - start + 1);
+    i = 0;
+    if (!res)
+        return (NULL);
+    while (start < end)
+        res[i++] = s[start++];
+    res[i] = '\0';
+    return (res);
 }
 
 char **split_args(const char *s, char sep)
 {
-    int i = 0, j = 0, start;
-    int single_quote = 0;
-    int double_quote = 0;
+    int i;
+    int j;
+    int start;
+    int single_quote;
+    int double_quote;
     char **tab;
     char *raw_word;
 
+    i = 0;
+    j = 0;
+    single_quote = 0;
+    double_quote = 0;
     if (!s)
         return NULL;
 
@@ -92,7 +98,7 @@ char **split_args(const char *s, char sep)
         tab[j++] = raw_word;
     }
     tab[j] = NULL;
-    return tab;
+    return (tab);
 }
 
 char *remove_quotes_or_slash(char *str)

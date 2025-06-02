@@ -1,15 +1,7 @@
 #include "../includes/minishell.h"
 
-// Ctrl+C (SIGINT) : Interrompt la commande en cours mais ne ferme pas le shell.
-// Ctrl +D(EOF) : Quitte proprement le shell.
-// Ctrl +\ (SIGQUIT) : Ignoré ou utilisé pour afficher un dump mémoire.Fonctions utiles
-
 void	set_signal_action(void)
 {
-    // if (signal(SIGINT, signal_handler) == SIG_ERR)
-    //     exit_error();
-    // else if (signal(SIGQUIT, signal_handler) == SIG_ERR)
-    //     exit_error();
 	signal(SIGINT, handler_sigint); // Ctrl+C : annule readline
 	signal(SIGQUIT, SIG_IGN);       // Ctrl+\ : ignoré comme bash
 }

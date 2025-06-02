@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 10:45:02 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/27 14:42:08 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/02 10:23:51 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int execute(t_com_list *cmds, char ***envcp)
 {
     char **args;
     pid_t pid;
+	int	status;
 
     if (!cmds)
         return (-1);
@@ -38,8 +39,8 @@ int execute(t_com_list *cmds, char ***envcp)
     }
     else if (is_builting(args[0]))
     {
-        exec_builting(args, envcp);
-		    g_exit_status = 0;
+        status = exec_builting(args, envcp);
+		g_exit_status = status;
     }
     else
     {
