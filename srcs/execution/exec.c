@@ -143,7 +143,6 @@ char *path_error_message(char *cmd)
     return (ft_strdup(cmd));
 }
 
-
 char *get_path(char *cmd, char **envp)
 {
     char **paths;
@@ -159,7 +158,7 @@ char *get_path(char *cmd, char **envp)
     path = search_path(paths, cmd);
     if (path == NULL)
     {
-        printf("minishell: command not found: %s\n", cmd);
+        fprintf(stderr, "minishell: command not found: %s\n", cmd);
         g_exit_status = 127;
     }
     else if (access(path, X_OK) != 0)

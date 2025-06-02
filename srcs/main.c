@@ -38,8 +38,8 @@ int	main(int ac, char **av, char **envp)
         {
             printf("DEBUG: readline a retourné NULL, on va quitter\n");
             ft_putstr_fd("exit\n", STDOUT_FILENO);
-			    exit(g_exit_status);
-		    }
+			exit(g_exit_status);
+		}
         add_history(input);
         tokens = create_tokens(&input, envcp);
         if (tokens == NULL)
@@ -63,8 +63,6 @@ int	main(int ac, char **av, char **envp)
                     has_redir_error = ft_redirection(command, &mem_fd_in, &mem_fd_out, &mem_fd_err);
                     if (has_redir_error != 0)
                         g_exit_status = 1;
-                    else
-                        g_exit_status = 0;
                     restore_redirections(mem_fd_in, mem_fd_out, mem_fd_err);
                     mem_fd_in = mem_fd_err = -1;
                 }

@@ -27,7 +27,6 @@ t_token	*add_token(t_token **head, char *str, int type)
 // int	handle_token_type(char **str, int *i, t_token **tokens, char **envcp)
 // {
 // 	int	status;
-
 // 	status = handle_redirection(*str, i, tokens, envcp);
 // 	if (status == -1)
 // 		return (-1);
@@ -84,6 +83,28 @@ t_token	*add_token(t_token **head, char *str, int type)
 // 	}
 // 	return (tokens);
 // }
+	/*tokens = NULL;
+	i = 0;
+	expect_cmd = 1;
+	while ((*str)[i])
+	{
+		while ((*str)[i] == ' ')
+			i++;
+		if (!(*str)[i])
+			break ;
+		status = handle_special_char(str, &i, &tokens, &expect_cmd);
+		if (status == -1)
+			return (free_tokens(tokens), NULL);
+		if (status == 1) // Pertinent ici ? Parce que de toute facon on a 1 et -1, nothing else.
+			continue ;
+		status = handle_token_type(str, &i, &tokens, envcp);
+		if (status == -1)
+			return (free_tokens(tokens), NULL);
+		if (handle_word(str, &i, &tokens, &expect_cmd) == -1)
+			return (free_tokens(tokens), NULL);
+	}
+	return (tokens);
+}*/
 
 
 // Analyser la ligne de commande et créer des tokens
