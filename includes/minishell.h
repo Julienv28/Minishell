@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/02 14:38:23 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/02 14:29:34 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ typedef struct s_com_list
     char *outfile;
     char *infile;
     char *errfile;
+    char    append_mode;
     int heredoc_fd;
     int flag_in; // 1 si redirection >>, 0 sinon
     int flag_out;
@@ -88,7 +89,7 @@ typedef struct s_token
 } t_token;
 
 // Message prompt + history (Oceane) ==> a ameliorer
-int handle_heredoc(char *limiter, char **envcp);
+// int handle_heredoc(char *limiter, char **envcp);
 int limiter_is_quoted(const char *str);
 void fake_exit_builtin(char **args);
 int is_valid_numeric_argument(char *str);
@@ -120,6 +121,7 @@ int ft_redirection(t_com_list *command, int *mem_fd_in, int *mem_fd_out, int *me
 int open_file_cmd(char *infile);
 int open_outfile(char *outfile, int append);
 int open_errfile(char *errfile);
+char	*handle_heredoc(char *limiter, char **envcp, int expand_var);
 
 // Parsing
 t_com_list *fill_values(char **commands);
@@ -140,7 +142,7 @@ int check_input(char *str, int i);
 int ft_isnumber(char *str);
 
 // Commandes
-void ft_echo(char **args);
+void ft_echo(char **args, char ***envcp);
 int ft_cd(char **args, char ***envcp);
 int ft_pwd(char **args, char ***envcp);
 int ft_exit(char **args, int in_child);
@@ -169,8 +171,11 @@ int parse_pipes(char **args);
 
 // Utils
 void exit_error(void);
+void *free_and_return_null(char **pending_infile, char **pending_outfile);
+int syntax_error(void);
 // int open_file(char *av, int i);
 //  void ft_exec(char *av, char **envp);
+void apply_redirection(t_com_list *curr_cmd, char *expanded, int redir_type);
 void free_tab(char **tab);
 void free_file_list(t_file_list *list);
 char **split_args(const char *s, char sep);
@@ -185,6 +190,7 @@ int parse_args_echo(char **args);
 int count_ags(char **args);
 int check_events(char *arg);
 char *clean_spaces(char *str);
+char	*add_space_if_needed(char *arg, char **envcp);
 
 void print_cmd_list(t_com_list *cmd_list);
 void add_outfile(t_file_list **list, char *filename, int flag);

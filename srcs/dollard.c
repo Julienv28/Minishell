@@ -47,10 +47,8 @@ char *expand_env_variable(char *str, int *i, char *res, char **envcp, int quoted
         env_value = get_env_value(var_name, envcp); // On garde les espaces dans le cas de la citation
     else
         env_value = get_value_cleaned(var_name, envcp); // On nettoie les espaces si non cité
-
     if (!env_value)
         env_value = ""; // En cas d'absence de variable
-
     tmp = ft_strjoin(res, env_value); // Concaténation avec le résultat
     free(res);
     return tmp;
@@ -77,7 +75,7 @@ char *replace_variable_or_special(char *str, int *i, char *res, char **envcp, in
     if (str[*i] == '"' && str[*i + 1] == '"')
     {
         (*i) += 2;                    // Skip les guillemets vides
-        return append_char(res, '\0');
+        return (res);
     }
 
     // Cas pour $"" suivi d'un autre " (chaîne vide) → chaîne vide mais $ reste
