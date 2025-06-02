@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 16:08:55 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/29 13:39:25 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/02 14:06:07 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -309,6 +309,7 @@ t_com_list	*tokens_to_cmds(t_token *tokens, char **envcp)
                     if (fd < 0)
                     {
                         perror(filename);
+                        g_exit_status = 1;
                         free(filename);
                         return NULL;
                     }

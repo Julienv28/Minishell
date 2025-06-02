@@ -23,7 +23,7 @@ t_token	*add_token(t_token **head, char *str, int type)
 	}
 	return (new);
 }
-
+/*
 int	handle_token_type(char **str, int *i, t_token **tokens, char **envcp)
 {
 	int	status;
@@ -83,9 +83,8 @@ t_token	*create_tokens(char **str, char **envcp)
 			return (free_tokens(tokens), NULL);
 	}
 	return (tokens);
-}
+}*/
 
-/*
 // Analyser la ligne de commande et créer des tokens
 t_token *create_tokens(char **str, char **envcp)
 {
@@ -132,4 +131,4 @@ t_token *create_tokens(char **str, char **envcp)
         }
     }
     return (tokens);
-}*/
+}
