@@ -32,7 +32,6 @@ int	main(int ac, char **av, char **envp)
     while (1)
     {
         set_signal_action();
-        // printf("\n==================== NOUVELLE BOUCLE ====================\n");
         input = readline(GREEN "minishell$ " RESET);
         if (!input)
         {

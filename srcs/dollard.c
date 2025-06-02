@@ -75,7 +75,7 @@ char *replace_variable_or_special(char *str, int *i, char *res, char **envcp, in
     if (str[*i] == '"' && str[*i + 1] == '"')
     {
         (*i) += 2;                    // Skip les guillemets vides
-        return append_char(res, '\0');
+        return (res);
     }
 
     // Cas pour $"" suivi d'un autre " (chaîne vide) → chaîne vide mais $ reste
