@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   arguments.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:06:51 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/29 13:27:18 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/02 16:19:16 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,19 +57,20 @@ int prompt_for_quotes(char **str)
     ensure_newline_at_end(str);
     while (check_mismatched_quotes(*str) == 1)
     {
+		signal(SIGINT, heredoc_sigint_handler); // handler temporaire
         input = readline("> ");
-        if (!input)
+		signal(SIGINT, handler_sigint);
+		if (g_exit_status == 130)
         {
-            ft_putstr_fd("minishell: unexpected EOF while looking for matching `''\n", STDERR_FILENO);
+            free(input);  // readline retourne une ligne vide, qu'on ignore
+            return -1;    // on quitte prompt_for_quotes proprement
+        }
+		if (!input)
+		{
+			ft_putstr_fd("minishell: unexpected EOF while looking for matching `''\n", STDERR_FILENO);
             ft_putstr_fd("syntax error: unexpected end of file\n", STDERR_FILENO);
             return (-1);
-        }
-        else if (g_exit_status == 130)
-        {
-            g_exit_status = 0;
-            free(input);
-            return (-1);
-        }
+		}
         tmp = ft_strjoin(*str, input);
         if (check_mismatched_quotes(tmp) == 1)
         {

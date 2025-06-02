@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/29 10:38:29 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/02 14:38:23 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,7 @@ char *replace_all_variables(char *str, char **envcp, int avoid_expand);
 void expand_variables(char **args, char **envcp, int is_heredoc);
 char *replace_variable_or_special(char *str, int *i, char *res, char **envcp, int quoted);
 char *append_char(char *res, char c);
+void heredoc_sigint_handler(int sig);
 
 // Tokens
 t_token *add_token(t_token **head, char *str, int type);
