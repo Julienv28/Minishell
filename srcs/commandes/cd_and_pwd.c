@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd_and_pwd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 16:04:31 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/28 14:40:41 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/02 11:41:35 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,14 @@ int ft_cd(char **args, char ***envcp)
 
 	if (!getcwd(current_dir, sizeof(current_dir)))
 		current_dir[0] = '\0';
+	if (args[1] && args[1][0] == '\0')
+	{
+    	if (!home)
+    	{
+        	ft_putstr_fd("cd: HOME not set\n", STDERR_FILENO);
+        	return (1);
+		}
+	}
 	if (args[1] && args[2])
 	{
 		ft_putstr_fd("minishell: cd: too many arguments\n", STDERR_FILENO);

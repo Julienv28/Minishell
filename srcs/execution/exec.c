@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/02 11:30:12 by juvitry           #+#    #+#             */
+/*   Updated: 2025/06/02 12:06:58 by juvitry          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 #include <errno.h>
 
@@ -20,7 +32,7 @@ int exec_builting(char **args, char ***envcp)
     else if (ft_strcmp(args[0], "pwd") == 0)
         return (ft_pwd(args, envcp));
     else if (ft_strcmp(args[0], "echo") == 0)
-        return (ft_echo(args), 0); // Appel direct avec les args
+        return (ft_echo(args, envcp), 0); // Appel direct avec les args
     else if (ft_strcmp(args[0], "export") == 0)
     {
         if (!args[1]) // Aucun argument : afficher l'environnement
