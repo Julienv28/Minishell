@@ -72,30 +72,30 @@ int	is_valid_numeric_argument(char *str)
 	return (1);
 }
 
-int ft_exit(char **args, int in_child)
+int	ft_exit(char **args, int in_child)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    while (args[i])
-        i++;
-    if (in_child)
-        printf("exit\n");
-    if (i == 1) // Si av = 1 donc juste exit quitter avec le code 0 (succes)
-        exit(0);
-    else if (!is_valid_numeric_argument(args[1])) // Si 1e arg n'est pas un entier, on affiche un message d’erreur et on quitte avec le code 255 (comportement standard).
-    {
-        printf("exit\n");
-        printf("minishell: exit: %s: numeric argument required\n", args[1]);
+	i = 0;
+	while (args[i])
+		i++;
+	if (in_child)
+		printf("exit\n");
+	if (i == 1)
+		exit(0);
+	else if (!is_valid_numeric_argument(args[1]))
+	{
+		printf("exit\n");
+		printf("minishell: exit: %s: numeric argument required\n", args[1]);
 		exit(255);
-    }
-    else if (i > 2)
-    {
-        printf("exit\n");
-        ft_putstr_fd("minishell: exit: too many arguments\n", STDERR_FILENO);
-        g_exit_status = 1;
+	}
+	else if (i > 2)
+	{
+		printf("exit\n");
+		ft_putstr_fd("minishell: exit: too many arguments\n", STDERR_FILENO);
+		g_exit_status = 1;
 		return (g_exit_status);
-    }
-    exit(ft_atoi(args[1]));
+	}
+	exit(ft_atoi(args[1]));
 	return (g_exit_status);
 }

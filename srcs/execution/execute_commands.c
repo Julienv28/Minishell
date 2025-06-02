@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_commands.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 10:45:02 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/02 10:23:51 by opique           ###   ########.fr       */
+/*   Updated: 2025/05/29 10:31:15 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,11 @@ int execute(t_com_list *cmds, char ***envcp)
     if (!args || !args[0] || args[0][0] == '\0')
     {
         ft_putstr_fd("minishell: ", STDERR_FILENO);
-		ft_putstr_fd(args && args[0] ? args[0] : "", STDERR_FILENO);
-		ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
-		g_exit_status = 127;
-		free_tab(args);
-		return (-1);
+        ft_putstr_fd(args && args[0] ? args[0] : "", STDERR_FILENO);
+        ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+        g_exit_status = 127;
+        free_tab(args);
+        return (-1);
     }
     // printf("command expand %s\n", cmds->command);
     if (is_builting(args[0]) && ft_strcmp(args[0], "exit") == 0)
@@ -40,7 +40,7 @@ int execute(t_com_list *cmds, char ***envcp)
     else if (is_builting(args[0]))
     {
         status = exec_builting(args, envcp);
-		g_exit_status = status;
+		    g_exit_status = status;
     }
     else
     {
@@ -90,7 +90,7 @@ int execute(t_com_list *cmds, char ***envcp)
         }
     }
     free_tab(args);
-	return (g_exit_status);
+    return (g_exit_status);
 }
 
 static void	wait_children(pid_t last_pid)
@@ -110,9 +110,8 @@ static void	wait_children(pid_t last_pid)
 		}
 		pid = wait(&status);
 	}
-	if (WTERMSIG(status) == SIGQUIT)             
+	if (WTERMSIG(status) == SIGQUIT)
 		write(1, "Quit (core dumped)\n", 20);
-			
 }
 
 /*
@@ -130,13 +129,12 @@ void	fake_exit_builtin(char **args)
 	if (!is_valid_numeric_argument(args[1]))
 	{
 		fprintf(stderr, "minishell: exit: %s: numeric argument required\n", \
-			args[1]);
+				args[1]);
 		exit(255);
 	}
 	exit_value = ft_atoull(args[1]);
 	exit((unsigned char)(exit_value));
 }
-
 
 // void	exec_pipes(t_com_list *cmds, char ***envcp)
 // {
@@ -232,90 +230,93 @@ void	fake_exit_builtin(char **args)
 // 	wait_children();
 // }
 
-int	exec_pipes(t_com_list *cmds, char **envcp)
+int exec_pipes(t_com_list *cmds, char **envcp)
 {
-	t_com_list	*curr = cmds;
-	pid_t		pid;
-	int			pipefd[2];
-	int			prev_fd = -1;
-	pid_t		last_pid = -1;
+    t_com_list *curr = cmds;
+    pid_t pid;
+    int pipefd[2];
+    int prev_fd = -1;
+    pid_t last_pid = -1;
 
-	while (curr)
-	{
-		if (curr->next)
-		{
-			if (pipe(pipefd) == -1)
-			{
-				perror("pipe");
-				return (-1);
-			}
-		}
-		else
-		{
-			pipefd[0] = -1;
-			pipefd[1] = -1;
-		}
-		pid = fork();
-		if (pid < 0)
-		{
-			perror("fork");
-			return (-1);
-		}
-		if (pid == 0) // ---CHILD---
-		{
-			// Ignorer SIGTSTP dans les processus enfants
+    while (curr)
+    {
+        if (curr->next)
+        {
+            if (pipe(pipefd) == -1)
+            {
+                perror("pipe");
+                return (-1);
+            }
+        }
+        else
+        {
+            pipefd[0] = -1;
+            pipefd[1] = -1;
+        }
+        pid = fork();
+        if (pid < 0)
+        {
+            perror("fork");
+            return (-1);
+        }
+        if (pid == 0) // ---CHILD---
+        {
+            // Ignorer SIGTSTP dans les processus enfants
             signal(SIGTSTP, SIG_IGN);
             // Processus enfant : rétablir comportement par défaut pour SIGINT et SIGQUIT
             signal(SIGINT, SIG_DFL);
             signal(SIGQUIT, SIG_DFL);
-			if (prev_fd != -1)
-			{
-				dup2(prev_fd, STDIN_FILENO);
-				close (prev_fd);
-			}
-			if (curr->next)
-			{
-				close(pipefd[0]);
-				dup2(pipefd[1], STDOUT_FILENO);
-				close(pipefd[1]);
-			}
-			char	**args = curr->args;
-			if (!args || !args[0] || args[0][0] == '\0')
-			{
-				ft_putstr_fd("minishell: ", STDERR_FILENO);
-				ft_putstr_fd(args && args[0] ? args[0] : "", STDERR_FILENO);
-				ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
-				exit(127);
-			}
-			if (is_builting(args[0]) && ft_strcmp(args[0], "exit") == 0)
-				fake_exit_builtin(args);
-			else if (is_builting(args[0]))
-				exec_builting(args, &envcp);
-			else
-				exec_cmd(args, &envcp);
-			exit(g_exit_status);
-		}
-		//---PARENT---
-		signal(SIGINT, SIG_IGN);
-		signal(SIGQUIT, SIG_IGN);
-		if (prev_fd != -1)
-			close (prev_fd);
-		if (curr->next)
-		{
-			close(pipefd[1]);
-			prev_fd = pipefd[0];
-		}
-		else
-		{
-			last_pid = pid;
-			if (pipefd[0] != -1)
-				close(pipefd[0]);
-			prev_fd = -1;
-		}
-		curr = curr->next;
-	}
-	wait_children(last_pid);
-	signal(SIGINT, handler_sigint);
-	signal(SIGQUIT, SIG_IGN);
-	return (g_exit_status);
+            if (prev_fd != -1)
+            {
+                dup2(prev_fd, STDIN_FILENO);
+                close(prev_fd);
+            }
+            if (curr->next)
+            {
+                close(pipefd[0]);
+                dup2(pipefd[1], STDOUT_FILENO);
+                close(pipefd[1]);
+            }
+            char **args = curr->args;
+            if (!args || !args[0] || args[0][0] == '\0')
+            {
+                ft_putstr_fd("minishell: ", STDERR_FILENO);
+                ft_putstr_fd(args && args[0] ? args[0] : "", STDERR_FILENO);
+                ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+                exit(127);
+            }
+            if (is_builting(args[0]) && ft_strcmp(args[0], "exit") == 0)
+                fake_exit_builtin(args);
+            else if (is_builting(args[0]))
+            {
+                int status = exec_builting(args, &envcp);
+                g_exit_status = status;
+            }
+            else
+                exec_cmd(args, &envcp);
+            exit(g_exit_status);
+        }
+        //---PARENT---
+        signal(SIGINT, SIG_IGN);
+        signal(SIGQUIT, SIG_IGN);
+        if (prev_fd != -1)
+            close(prev_fd);
+        if (curr->next)
+        {
+            close(pipefd[1]);
+            prev_fd = pipefd[0];
+        }
+        else
+        {
+            last_pid = pid;
+            if (pipefd[0] != -1)
+                close(pipefd[0]);
+            prev_fd = -1;
+        }
+        curr = curr->next;
+    }
+    wait_children(last_pid);
+    signal(SIGINT, handler_sigint);
+    signal(SIGQUIT, SIG_IGN);
+    return (g_exit_status);
 }

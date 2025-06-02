@@ -3,26 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 14:23:42 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/20 16:30:20 by opique           ###   ########.fr       */
+/*   Updated: 2025/05/28 15:10:38 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-// Liberer tab args
 void	free_tab(char **tab)
 {
 	int	i;
 
 	if (!tab)
-        return;
+		return ;
 	i = 0;
 	while (tab[i])
 	{
-		//printf("Freeing: %s\n", tab[i]);  // Ajoutez cette ligne pour voir ce que vous libér
 		free(tab[i]);
 		i++;
 	}
@@ -70,7 +68,7 @@ void	ft_freeenvp(char **envcp)
 		free(envcp[i]);
 		i++;
 	}
-	free (envcp);
+	free(envcp);
 }
 
 char	*ft_srjoin3(char *s1, char *s2, char *s3)
@@ -86,7 +84,7 @@ char	*ft_srjoin3(char *s1, char *s2, char *s3)
 	return (result);
 }
 
-char	**ft_realloc_env(char **envcp, char *new_entry)
+char    **ft_realloc_env(char **envcp, char *new_entry)
 {
 	int		i;
 	int		j;

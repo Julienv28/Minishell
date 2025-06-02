@@ -7,12 +7,12 @@ void	set_signal_action(void)
 }
 
 // handler pour SIGINT (Ctrl+C) dans readline uniquement
-void	handler_sigint(int sig)
+void handler_sigint(int sig)
 {
-	(void)sig;
-	write(1, "\n", 1);
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
-	g_exit_status = 130;
+    (void)sig;
+    write(1, "\n", 1);
+    rl_on_new_line();
+    rl_replace_line("", 0);
+    rl_redisplay();
+    g_exit_status = 130;
 }

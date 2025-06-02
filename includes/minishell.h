@@ -3,49 +3,49 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/02 10:24:41 by opique           ###   ########.fr       */
+/*   Updated: 2025/05/29 10:38:29 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
-#define MINISHELL_H
+# define MINISHELL_H
 
 // Définition des codes de couleur ANSI
-#define RESET "\x1b[0m"
-#define RED "\x1b[31m"
-#define GREEN "\x1b[32m"
-#define YELLOW "\x1b[33m"
-#define BLUE "\x1b[34m"
-#define MAGENTA "\x1b[35m"
-#define CYAN "\x1b[36m"
+# define RESET "\x1b[0m"
+# define RED "\x1b[31m"
+# define GREEN "\x1b[32m"
+# define YELLOW "\x1b[33m"
+# define BLUE "\x1b[34m"
+# define MAGENTA "\x1b[35m"
+# define CYAN "\x1b[36m"
 
 // Declaration des packages
-#include <unistd.h>
-#include <stdio.h>
-#include "../libft/libft.h"
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <sys/wait.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <limits.h>
-#include <signal.h> // gerer les signaux
+# include <unistd.h>
+# include <stdio.h>
+# include "../libft/libft.h"
+# include <readline/readline.h>
+# include <readline/history.h>
+# include <sys/wait.h>
+# include <sys/types.h>
+# include <sys/stat.h>
+# include <fcntl.h>
+# include <limits.h>
+# include <signal.h> // gerer les signaux
 
-#define MAX_ARGS 1024
+# define MAX_ARGS 1024
 
 // Définition des types de tokens
-#define INPUT 1
-#define HEREDOC 2
-#define TRUNC 3
-#define APPEND 4
-#define PIPE 5
-#define CMD 6
-#define ARG 7
-#define ERR_REDIR 8
+# define INPUT 1
+# define HEREDOC 2
+# define TRUNC 3
+# define APPEND 4
+# define PIPE 5
+# define CMD 6
+# define ARG 7
+# define ERR_REDIR 8
 
 // variable globale pour suivre l'état des erreurs
 extern int g_exit_status;
@@ -93,7 +93,6 @@ int limiter_is_quoted(const char *str);
 void fake_exit_builtin(char **args);
 int is_valid_numeric_argument(char *str);
 unsigned long long ft_atoull(const char *str);
-
 
 // Signaux
 void set_signal_action(void);

@@ -13,7 +13,6 @@ int	count_ags(char **args)
 
 int exec_builting(char **args, char ***envcp)
 {
-
     if (ft_strcmp(args[0], "exit") == 0)
         return(ft_exit(args, 1), 0); //
     else if (ft_strcmp(args[0], "cd") == 0)
@@ -36,7 +35,6 @@ int exec_builting(char **args, char ***envcp)
     }
     else if (ft_strcmp(args[0], "env") == 0)
     {
-        // Verifier la presence d'options
         if (args[1] && args[1][0] == '-')
         {
             printf("bash: env: -%c: invalid option\n", args[1][1]);
@@ -102,7 +100,6 @@ int	find_line(char **envp, char *path)
 	return (i);
 }
 
-// Si chemin trouver c'est un repertoire
 int	is_directory(char *path)
 {
 	struct stat	sb;
@@ -132,6 +129,7 @@ char *path_error_message(char *cmd)
         return (NULL);
     }
     return (ft_strdup(cmd));
+}
 
 }
 char *get_path(char *cmd, char **envp)
@@ -163,9 +161,9 @@ char *get_path(char *cmd, char **envp)
     return (path);
 }
 
-void	exec_cmd(char **args, char ***envcp)
+void exec_cmd(char **args, char ***envcp)
 {
-	char	*path;
+    char *path;
 
 	path = get_path(args[0], *envcp);
 	if (path == NULL)
@@ -184,8 +182,8 @@ void	exec_cmd(char **args, char ***envcp)
             perror("minishell");
             g_exit_status = 1;
         }
-		free(path);
-		exit(g_exit_status);
-	}
-	exit(1);
+        free(path);
+        exit(g_exit_status);
+    }
+    exit(1);
 }

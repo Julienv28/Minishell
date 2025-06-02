@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:21 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/02 10:46:42 by opique           ###   ########.fr       */
+/*   Updated: 2025/05/28 14:05:29 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-// La fonction est longue, il faudra la raccourcir...
+// La fonction est longue, il faudrna la raccourcir...
 int ft_unset(char **args, char ***envcp)
 {
     int i;
@@ -21,6 +21,7 @@ int ft_unset(char **args, char ***envcp)
     int size;
     char **new_env;
     int exit_status = 0;
+
 
     if (!args[1])
         return (0);
