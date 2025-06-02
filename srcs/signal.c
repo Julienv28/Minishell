@@ -1,9 +1,9 @@
 #include "../includes/minishell.h"
 
-void set_signal_action(void)
+void	set_signal_action(void)
 {
-    signal(SIGINT, handler_sigint); // Ctrl+C : annule readline
-    signal(SIGQUIT, SIG_IGN);       // Ctrl+\ : ignoré comme bash
+	signal(SIGINT, handler_sigint); // Ctrl+C : annule readline
+	signal(SIGQUIT, SIG_IGN);       // Ctrl+\ : ignoré comme bash
 }
 
 // handler pour SIGINT (Ctrl+C) dans readline uniquement

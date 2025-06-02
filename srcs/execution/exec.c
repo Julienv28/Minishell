@@ -11,16 +11,16 @@ int	count_ags(char **args)
 	return (i);
 }
 
-int	exec_builting(char **args, char ***envcp)
+int exec_builting(char **args, char ***envcp)
 {
-	if (ft_strcmp(args[0], "exit") == 0)
-		return (ft_exit(args, 1), 0);
-	else if (ft_strcmp(args[0], "cd") == 0)
-		return (ft_cd(args, envcp));
+    if (ft_strcmp(args[0], "exit") == 0)
+        return(ft_exit(args, 1), 0); //
+    else if (ft_strcmp(args[0], "cd") == 0)
+        return (ft_cd(args, envcp));
     else if (ft_strcmp(args[0], "pwd") == 0)
         return (ft_pwd(args, envcp));
     else if (ft_strcmp(args[0], "echo") == 0)
-        return (ft_echo(args), 0);
+        return (ft_echo(args), 0); // Appel direct avec les args
     else if (ft_strcmp(args[0], "export") == 0)
     {
         if (!args[1]) // Aucun argument : afficher l'environnement
@@ -47,7 +47,7 @@ int	exec_builting(char **args, char ***envcp)
     else if (ft_strcmp(args[0], "unset") == 0)
     {
         if (check_events(args[1]) == 0)
-            return  (ft_unset(args, envcp));
+            return (ft_unset(args, envcp));
         else
             return (1);
     }
@@ -131,6 +131,7 @@ char *path_error_message(char *cmd)
     return (ft_strdup(cmd));
 }
 
+}
 char *get_path(char *cmd, char **envp)
 {
     char **paths;
@@ -138,7 +139,7 @@ char *get_path(char *cmd, char **envp)
     int line;
 
     if (ft_strchr(cmd, '/'))
-        return (path_error_message(cmd));
+        return ((path_error_message(cmd)));
     line = find_line(envp, "PATH");
     if (!envp[line] || line == -1)
         return (ft_putstr_fd("minishell: PATH not set\n", STDERR_FILENO), NULL);
@@ -164,13 +165,13 @@ void exec_cmd(char **args, char ***envcp)
 {
     char *path;
 
-    path = get_path(args[0], *envcp);
-    if (path == NULL)
-        exit(g_exit_status);
-    signal(SIGINT, SIG_DFL);
-    signal(SIGQUIT, SIG_DFL);
-    if (execve(path, args, *envcp) == -1)
-    {
+	path = get_path(args[0], *envcp);
+	if (path == NULL)
+		exit(g_exit_status);
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+	if (execve(path, args, *envcp) == -1)
+	{
         if (errno == EISDIR)
         {
             printf("minishell: %s : Is a directory\n", path);

@@ -22,38 +22,35 @@ int	main(int ac, char **av, char **envp)
     int mem_fd_in = -1, mem_fd_out = -1, mem_fd_err = -1;
     int has_redir_error = 0;
 
-	(void)ac;
-	(void)av;
-	envcp = ft_env_dup(envp);
-    // Ignorer SIGTSTP (signal envoyé par Ctrl+Z) dans le shell principal
-	signal(SIGTSTP, SIG_IGN);
+    (void)ac;
+    (void)av;
 
-    // Signaux pour readline
-	signal(SIGINT, handler_sigint); // pour readline seulement
-	signal(SIGQUIT, SIG_IGN);       // on ignore Ctrl+
-	while (1)
-	{
-		set_signal_action();
+    envcp = ft_env_dup(envp);
+    signal(SIGTSTP, SIG_IGN);
+    signal(SIGINT, handler_sigint); // pour readline seulement
+    signal(SIGQUIT, SIG_IGN);       // on ignore Ctrl+
+    while (1)
+    {
+        set_signal_action();
         // printf("\n==================== NOUVELLE BOUCLE ====================\n");
-		input = readline(GREEN "minishell$ " RESET);
-		if (!input)
-		{
+        input = readline(GREEN "minishell$ " RESET);
+        if (!input)
+        {
             printf("DEBUG: readline a retourné NULL, on va quitter\n");
             ft_putstr_fd("exit\n", STDOUT_FILENO);
-			exit(g_exit_status);
-		}
-
-		add_history(input);
-		tokens = create_tokens(&input, envcp);
-		if (tokens == NULL)
-			g_exit_status = 2;
-		free(input);
-		if (!tokens)
-		{
-			free_tokens(tokens);
-			continue ;
-		}
-		command = tokens_to_cmds(tokens, envcp);
+			    exit(g_exit_status);
+		    }
+        add_history(input);
+        tokens = create_tokens(&input, envcp);
+        if (tokens == NULL)
+           g_exit_status = 2;
+        free(input);
+        if (!tokens)
+        {
+            free_tokens(tokens);
+            continue;
+        }
+        command = tokens_to_cmds(tokens, envcp);
         while (command)
         {
             has_redir_error = 0;
@@ -101,7 +98,6 @@ int	main(int ac, char **av, char **envp)
                 printf("DEBUG: g_exit_status après execute = %d\n", g_exit_status);
             }
             // Restauration des redirections
-
             if ((command->infile || command->outfile || command->errfile || command->heredoc_fd > 0) && has_redir_error >= 0)
             {
                 restore_redirections(mem_fd_in, mem_fd_out, mem_fd_err);
@@ -111,5 +107,5 @@ int	main(int ac, char **av, char **envp)
         }
     }
     ft_freeenvp(envcp);
-    return g_exit_status;
+    return (g_exit_status);
 }

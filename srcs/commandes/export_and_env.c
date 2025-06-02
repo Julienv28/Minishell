@@ -132,9 +132,7 @@ int ft_export(char **args, char ***envcp)
         }
         if (!is_valid_name(key))
         {
-            ft_putstr_fd("export: `", STDERR_FILENO);
-            ft_putstr_fd(replaced, STDERR_FILENO);
-            ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
+            printf("bash: export: %s: not a valid identifier\n", replaced);
             exit_status = 1;
             free(key);
             free(replaced);

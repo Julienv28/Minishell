@@ -21,7 +21,8 @@ int ft_unset(char **args, char ***envcp)
     int size;
     char **new_env;
     int exit_status = 0;
-    ;
+
+
     if (!args[1])
         return (0);
     i = 1;

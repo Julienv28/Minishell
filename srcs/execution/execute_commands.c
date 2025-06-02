@@ -17,6 +17,7 @@ int execute(t_com_list *cmds, char ***envcp)
 {
     char **args;
     pid_t pid;
+	int	status;
 
     if (!cmds)
         return (-1);
@@ -38,8 +39,8 @@ int execute(t_com_list *cmds, char ***envcp)
     }
     else if (is_builting(args[0]))
     {
-        int status = exec_builting(args, envcp);
-        g_exit_status = status;
+        status = exec_builting(args, envcp);
+		    g_exit_status = status;
     }
     else
     {
