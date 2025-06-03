@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:42:01 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/02 12:54:22 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/03 11:39:59 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,11 @@ void	ft_echo(char **args, char ***envcp)
 	while (args[i])
 	{
 		patched = add_space_if_needed(args[i], *envcp);
-		ft_putstr_fd(patched, STDOUT_FILENO);
-		free (patched);
+		if (patched)
+		{
+			ft_putstr_fd(patched, STDOUT_FILENO);
+			free (patched);
+		}
 		if (args[i + 1])
 			ft_putchar_fd(' ', STDOUT_FILENO);
 		i++;
@@ -48,22 +51,23 @@ char	*get_value_cleaned(char *name, char **envp)
 	return (clean_spaces(raw));
 }
 
-char *get_env_value(char *name, char **envp)
+char	*get_env_value(char *name, char **envp)
 {
-    int i;
-    size_t len;
+	int		i;
+	size_t	len;
 
-    i = 0;
-    len = ft_strlen(name);
-    if (!name || !envp)
-        return (NULL);
-    while (envp[i])
-    {
-        if (envp[i] && ft_strncmp(envp[i], name, len) == 0 && envp[i][len] == '=')
-            return (envp[i] + len + 1);
-        i++;
-    }
-    return (NULL);
+	i = 0;
+	len = ft_strlen(name);
+	if (!name || !envp)
+		return (NULL);
+	while (envp[i])
+	{
+		if (envp[i] && ft_strncmp(envp[i], name, len) == 0
+			&& envp[i][len] == '=')
+			return (envp[i] + len + 1);
+		i++;
+	}
+	return (NULL);
 }
 
 int parse_args_echo(char **args)
@@ -171,12 +175,42 @@ char	*add_space_if_needed(char *arg, char **envcp)
 			if (len > 0)
 			{
 				before = ft_substr(arg, 0, i);
+				if (!before)
+					return (NULL);
 				var_key = ft_substr(var_name, 0, len);
+				if (!var_key)
+				{
+					free (before);
+					return (NULL);
+				}
 				value = get_value_cleaned(var_key, envcp);
 				if (!value)
+				{
 					value = ft_strdup("");
+					if (!value)
+					{
+						free(before);
+						free(var_key);
+						return (NULL);
+					}
+				}
 				spaced = ft_strjoin(before, " ");
+				if (!spaced)
+				{
+					free(before);
+					free(var_key);
+					free(value);
+					return (NULL);
+				}
 				res = ft_strjoin(spaced, value);
+				if (!res)
+				{
+					free(before);
+					free(var_key);
+					free(spaced);
+					free(value);
+					return (NULL);
+				}
 				free (before);
 				free (spaced);
 				free (var_key);
@@ -188,3 +222,4 @@ char	*add_space_if_needed(char *arg, char **envcp)
 	}
 	return (ft_strdup(arg));
 }
+

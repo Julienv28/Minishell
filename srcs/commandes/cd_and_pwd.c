@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 16:04:31 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/02 11:41:35 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/03 11:23:08 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,12 +81,16 @@ int ft_cd(char **args, char ***envcp)
 	if (chdir(path) == -1)
 	{
 		printf("minishell: cd: %s : No such file or directory\n", path);
+		if (args[1][0] == '~')
+        	free(path);
 		return (1);
 	}
 	if (!getcwd(new_dir, sizeof(new_dir)))
 	{
 		ft_putstr_fd("chdir: error retrieving current directory: getcwd: cannot access parent directories: ", STDERR_FILENO);
 		perror("");
+		if (args[1] && args[1][0] == '~')
+			free(path);
 		return (1);
 	}
 	if (current_dir[0] != '\0')

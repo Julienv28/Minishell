@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   arguments.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:06:51 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/02 16:19:16 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/03 15:08:17 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,11 @@ int prompt_for_quotes(char **str)
             return (-1);
 		}
         tmp = ft_strjoin(*str, input);
+		if (!tmp)
+		{
+			free(input);
+			return (-1);
+		}
         if (check_mismatched_quotes(tmp) == 1)
         {
             join = ft_strjoin(tmp, "\n");
@@ -119,6 +124,8 @@ int	extract_word(char **str, int *i, char **word, int *start)
 			(*i)++;
 	}
 	*word = ft_strndup(*str + *start, *i - *start);
+	if (!word)
+		return (-1);
 	return (0);
 }
 

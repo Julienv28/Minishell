@@ -3,62 +3,68 @@
 /*                                                        :::      ::::::::   */
 /*   export_and_env.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:36 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/27 16:18:36 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/03 13:43:25 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
 // Fonction pour vérifier la validité du nom de la variable
-int is_valid_name(char *name)
+// Le nom doit commencer par une lettre ou un underscore
+// Le reste doit être alphanumérique ou underscore
+int	is_valid_name(char *name)
 {
-    int i;
+	int	i;
 
-    if (!name || (!ft_isalpha(name[0]) && name[0] != '_')) // Le nom doit commencer par une lettre ou un underscore
-        return (0);
-    i = 1;
-    while (name[i])
-    {
-        if (!(ft_isalnum(name[i]) || name[i] == '_')) // Le reste doit être alphanumérique ou underscore
-            return (0);
-        i++;
-    }
-    return (1);
+	if (!name || (!ft_isalpha(name[0]) && name[0] != '_'))
+		return (0);
+	i = 1;
+	while (name[i])
+	{
+		if (!(ft_isalnum(name[i]) || name[i] == '_'))
+			return (0);
+		i++;
+	}
+	return (1);
 }
 
-void ft_set_env(char *key, char *value, char ***envcp)
+void	ft_set_env(char *key, char *value, char ***envcp)
 {
-    int i;
-    char *new_entry;
-    char *tmp;
-    char **new_env;
+	int		i;
+	char	*new_entry;
+	char	*tmp;
+	char	**new_env;
 
-    new_entry = ft_strjoin(key, "=");
-    tmp = ft_strjoin(new_entry, value ? value : "");
-    free(new_entry);
-    new_entry = tmp;
-    i = 0;
-    while (*envcp && (*envcp)[i])
-    {
-        if (ft_strncmp((*envcp)[i], key, ft_strlen(key)) == 0 && (*envcp)[i][ft_strlen(key)] == '=')
-        {
-            free((*envcp)[i]);
-            (*envcp)[i] = new_entry;
-            return;
-        }
-        i++;
-    }
-    new_env = ft_realloc_env(*envcp, new_entry);
-    if (!new_env)
-    {
-        free(new_entry);
-        return;
-    }
-    ft_freeenvp(*envcp);
-    *envcp = new_env;
+	tmp = ft_strjoin(key, "=");
+	if (!tmp)
+		return ;
+	new_entry = ft_strjoin(tmp, value ? value : "");
+	free(tmp);
+	if (!new_entry)
+		return ;
+	i = 0;
+	while (*envcp && (*envcp)[i])
+	{
+		if (ft_strncmp((*envcp)[i], key, ft_strlen(key)) == 0
+			&& (*envcp)[i][ft_strlen(key)] == '=')
+		{
+			free((*envcp)[i]);
+			(*envcp)[i] = new_entry;
+			return ;
+		}
+		i++;
+	}
+	new_env = ft_realloc_env(*envcp, new_entry);
+	if (!new_env)
+	{
+		free(new_entry);
+		return ;
+	}
+	ft_freeenvp(*envcp);
+	*envcp = new_env;
 }
 
 int ft_export(char **args, char ***envcp)
