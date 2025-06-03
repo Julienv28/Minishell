@@ -1,9 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   check_cmd.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/03 15:19:26 by juvitry           #+#    #+#             */
+/*   Updated: 2025/06/03 15:22:26 by juvitry          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 // Si on a une redirection qui est suivie d'un autre token spécial
 // cas <>
 int	check_redirection(char *str, int *i)
 {
+	if (!str)
+		return (-1);
 	while (str[*i] == ' ')
 		(*i)++;
 	if (!str[*i])
@@ -13,11 +27,12 @@ int	check_redirection(char *str, int *i)
 	}
 	if (str[*i] == '<' || str[*i] == '>' || str[*i] == '|')
 	{
-		if ((str[*i] == '>' && str[*i + 1] == '>')
+		if (((str[*i] == '>' && str[*i + 1] == '>')
 			|| (str[*i] == '<' && str[*i + 1] == '<'))
+			&& str[*i + 1])
 			printf("Erreur : syntax error near unexpected token `%c%c'\n", \
 					str[*i], str[*i]);
-		else if (str[*i] == '>' && str[*i - 1] == '<')
+		else if (str[*i] == '>' && *i > 0 && str[*i - 1] == '<')
 			printf("Erreur : syntax error near unexpected token `newline'\n");
 		else
 			printf("Erreur : syntax error near unexpected token `%c'\n", \
@@ -32,7 +47,9 @@ int	check_pipe(char *str, int i)
 {
 	int	j;
 
-	if (str[i] == '|' && str[i + 1] == '|')
+	if (!str)
+		return (-1);
+	if (str[i] == '|' && str[i + 1] == '|' && str[i + 1])
 	{
 		printf("Erreur : syntax error near unexpected token `||'\n");
 		return (-1);
@@ -47,7 +64,7 @@ int	check_pipe(char *str, int i)
 		j++;
 	if (str[j] == '\0')
 	{
-		printf("Erreur : syntax error near unexpected token `%c'\n", str[j]);
+		printf("Erreur : syntax error near unexpected token `newline'\n");
 		return (-1);
 	}
 	if (str[j] == '|')
@@ -61,6 +78,8 @@ int	check_pipe(char *str, int i)
 // Vérifier si le caractère précédent est aussi un pipe
 int	check_input(char *str, int i)
 {
+	if (!str)
+		return (-1);
 	if ((str[i] == '&' && str[i + 1] == '&')
 		|| (str[i] == ';' && str[i + 1] == ';'))
 	{

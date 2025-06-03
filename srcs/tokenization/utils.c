@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 10:39:23 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/02 14:26:11 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/03 17:23:53 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,20 @@ void	free_tokens(t_token *tokens)
 	}
 }
 
+static void	free_file_list_2(t_file_list *files)
+{
+	t_file_list	*tmp;
+
+	while (files)
+	{
+		tmp = files->next;
+		if (files->filename)
+			free(files->filename);
+		free(files);
+		files = tmp;
+	}
+}
+
 void	free_cmd(t_com_list *command)
 {
 	t_com_list	*tmp;
@@ -41,8 +55,10 @@ void	free_cmd(t_com_list *command)
 			free(command->outfile);
 		if (command->errfile)
 			free(command->errfile);
+		if (command->args)
+			free_tab(command->args);
 		if (command->all_outfilles)
-			free(command->all_outfilles);
+			free_file_list_2(command->all_outfilles);
 		free(command);
 		command = tmp;
 	}

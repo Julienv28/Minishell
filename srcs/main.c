@@ -84,6 +84,7 @@ int	main(int ac, char **av, char **envp)
             continue ;
         }
         command = tokens_to_cmds(tokens, envcp);
+        t_com_list *start = command;
         while (command)
         {
             has_redir_error = 0;
@@ -127,6 +128,8 @@ int	main(int ac, char **av, char **envp)
             }
             command = command->next;
         }
+            free_tokens(tokens);
+            free_cmd(start);
     }
     ft_freeenvp(envcp);
     return (g_exit_status);

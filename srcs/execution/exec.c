@@ -57,6 +57,8 @@ int	exec_builting(char **args, char ***envcp)
 	}
 	else if (ft_strcmp(args[0], "unset") == 0)
 	{
+		if (!args[1])
+			return (0);
 		if (check_events(args[1]) == 0)
 			return (ft_unset(args, envcp));
 		else
@@ -106,9 +108,14 @@ int	find_line(char **envp, char *path)
 	int	i;
 
 	i = 0;
-	while (envp[i] && ft_strncmp(path, envp[i], ft_strlen(path)) != 0)
+	while (envp[i])
+	{
+		if (ft_strncmp(path, envp[i], ft_strlen(path)) == 0
+			&& envp[i][ft_strlen(path)] == '=')
+			return (i);
 		i++;
-	return (i);
+	}
+	return (-1);
 }
 
 int	is_directory(char *path)

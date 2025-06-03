@@ -16,7 +16,7 @@ int	execute(t_com_list *cmds, char ***envcp)
 {
 	char	**args;
 	pid_t	pid;
-	int	status;
+	int		status;
 
 	if (!cmds)
 		return (-1);
@@ -36,44 +36,46 @@ int	execute(t_com_list *cmds, char ***envcp)
 	else if (is_builting(args[0]))
 	{
 		status = exec_builting(args, envcp);
-		g_exit_status = status;
+			g_exit_status = status;
 	}
-	else
-	{
-		pid = fork();
-		if (pid == -1)
-		{
-			perror("fork");
-			free_tab(args);
-			return (-1);
-		}
-		if (pid == 0) // Enfant
-		{
-			exec_cmd(args, envcp);
-			exit(g_exit_status);
-		}
-		else // Parent
-		{
-			signal(SIGTSTP, SIG_IGN);
-			signal(SIGINT, SIG_IGN);
-			signal(SIGQUIT, SIG_IGN);
-			waitpid(pid, &status, 0);
-			signal(SIGINT, handler_sigint);
-			signal(SIGQUIT, SIG_IGN);
-			if (WIFEXITED(status))
-				g_exit_status = WEXITSTATUS(status);
-			else if (WIFSIGNALED(status))
-			{
-				g_exit_status = 128 + WTERMSIG(status);
-				if (WTERMSIG(status) == SIGINT)
-					write(1, "\n", 1);
-				else if (WTERMSIG(status) == SIGQUIT)
-					write(1, "Quit (core dumped)\n", 20);
-			}
-		}
-	}
-	free_tab(args);
-	return (g_exit_status);
+    else
+    {
+        // FORK pour les commandes externes
+        pid = fork();
+        if (pid == -1)
+        {
+            perror("fork");
+            return (-1);
+        }
+        if (pid == 0)
+        {
+            exec_cmd(args, envcp);
+            exit(g_exit_status);
+        }
+        else
+        {
+            int status;
+            signal(SIGINT, SIG_IGN);
+            signal(SIGQUIT, SIG_IGN);
+
+            waitpid(pid, &status, 0);
+
+            signal(SIGINT, handler_sigint);
+            signal(SIGQUIT, SIG_IGN);
+
+            if (WIFEXITED(status))
+                g_exit_status = WEXITSTATUS(status);
+            else if (WIFSIGNALED(status))
+            {
+                g_exit_status = 128 + WTERMSIG(status);
+                if (WTERMSIG(status) == SIGINT)
+                    write(1, "\n", 1);
+                else if (WTERMSIG(status) == SIGQUIT)
+                    write(1, "Quit (core dumped)\n", 20);
+            }
+        }
+    }
+    return (g_exit_status);
 }
 
 static void	wait_children(pid_t last_pid)

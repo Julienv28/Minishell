@@ -84,12 +84,16 @@ int ft_cd(char **args, char ***envcp)
 	if (chdir(path) == -1)
 	{
 		printf("minishell: cd: %s : No such file or directory\n", path);
+		if (args[1][0] == '~')
+        	free(path);
 		return (1);
 	}
 	if (!getcwd(new_dir, sizeof(new_dir)))
 	{
 		ft_putstr_fd("chdir: error retrieving current directory: getcwd: cannot access parent directories: ", STDERR_FILENO);
 		perror("");
+		if (args[1] && args[1][0] == '~')
+			free(path);
 		return (1);
 	}
 	if (current_dir[0] != '\0')

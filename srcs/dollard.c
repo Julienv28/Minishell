@@ -9,6 +9,8 @@ char	*append_char(char *res, char c)
 	current[0] = c;
 	current[1] = '\0';
 	tmp = ft_strjoin(res, current);
+	if (!tmp)
+		return (NULL);
 	free(res);
 	return (tmp);
 }
@@ -22,30 +24,42 @@ char	*expand_exit_status(char *res)
 	if (!status)
 		return (NULL);
 	tmp = ft_strjoin(res, status);
+	if (!tmp)
+		return (NULL);
 	free(res);
 	free(status);
 	return (tmp);
 }
 
-char *expand_env_variable(char *str, int *i, char *res, char **envcp, int quoted)
+char	*expand_env_variable(char *str, int *i, char *res, char **envcp, int quoted)
 {
-    char var_name[256];
-    int j = 0;
-    char *tmp;
-    char *env_value;
+	char	var_name[256];
+	int		j = 0;
+	char	*tmp;
+	char	*env_value;
+	int		need_free = 0;
 
     while (str[*i] && (ft_isalnum(str[*i]) || str[*i] == '_'))
         var_name[j++] = str[(*i)++];
     var_name[j] = '\0';
-    if (quoted)
-        env_value = get_env_value(var_name, envcp);
-    else
-        env_value = get_value_cleaned(var_name, envcp);
-    if (!env_value)
-        env_value = "";
-    tmp = ft_strjoin(res, env_value);
-    free(res);
-    return (tmp);
+    printf("Expanding env variable: %s\n", var_name); 
+    // Choix entre get_env_value ou get_value_cleaned selon le flag quoted
+	if (quoted)
+		env_value = get_env_value(var_name, envcp);
+	else
+	{
+		env_value = get_value_cleaned(var_name, envcp);
+		need_free = 1;
+	}
+	if (!env_value)
+		env_value = ""; // En cas d'absence de variable
+	tmp = ft_strjoin(res, env_value);
+	if (!tmp)
+		return (NULL);
+	free(res);
+	if (need_free)
+		free(env_value);
+	return (tmp);
 }
 
 char *replace_variable_or_special(char *str, int *i, char *res, char **envcp, int is_heredoc)
@@ -64,7 +78,7 @@ char *replace_variable_or_special(char *str, int *i, char *res, char **envcp, in
     if (is_heredoc)
     {
         printf("Heredoc mode with quotes, no variable expansion\n");
-        // return append_char(res, '$');
+        return (append_char(res, '$'));
     }
     
     // Cas pour $"" (chaîne vide entre guillemets) → chaîne vide, donc ne rien ajouter
@@ -175,13 +189,15 @@ char	*replace_all_variables(char *str, char **envcp, int is_heredoc)
 		if (str[i] == '\\' && str[i + 1] == '$')
 		{
 			res = append_char(res, '$');
+			if (!res)
+				return (NULL);
 			i += 2;
 			continue ;
 		}
 		if (str[i] == '\'' && !in_double_quote)
 		{
 			in_single_quote = !in_single_quote;
-            i++;
+			i++;
 			continue ;
         }
         else if (str[i] == '"' && !in_single_quote)
@@ -198,6 +214,8 @@ char	*replace_all_variables(char *str, char **envcp, int is_heredoc)
         else
         {
             res = append_char(res, str[i++]);
+			if (!res)
+				return (NULL);
         }
     }
     return (res);
@@ -237,18 +255,21 @@ void expand_variables(char **args, char **envcp, int is_heredoc)
         }
         new_args[j++] = res;
         i++;
-    }
-    new_args[j] = NULL;
-    i = 0;
-    while (args[i])
-        free(args[i++]);
-    args[i] = NULL;
-    i = 0;
-    while (new_args[i])
-    {
-        args[i] = ft_strdup(new_args[i]);
+	}
+	new_args[j] = NULL;
+	i = 0;
+
+	while (args[i])
+		free(args[i++]);
+	args[i] = NULL;
+	i = 0;
+	while (new_args[i])
+	{
+		args[i] = ft_strdup(new_args[i]);
+		if (!args[i])
+			break ; // nouvelle copie pour éviter ownership multiple
         free(new_args[i]);
         i++;
-    }
-    args[i] = NULL;
+	}
+	args[i] = NULL;
 }

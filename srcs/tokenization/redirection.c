@@ -23,7 +23,10 @@ char	*extract_redir_word(char *str, int *i)
 		&& str[*i] != '<' && str[*i] != '>')
 		(*i)++;
 	if (*i == start)
+    {
+        (*i)++;
 		return (NULL);
+    }
 	return (ft_strndup(str + start, *i - start));
 }
 
@@ -56,50 +59,54 @@ int	handle_redirection(char *str, int *i, t_token **tokens, char **envcp)
 	if (!word)
 		return (printf("Erreur : Redirection sans fichier !\n"), -1);
 	if (type == HEREDOC && limiter_is_quoted(word) == 0)
+    {
 		add_token(tokens, word, ARG);
+        free(word);
+    }
 	else
 	{
-		word = expand_clean_word(word, envcp);
+		char *expanded = expand_clean_word(word, envcp);
 		add_token(tokens, word, ARG);
+        free(expanded);
+        free(word);
 	}
-	free(word);
 	return (1);
 }
 
 // Analyser les redirections et avancer l'index
 int	parse_redirection(char *str, int *i)
 {
-	if (str[*i] == '2' && str[*i + 1] == '>' && str[*i + 2] == '>')
-	{
-		(*i) += 3;
-		return (ERR_REDIR);
-	}
-	else if (str[*i] == '2' && str[*i + 1] == '>')
-	{
-		(*i) += 2;
-		return (ERR_REDIR);
-	}
-	if (str[*i] == '<' && str[*i + 1] == '<')
-	{
-		*i += 2;
-		return (HEREDOC);
-	}
-	else if (str[*i] == '>' && str[*i + 1] == '>')
-	{
-		*i += 2;
-		return (APPEND);
-	}
-	else if (str[*i] == '<')
-	{
-		(*i)++;
-		return (INPUT);
-	}
-	else if (str[*i] == '>')
-	{
-		(*i)++;
-		return (TRUNC);
-	}
-	return (0);
+    if (str[*i] == '2' && str[*i + 1] == '>' && str[*i + 2] == '>')
+    {
+        (*i) += 3;
+        return (ERR_REDIR);
+    }
+    else if (str[*i] == '2' && str[*i + 1] == '>')
+    {
+        (*i) += 2;
+        return (ERR_REDIR);
+    }
+    if (str[*i] == '<' && str[*i + 1] == '<')
+    {
+        (*i) += 2;
+        return (HEREDOC);
+    }
+    else if (str[*i] == '>' && str[*i + 1] == '>')
+    {
+        (*i) += 2;
+        return (APPEND);
+    }
+    else if (str[*i] == '<')
+    {
+        (*i)++;
+        return (INPUT);
+    }
+    else if (str[*i] == '>')
+    {
+        (*i)++;
+        return (TRUNC);
+    }
+    return (0);
 }
 
 // Convertir un type en symbole de redirection

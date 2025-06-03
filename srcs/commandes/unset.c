@@ -40,38 +40,49 @@ int ft_unset(char **args, char ***envcp)
             g_exit_status = 1;
             return (g_exit_status);
         }
+		if (!is_valid_name(args[i]))
+			{
+            	printf("minishell: unset: `%s': not a valid identifier\n", \
+					args[i]);
+				exit_status = 1;
+			}
         i++;
     }
-    i = 1;
-    while (args[i])
+    size = 0;
+    while ((*envcp)[size])
+        size++;
+    new_env = malloc(sizeof(char *) * (size + 1));
+    if (!new_env)
+        return (1);
+    j = 0;
+    k = 0;
+    while (j < size)
     {
-        if (!is_valid_name(args[i]))
+        int to_remove = 0;
+        i = 1;
+        while (args[i])
         {
-            printf("minishell: unset: `%s': not a valid identifier\n", args[i]);
-            exit_status = 1;
-            i++;
-            continue;
+			if (!is_valid_name(args[i]))
+			{
+				i++;
+				continue ;
+			}
+			if (ft_strncmp((*envcp)[j], args[i], ft_strlen(args[i])) == 0
+				&& (*envcp)[j][ft_strlen(args[i])] == '=')
+			{
+				to_remove = 1;
+				break ;
+			}
+			i++;
         }
-        size = 0;
-        while ((*envcp)[size])
-            size++;
-        new_env = malloc(sizeof(char *) * size);
-        if (!new_env)
-            return (0);
-        j = 0;
-        k = 0;
-        while ((*envcp)[j])
-        {
-            if (ft_strncmp((*envcp)[j], args[i], ft_strlen(args[i])) == 0 && (*envcp)[j][ft_strlen(args[i])] == '=')
-                free((*envcp)[j]);
-            else
-                new_env[k++] = (*envcp)[j];
-            j++;
-        }
-        new_env[k] = NULL;
-        free(*envcp);
-        *envcp = new_env;
-        i++;
+        if (to_remove)
+            free((*envcp)[j]);
+        else
+            new_env[k++] = (*envcp)[j];
+        j++;
     }
+    new_env[k] = NULL;
+    free(*envcp);
+    *envcp = new_env;
     return (exit_status);
 }
