@@ -10,6 +10,8 @@ char	*append_char(char *res, char c)
 	current[0] = c;
 	current[1] = '\0';
 	tmp = ft_strjoin(res, current);
+	if (!tmp)
+		return (NULL);
 	free(res);
 	return (tmp);
 }
@@ -24,17 +26,20 @@ char	*expand_exit_status(char *res)
 		return (NULL);
     printf("Expanding exit status: %s\n", status);
 	tmp = ft_strjoin(res, status);
+	if (!tmp)
+		return (NULL);
 	free(res);
 	free(status);
 	return (tmp);
 }
 
-char *expand_env_variable(char *str, int *i, char *res, char **envcp, int quoted)
+char	*expand_env_variable(char *str, int *i, char *res, char **envcp, int quoted)
 {
-    char var_name[256];
-    int j = 0;
-    char *tmp;
-    char *env_value;
+	char	var_name[256];
+	int		j = 0;
+	char	*tmp;
+	char	*env_value;
+	int		need_free = 0;
 
     // Extraction du nom de la variable d'environnement
     while (str[*i] && (ft_isalnum(str[*i]) || str[*i] == '_'))
@@ -43,15 +48,22 @@ char *expand_env_variable(char *str, int *i, char *res, char **envcp, int quoted
 
     printf("Expanding env variable: %s\n", var_name); 
     // Choix entre get_env_value ou get_value_cleaned selon le flag quoted
-    if (quoted)
-        env_value = get_env_value(var_name, envcp); // On garde les espaces dans le cas de la citation
-    else
-        env_value = get_value_cleaned(var_name, envcp); // On nettoie les espaces si non cité
-    if (!env_value)
-        env_value = ""; // En cas d'absence de variable
-    tmp = ft_strjoin(res, env_value); // Concaténation avec le résultat
-    free(res);
-    return tmp;
+	if (quoted)
+		env_value = get_env_value(var_name, envcp);
+	else
+	{
+		env_value = get_value_cleaned(var_name, envcp);
+		need_free = 1;
+	}
+	if (!env_value)
+		env_value = ""; // En cas d'absence de variable
+	tmp = ft_strjoin(res, env_value);
+	if (!tmp)
+		return (NULL);
+	free(res);
+	if (need_free)
+		free(env_value);
+	return (tmp);
 }
 
 char *replace_variable_or_special(char *str, int *i, char *res, char **envcp, int is_heredoc)
@@ -68,7 +80,7 @@ char *replace_variable_or_special(char *str, int *i, char *res, char **envcp, in
     if (is_heredoc)
     {
         printf("Heredoc mode with quotes, no variable expansion\n");
-        // return append_char(res, '$');
+        return (append_char(res, '$'));
     }
     
     // Cas pour $"" (chaîne vide entre guillemets) → chaîne vide, donc ne rien ajouter
@@ -333,6 +345,8 @@ char	*replace_all_variables(char *str, char **envcp, int is_heredoc)
 		if (str[i] == '\\' && str[i + 1] == '$')
 		{
 			res = append_char(res, '$');
+			if (!res)
+				return (NULL);
 			i += 2;
 			continue ;
 		}
@@ -340,7 +354,7 @@ char	*replace_all_variables(char *str, char **envcp, int is_heredoc)
 		if (str[i] == '\'' && !in_double_quote)
 		{
 			in_single_quote = !in_single_quote;
-            i++;
+			i++;
 			continue ;
         }
         // Gestion des quotes doubles
@@ -360,10 +374,12 @@ char	*replace_all_variables(char *str, char **envcp, int is_heredoc)
         else
         {
             res = append_char(res, str[i++]);
+			if (!res)
+				return (NULL);
         }
     }
     printf("Final expanded string: '%s'\n", res);
-    return res;
+    return (res);
 }
 
 // Fonction pour remplacer toutes les variables d'environnement dans un tableau d'arguments
@@ -390,7 +406,7 @@ void expand_variables(char **args, char **envcp, int is_heredoc)
         if (!res)
         {
             i++;
-            continue;
+            continue ;
         }
 
         if (res[0] == '\0' &&
@@ -403,21 +419,21 @@ void expand_variables(char **args, char **envcp, int is_heredoc)
         }
         new_args[j++] = res;
         i++;
-    }
+	}
+	new_args[j] = NULL;
+	i = 0;
 
-    new_args[j] = NULL;
-    i = 0;
-
-    while (args[i])
-        free(args[i++]);
-    args[i] = NULL;
-
-    i = 0;
-    while (new_args[i])
-    {
-        args[i] = ft_strdup(new_args[i]); // nouvelle copie pour éviter ownership multiple
+	while (args[i])
+		free(args[i++]);
+	args[i] = NULL;
+	i = 0;
+	while (new_args[i])
+	{
+		args[i] = ft_strdup(new_args[i]);
+		if (!args[i])
+			break ; // nouvelle copie pour éviter ownership multiple
         free(new_args[i]);
         i++;
-    }
-    args[i] = NULL;
+	}
+	args[i] = NULL;
 }

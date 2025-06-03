@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 11:30:12 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/02 12:06:58 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/03 14:03:23 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,47 +23,49 @@ int	count_ags(char **args)
 	return (i);
 }
 
-int exec_builting(char **args, char ***envcp)
+int	exec_builting(char **args, char ***envcp)
 {
-    if (ft_strcmp(args[0], "exit") == 0)
-        return(ft_exit(args, 1), 0); //
-    else if (ft_strcmp(args[0], "cd") == 0)
-        return (ft_cd(args, envcp));
-    else if (ft_strcmp(args[0], "pwd") == 0)
-        return (ft_pwd(args, envcp));
-    else if (ft_strcmp(args[0], "echo") == 0)
-        return (ft_echo(args, envcp), 0); // Appel direct avec les args
-    else if (ft_strcmp(args[0], "export") == 0)
-    {
-        if (!args[1]) // Aucun argument : afficher l'environnement
-            return (ft_env(*envcp), 0);
-        else
-        {
-            if (check_events(args[1]) == 0)
-                return (ft_export(args, envcp));
-            else
-                return (1);
-        }
-    }
-    else if (ft_strcmp(args[0], "env") == 0)
-    {
-        if (args[1] && args[1][0] == '-')
-        {
-            printf("bash: env: -%c: invalid option\n", args[1][1]);
-            g_exit_status = 2;
-            return (g_exit_status);
-        }
-        else
-            return (ft_env(*envcp), 0);
-    }
-    else if (ft_strcmp(args[0], "unset") == 0)
-    {
-        if (check_events(args[1]) == 0)
-            return (ft_unset(args, envcp));
-        else
-            return (1);
-    }
-    return (g_exit_status);
+	if (ft_strcmp(args[0], "exit") == 0)
+		return(ft_exit(args, 1), 0); //
+	else if (ft_strcmp(args[0], "cd") == 0)
+		return (ft_cd(args, envcp));
+	else if (ft_strcmp(args[0], "pwd") == 0)
+		return (ft_pwd(args, envcp));
+	else if (ft_strcmp(args[0], "echo") == 0)
+		return (ft_echo(args, envcp), 0); // Appel direct avec les args
+	else if (ft_strcmp(args[0], "export") == 0)
+	{
+		if (!args[1]) // Aucun argument : afficher l'environnement
+			return (ft_env(*envcp), 0);
+		else
+		{
+			if (check_events(args[1]) == 0)
+				return (ft_export(args, envcp));
+			else
+				return (1);
+		}
+	}
+	else if (ft_strcmp(args[0], "env") == 0)
+	{
+		if (args[1] && args[1][0] == '-')
+		{
+			printf("bash: env: -%c: invalid option\n", args[1][1]);
+			g_exit_status = 2;
+			return (g_exit_status);
+		}
+		else
+			return (ft_env(*envcp), 0);
+	}
+	else if (ft_strcmp(args[0], "unset") == 0)
+	{
+		if (!args[1])
+			return (0);
+		if (check_events(args[1]) == 0)
+			return (ft_unset(args, envcp));
+		else
+			return (1);
+	}
+	return (g_exit_status);
 }
 
 int	is_valid_n_flag(const char *str)
@@ -107,9 +109,14 @@ int	find_line(char **envp, char *path)
 	int	i;
 
 	i = 0;
-	while (envp[i] && ft_strncmp(path, envp[i], ft_strlen(path)) != 0)
+	while (envp[i])
+	{
+		if (ft_strncmp(path, envp[i], ft_strlen(path)) != 0
+			&& envp[i][ft_strlen(path)] == '=')
+			return (i);
 		i++;
-	return (i);
+	}
+	return (-1);
 }
 
 int	is_directory(char *path)

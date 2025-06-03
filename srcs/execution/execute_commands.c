@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 10:45:02 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/29 10:31:15 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/03 10:48:54 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ int execute(t_com_list *cmds, char ***envcp)
         ft_putstr_fd(args && args[0] ? args[0] : "", STDERR_FILENO);
         ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
         g_exit_status = 127;
-        free_tab(args);
         return (-1);
     }
     // printf("command expand %s\n", cmds->command);
@@ -89,7 +88,6 @@ int execute(t_com_list *cmds, char ***envcp)
             }
         }
     }
-    free_tab(args);
     return (g_exit_status);
 }
 

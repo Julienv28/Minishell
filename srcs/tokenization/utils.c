@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 10:39:23 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/02 14:26:11 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/03 10:53:21 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ void	free_cmd(t_com_list *command)
 			free(command->errfile);
 		if (command->all_outfilles)
 			free(command->all_outfilles);
+		if (command->args)
+			free_tab(command->args);
 		free(command);
 		command = tmp;
 	}

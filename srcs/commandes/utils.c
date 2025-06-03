@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 14:23:42 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/28 15:10:38 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/03 13:47:33 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ char    **ft_realloc_env(char **envcp, char *new_entry)
 		}
 		j++;
 	}
-	new_env[i] = ft_strdup(new_entry);
+	new_env[i] = new_entry;
 	if (!new_env[i])
 	{
 		while (--j >= 0)
