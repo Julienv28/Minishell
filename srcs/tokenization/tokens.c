@@ -9,8 +9,8 @@ t_token	*add_token(t_token **head, char *str, int type)
 	new = malloc(sizeof(t_token));
 	if (new == NULL)
 		return (NULL);
-	new->value = ft_strdup(str); // Copie la valeur du token
-	new->type = type;            // Lui assigne un type
+	new->value = ft_strdup(str);
+	new->type = type;
 	new->next = NULL;
 	if (!*head)
 		*head = new;
@@ -23,6 +23,7 @@ t_token	*add_token(t_token **head, char *str, int type)
 	}
 	return (new);
 }
+<<<<<<< HEAD
 
 // int	handle_token_type(char **str, int *i, t_token **tokens, char **envcp)
 // {
@@ -105,34 +106,35 @@ t_token	*add_token(t_token **head, char *str, int type)
 	}
 	return (tokens);
 }*/
+=======
+>>>>>>> 4db050b (resolved $" et redirection)
 
 
 // Analyser la ligne de commande et créer des tokens
 t_token *create_tokens(char **str, char **envcp)
 {
     int i;
-    int expect_cmd; // Flag pour savoir si on attend une CMD (1) ou un ARG
+    int expect_cmd;
     t_token *tokens;
     int redirection_status;
 
     i = 0;
     tokens = NULL;
-    expect_cmd = 1; // On attend une CMD en premier
+    expect_cmd = 1;
     while ((*str)[i])
     {
-        while ((*str)[i] == ' ') // Sauter les espaces
+        while ((*str)[i] == ' ')
             i++;
-        if (!(*str)[i]) // Fin de la chaîne
-            break;
+        if (!(*str)[i])
+            break ;
         if ((*str)[i] == '|')
         {
             if (check_pipe(*str, i) == -1)
                 return (NULL);
             add_token(&tokens, "|", PIPE);
             i++;
-            expect_cmd = 1; // Après un pipe, on attend une nouvelle commande
+            expect_cmd = 1;
         }
-        // Gestion des autres opérateurs si nécessaire
         else if ((*str)[i] == '&' || (*str)[i] == ':' || (*str)[i] == '!' || (*str)[i] == '#' || (*str)[i] == ';')
         {
             if (check_input(*str, i) == -1)
@@ -147,9 +149,9 @@ t_token *create_tokens(char **str, char **envcp)
                 return (NULL);
             }
             if (redirection_status == 1)
-                continue; // Redirection traitée, boucle suivante
+                continue;
             if (handle_word(str, &i, &tokens, &expect_cmd) == -1)
-                break;
+                break ;
         }
     }
     return (tokens);

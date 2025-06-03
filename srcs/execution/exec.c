@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/02 11:30:12 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/02 12:06:58 by juvitry          ###   ########.fr       */
+/*   Created: 2025/06/03 09:00:40 by opique            #+#    #+#             */
+/*   Updated: 2025/06/03 17:45:51 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-#include <errno.h>
 
 int	count_ags(char **args)
 {
@@ -23,47 +22,47 @@ int	count_ags(char **args)
 	return (i);
 }
 
-int exec_builting(char **args, char ***envcp)
+int	exec_builting(char **args, char ***envcp)
 {
-    if (ft_strcmp(args[0], "exit") == 0)
-        return(ft_exit(args, 1), 0); //
-    else if (ft_strcmp(args[0], "cd") == 0)
-        return (ft_cd(args, envcp));
-    else if (ft_strcmp(args[0], "pwd") == 0)
-        return (ft_pwd(args, envcp));
-    else if (ft_strcmp(args[0], "echo") == 0)
-        return (ft_echo(args, envcp), 0); // Appel direct avec les args
-    else if (ft_strcmp(args[0], "export") == 0)
-    {
-        if (!args[1]) // Aucun argument : afficher l'environnement
-            return (ft_env(*envcp), 0);
-        else
-        {
-            if (check_events(args[1]) == 0)
-                return (ft_export(args, envcp));
-            else
-                return (1);
-        }
-    }
-    else if (ft_strcmp(args[0], "env") == 0)
-    {
-        if (args[1] && args[1][0] == '-')
-        {
-            printf("bash: env: -%c: invalid option\n", args[1][1]);
-            g_exit_status = 2;
-            return (g_exit_status);
-        }
-        else
-            return (ft_env(*envcp), 0);
-    }
-    else if (ft_strcmp(args[0], "unset") == 0)
-    {
-        if (check_events(args[1]) == 0)
-            return (ft_unset(args, envcp));
-        else
-            return (1);
-    }
-    return (g_exit_status);
+	if (ft_strcmp(args[0], "exit") == 0)
+		return (ft_exit(args, 1), 0);
+	else if (ft_strcmp(args[0], "cd") == 0)
+		return (ft_cd(args, envcp));
+	else if (ft_strcmp(args[0], "pwd") == 0)
+		return (ft_pwd(args, envcp));
+	else if (ft_strcmp(args[0], "echo") == 0)
+		return (ft_echo(args), 0);
+	else if (ft_strcmp(args[0], "export") == 0)
+	{
+		if (!args[1])
+			return (ft_env(*envcp), 0);
+		else
+		{
+			if (check_events(args[1]) == 0)
+				return (ft_export(args, envcp));
+			else
+				return (1);
+		}
+	}
+	else if (ft_strcmp(args[0], "env") == 0)
+	{
+		if (args[1] && args[1][0] == '-')
+		{
+			printf("bash: env: -%c: invalid option\n", args[1][1]);
+			g_exit_status = 2;
+			return (g_exit_status);
+		}
+		else
+			return (ft_env(*envcp), 0);
+	}
+	else if (ft_strcmp(args[0], "unset") == 0)
+	{
+		if (check_events(args[1]) == 0)
+			return (ft_unset(args, envcp));
+		else
+			return (1);
+	}
+	return (g_exit_status);
 }
 
 int	is_valid_n_flag(const char *str)
@@ -120,61 +119,61 @@ int	is_directory(char *path)
 		return (1);
 	return (0);
 }
-char *path_error_message(char *cmd)
+char	*path_error_message(char *cmd)
 {
-    if (access(cmd, F_OK) != 0)
-    {
-        printf("minishell: %s : No such file or directory\n", cmd);
-        g_exit_status = 127;
-        return (NULL);
-    }
-    if (is_directory(cmd))
-    {
-        printf("minishell: %s : is a directory\n", cmd);
-        g_exit_status = 126;
-        return (NULL);
-    }
-    if (access(cmd, X_OK) != 0)
-    {
-        printf("minishell: %s : Permission denied\n", cmd);
-        g_exit_status = 126;
-        return (NULL);
-    }
-    return (ft_strdup(cmd));
+	if (access(cmd, F_OK) != 0)
+	{
+		printf("minishell: %s : No such file or directory\n", cmd);
+		g_exit_status = 127;
+		return (NULL);
+	}
+	if (is_directory(cmd))
+	{
+		printf("minishell: %s : is a directory\n", cmd);
+		g_exit_status = 126;
+		return (NULL);
+	}
+	if (access(cmd, X_OK) != 0)
+	{
+		printf("minishell: %s : Permission denied\n", cmd);
+		g_exit_status = 126;
+		return (NULL);
+	}
+	return (ft_strdup(cmd));
 }
 
-char *get_path(char *cmd, char **envp)
+char	*get_path(char *cmd, char **envp)
 {
-    char **paths;
-    char *path;
-    int line;
+	char	**paths;
+	char	*path;
+	int		line;
 
-    if (ft_strchr(cmd, '/'))
-        return ((path_error_message(cmd)));
-    line = find_line(envp, "PATH");
-    if (!envp[line] || line == -1)
-        return (ft_putstr_fd("minishell: PATH not set\n", STDERR_FILENO), NULL);
-    paths = ft_split(envp[line] + 5, ':');
-    path = search_path(paths, cmd);
-    if (path == NULL)
-    {
-        fprintf(stderr, "minishell: %s : command not found\n", cmd);
-        g_exit_status = 127;
-    }
-    else if (access(path, X_OK) != 0)
-    {
-        printf("minishell: %s : Permission denied\n", cmd);
-        g_exit_status = 126;
-        free(path);
-        path = NULL;
-    }
-    free_tab(paths);
-    return (path);
+	if (ft_strchr(cmd, '/'))
+		return ((path_error_message(cmd)));
+	line = find_line(envp, "PATH");
+	if (!envp[line] || line == -1)
+		return (ft_putstr_fd("minishell: No such file or directory\n", STDERR_FILENO), NULL);
+	paths = ft_split(envp[line] + 5, ':');
+	path = search_path(paths, cmd);
+	if (path == NULL)
+	{
+		fprintf(stderr, "minishell: %s : command not found\n", cmd);
+		g_exit_status = 127;
+	}
+	else if (access(path, X_OK) != 0)
+	{
+		printf("minishell: %s : Permission denied\n", cmd);
+		g_exit_status = 126;
+		free(path);
+		path = NULL;
+	}
+	free_tab(paths);
+	return (path);
 }
 
-void exec_cmd(char **args, char ***envcp)
+void	exec_cmd(char **args, char ***envcp)
 {
-    char *path;
+	char	*path;
 
 	path = get_path(args[0], *envcp);
 	if (path == NULL)
@@ -183,18 +182,18 @@ void exec_cmd(char **args, char ***envcp)
 	signal(SIGQUIT, SIG_DFL);
 	if (execve(path, args, *envcp) == -1)
 	{
-        if (errno == EISDIR)
-        {
-            printf("minishell: %s : Is a directory\n", path);
-            g_exit_status = 126;
-        }
-        else
-        {
-            perror("minishell");
-            g_exit_status = 1;
-        }
-        free(path);
-        exit(g_exit_status);
-    }
-    exit(1);
+		if (errno == EISDIR)
+		{
+			printf("minishell: %s : Is a directory\n", path);
+			g_exit_status = 126;
+		}
+		else
+		{
+			perror("minishell");
+			g_exit_status = 1;
+		}
+		free(path);
+		exit(g_exit_status);
+	}
+	exit(1);
 }

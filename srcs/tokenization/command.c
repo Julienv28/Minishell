@@ -6,7 +6,11 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 16:08:55 by juvitry           #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2025/06/02 14:35:24 by juvitry          ###   ########.fr       */
+=======
+/*   Updated: 2025/06/03 16:50:47 by opique           ###   ########.fr       */
+>>>>>>> 4db050b (resolved $" et redirection)
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,17 +28,17 @@ char *concat_command(char *current_command, char *new_part)
     else
         len_current = 0;
     len_new = ft_strlen(new_part);
-    new_command = malloc(len_current + len_new + 2); // +2 pour l'espace et '\0'
+    new_command = malloc(len_current + len_new + 2);
     if (new_command == NULL)
         return (NULL);
     if (current_command)
     {
         ft_strcpy(new_command, current_command);
-        ft_strcat(new_command, " "); // Ajoute un espace entre les commandes
+        ft_strcat(new_command, " ");
     }
     else
-        new_command[0] = '\0';        // Initialiser à une chaîne vide si `current_command` est NULL
-    ft_strcat(new_command, new_part); // Ajouter le nouvel element
+        new_command[0] = '\0';
+    ft_strcat(new_command, new_part);
     free(current_command);
     return (new_command);
 }
@@ -119,6 +123,7 @@ static char	*generate_tmp_filename(void)
 	char		*pid_str;
 	char		*count_str;
 
+<<<<<<< HEAD
 	counter = 0;
 	prefix = ft_strdup("/tmp/.heredoc_");
 	pid_str = ft_itoa(getpid());
@@ -137,6 +142,43 @@ static char	*generate_tmp_filename(void)
 	free(count_str);
 	free (tmp);
 	return (final);
+=======
+    if (limiter_is_quoted(limiter))
+        is_heredoc = 1;
+    else
+        is_heredoc = 0;
+    expanded_limiter = replace_all_variables(limiter, envcp, is_heredoc);
+    cleaned_limiter = remove_quotes_or_slash(expanded_limiter);
+    if (!cleaned_limiter)
+        cleaned_limiter = ft_strdup("");
+    free(expanded_limiter);
+
+    if (pipe(pipefd) == -1)
+    {
+        perror("pipe");
+        free(cleaned_limiter);
+        return -1;
+    }
+    while (1)
+    {
+        line = readline("> ");
+        if (!line)
+            break;
+        if (ft_strcmp(line, cleaned_limiter) == 0)
+        {
+            free(line);
+            break;
+        }
+        expanded_line = replace_all_variables(line, envcp, is_heredoc);
+        write(pipefd[1], expanded_line, ft_strlen(expanded_line));
+        write(pipefd[1], "\n", 1);
+        free(line);
+        free(expanded_line);
+    }
+    free(cleaned_limiter);
+    close(pipefd[1]);
+    return pipefd[0];
+>>>>>>> 4db050b (resolved $" et redirection)
 }
 
 char	*handle_heredoc(char *limiter, char **envcp, int expand_var)
@@ -256,7 +298,6 @@ t_com_list	*tokens_to_cmds(t_token *tokens, char **envcp)
 
 	while (tmp)
 	{
-        // Affiche la valeur du token pour débogage
 		if (tmp->type == CMD)
 		{
 			if (!tmp->value)
@@ -313,13 +354,14 @@ t_com_list	*tokens_to_cmds(t_token *tokens, char **envcp)
         }
         else if (tmp->type == TRUNC || tmp->type == INPUT || tmp->type == HEREDOC || tmp->type == APPEND)
         {
-            redir_type = tmp->type; // <== Sauvegarde le type de redirection actuel
+            redir_type = tmp->type;
             if (tmp->next && tmp->next->type == ARG)
             {
                 tmp = tmp->next;
                 filename = ft_strdup(tmp->value);
                 flag = (redir_type == APPEND || redir_type == HEREDOC) ? 1 : 0;
                 fd = -1;
+<<<<<<< HEAD
                 // if (redir_type == INPUT || redir_type == HEREDOC)
 
                 if (redir_type == HEREDOC)
@@ -366,6 +408,51 @@ t_com_list	*tokens_to_cmds(t_token *tokens, char **envcp)
 					free (expanded);
 					tmp = file_token;
 				}
+=======
+                if (redir_type == HEREDOC)
+                {
+                    fd = handle_heredoc(filename, envcp); // Fonction pour gérer le heredoc
+                    if (fd < 0)
+                    {
+                        perror(filename);
+                        free(filename);
+                        return NULL;
+                    }
+                    free(filename);
+                    if (current_cmd)
+                    {
+                        current_cmd->heredoc_fd = fd;
+                        current_cmd->flag_in = 1;
+                    }
+                    else
+                    {
+                        pending_infile = filename;
+                        pending_flag_in = 1;
+                    }
+                }
+                else if (redir_type == INPUT)
+                {
+                    fd = open_file_cmd(filename);
+                    if (fd < 0)
+                    {
+                        perror(filename);
+                        g_exit_status = 1;
+                        free(filename);
+                        return (NULL);
+                    }
+                    close(fd);
+                    if (current_cmd)
+                    {
+                        current_cmd->infile = filename;
+                        current_cmd->flag_in = flag;
+                    }
+                    else
+                    {
+                        pending_infile = filename;
+                        pending_flag_in = flag;
+                    }
+                }
+>>>>>>> 4db050b (resolved $" et redirection)
                 else if (redir_type == ERR_REDIR)
                 {
                     fd = open_errfile(filename);
@@ -373,7 +460,7 @@ t_com_list	*tokens_to_cmds(t_token *tokens, char **envcp)
                     {
                         perror(filename);
                         free(filename);
-                        return NULL;
+                        return (NULL);
                     }
                     close(fd);
                     if (current_cmd)
@@ -381,15 +468,14 @@ t_com_list	*tokens_to_cmds(t_token *tokens, char **envcp)
                     else
                         pending_errfile = filename;
                 }
-                else // TRUNC or APPEND
+                else
                 {
-                    // int mode = O_WRONLY | O_CREAT | (flag ? O_APPEND : O_TRUNC);
                     fd = open_outfile(filename, flag);
                     if (fd < 0)
                     {
                         perror(filename);
                         free(filename);
-                        return NULL;
+                        return (NULL);
                     }
                     close(fd);
                     if (current_cmd)
@@ -416,7 +502,7 @@ t_com_list	*tokens_to_cmds(t_token *tokens, char **envcp)
     // Créer une commande vide si redirection seule
     if ((pending_outfile || pending_infile) && !current_cmd)
     {
-        new_cmd = list_new(NULL); // Pas de commande
+        new_cmd = list_new(NULL);
         new_cmd->heredoc_fd = -1;
         if (pending_outfile)
         {
@@ -424,7 +510,6 @@ t_com_list	*tokens_to_cmds(t_token *tokens, char **envcp)
             new_cmd->flag_out = pending_flag_out;
             new_cmd->all_outfilles = pending_all_outfiles;
             new_cmd->heredoc_fd = -1;
-            // add_outfile(&new_cmd->all_outfilles, pending_outfile, pending_flag_out);
         }
         if (pending_infile)
         {
@@ -433,22 +518,11 @@ t_com_list	*tokens_to_cmds(t_token *tokens, char **envcp)
         }
         if (pending_errfile)
             new_cmd->errfile = pending_errfile;
-
         if (!cmd_list)
             cmd_list = new_cmd;
         else
             add_bottom(&cmd_list, new_cmd);
     }
-    // t_com_list  *iter = cmd_list;
-    // while (iter)
-    // {
-    //     if (iter->args && iter->args[0])
-    //     {
-    //         free(iter->command);
-    //         iter->command = ft_strdup(iter->args[0]);
-    //     }
-    //     iter = iter->next;
-    // }
     return (cmd_list);
 }
 

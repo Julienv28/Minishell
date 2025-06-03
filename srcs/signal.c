@@ -2,8 +2,8 @@
 
 void	set_signal_action(void)
 {
-	signal(SIGINT, handler_sigint); // Ctrl+C : annule readline
-	signal(SIGQUIT, SIG_IGN);       // Ctrl+\ : ignoré comme bash
+	signal(SIGINT, handler_sigint);
+	signal(SIGQUIT, SIG_IGN);
 }
 void heredoc_sigint_handler(int sig)
 {

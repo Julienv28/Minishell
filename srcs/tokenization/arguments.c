@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:06:51 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/02 16:19:16 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/03 17:05:58 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,13 +57,13 @@ int prompt_for_quotes(char **str)
     ensure_newline_at_end(str);
     while (check_mismatched_quotes(*str) == 1)
     {
-		signal(SIGINT, heredoc_sigint_handler); // handler temporaire
+		signal(SIGINT, heredoc_sigint_handler);
         input = readline("> ");
 		signal(SIGINT, handler_sigint);
 		if (g_exit_status == 130)
         {
-            free(input);  // readline retourne une ligne vide, qu'on ignore
-            return -1;    // on quitte prompt_for_quotes proprement
+            free(input);
+            return (-1);
         }
 		if (!input)
 		{

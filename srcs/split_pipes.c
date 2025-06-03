@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split_pipes.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 11:35:17 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/06 11:44:11 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/02 16:47:08 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,16 @@ static int	is_quote(char c)
 char	**split_pipe_respect_quotes(const char *line)
 {
 	char	**result;
-	int		count = 0;
-	int		i = 0, start = 0;
-	char	quote = 0;
+	int		count;
+	int		i;
+	int		j;
+	int		start;
+	char	quote;
 
+	i = 0;
+	start = 0;
+	quote = 0;
+	count = 0;
 	while (line[i])
 	{
 		if (is_quote(line[i]))
@@ -41,7 +47,7 @@ char	**split_pipe_respect_quotes(const char *line)
 	if (!result)
 		return (NULL);
 	i = 0;
-	int j = 0;
+	j = 0;
 	start = 0;
 	quote = 0;
 	while (line[i])

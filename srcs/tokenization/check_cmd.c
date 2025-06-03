@@ -30,32 +30,32 @@ int	check_redirection(char *str, int *i)
 //Verifie la conformite de pipes (debut/fin de commande, ||...)
 int	check_pipe(char *str, int i)
 {
-    int j;
+	int	j;
 
-    if (str[i] == '|' && str[i + 1] == '|')
-    {
-        printf("Erreur : syntax error near unexpected token `||'\n");
-        return -1;
-    }
-    if (i == 0)
-    {
-        printf("Erreur : syntax error near unexpected token `%c'\n", str[i]);
-        return (-1);
-    }
-    j = i + 1;
-    while (str[j] && str[j] == ' ')
-        j++;
-    if (str[j] == '\0')
-    {
-        printf("Erreur : syntax error near unexpected token `%c'\n", str[j]);
-        return (-1);
-    }
-    if (str[j] == '|')
-    {
-        printf("Erreur : syntax error near unexpected token `%c'\n", str[j]);
-        return (-1);
-    }
-    return (0);
+	if (str[i] == '|' && str[i + 1] == '|')
+	{
+		printf("Erreur : syntax error near unexpected token `||'\n");
+		return (-1);
+	}
+	if (i == 0)
+	{
+		printf("Erreur : syntax error near unexpected token `%c'\n", str[i]);
+		return (-1);
+	}
+	j = i + 1;
+	while (str[j] && str[j] == ' ')
+		j++;
+	if (str[j] == '\0')
+	{
+		printf("Erreur : syntax error near unexpected token `%c'\n", str[j]);
+		return (-1);
+	}
+	if (str[j] == '|')
+	{
+		printf("Erreur : syntax error near unexpected token `%c'\n", str[j]);
+		return (-1);
+	}
+	return (0);
 }
 
 // Vérifier si le caractère précédent est aussi un pipe

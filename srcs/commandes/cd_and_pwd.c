@@ -3,24 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   cd_and_pwd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 16:04:31 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/02 11:41:35 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/03 17:44:18 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
+
 int ft_cd(char **args, char ***envcp)
 {
 	char	current_dir[1024];
 	char	new_dir[1024];
-	char	*path = NULL;
-	char	*home = get_env_value("HOME", *envcp);
+	char	*path;
+	char	*home;
 	size_t	home_len;	
 	size_t	suffix_len;
 
+	home = get_env_value("HOME", *envcp);
+	path = NULL;
 	if (!getcwd(current_dir, sizeof(current_dir)))
 		current_dir[0] = '\0';
 	if (args[1] && args[1][0] == '\0')
@@ -36,7 +39,7 @@ int ft_cd(char **args, char ***envcp)
 		ft_putstr_fd("minishell: cd: too many arguments\n", STDERR_FILENO);
 		return (1);
 	}
-	if (!args[1] || ft_strcmp(args[1], "--") == 0)
+	if (!args[1] || ft_strcmp(args[1], "--") == 0 || args[1][0] == '\0')
 	{
 		if (!home)
 		{
@@ -45,7 +48,7 @@ int ft_cd(char **args, char ***envcp)
 		}
 		path = home;
 	}
-	else if (ft_strcmp(args[1], "-") == 0)
+	else if (args[1] && ft_strcmp(args[1], "-") == 0)
 	{
 		path = get_env_value("OLDPWD", *envcp);
 		if (!path)

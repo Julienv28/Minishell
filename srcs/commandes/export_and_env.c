@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:36 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/27 16:18:36 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/03 17:04:45 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,17 +63,19 @@ void ft_set_env(char *key, char *value, char ***envcp)
 
 int ft_export(char **args, char ***envcp)
 {
-    char *key;
-    char *value;
-    char *equal_sign;
-    char *replaced;
+    char *key = NULL;
+    char *value = NULL;
+    char *equal_sign = NULL;
+    char *replaced = NULL;
+    char *expanded_value;
+    char *tmp;
     int exit_status = 0;
-    int i;
+    int i = 1;
     int j;
 
-    i = 0;
     if (!args[1])
     {
+        i = 0;
         while ((*envcp)[i])
         {
             j = 0;
@@ -94,16 +96,26 @@ int ft_export(char **args, char ***envcp)
         }
         return (0);
     }
-    i = 1;
+
     while (args[i])
     {
-        replaced = replace_all_variables(args[i], *envcp, 1);
-        if (!replaced)
+        equal_sign = ft_strchr(args[i], '=');
+        if (equal_sign)
         {
-            i++;
-            continue;
+            int key_len = equal_sign - args[i];
+            key = ft_substr(args[i], 0, key_len);
+            value = ft_strdup(equal_sign + 1);
+            expanded_value = replace_all_variables(value, *envcp, 0);
+            free(value);
+            value = expanded_value ? expanded_value : ft_strdup("");
+            replaced = ft_strjoin(key, "=");
+            tmp = ft_strjoin(replaced, value);
+            free(replaced);
+            replaced = tmp;
         }
-        if (replaced[0] == '\0')
+        else
+            replaced = ft_strdup(args[i]);
+        if (!replaced || replaced[0] == '\0')
         {
             ft_putstr_fd("export: `': not a valid identifier\n", STDERR_FILENO);
             free(replaced);
@@ -119,16 +131,16 @@ int ft_export(char **args, char ***envcp)
             i++;
             continue;
         }
-        equal_sign = ft_strchr(replaced, '=');
-        if (equal_sign)
+        char *pos_equal = ft_strchr(replaced, '=');
+        if (pos_equal)
         {
-            key = ft_substr(replaced, 0, equal_sign - replaced);
-            value = ft_strdup(equal_sign + 1);
+            free(key);
+            key = ft_substr(replaced, 0, pos_equal - replaced);
         }
         else
         {
+            free(key);
             key = ft_strdup(replaced);
-            value = NULL;
         }
         if (!is_valid_name(key))
         {
@@ -136,14 +148,12 @@ int ft_export(char **args, char ***envcp)
             exit_status = 1;
             free(key);
             free(replaced);
+            free(value);
             i++;
             continue;
         }
         if (equal_sign)
-        {
-            // printf("Ajout ou modification de l'environnement : %s=%s\n", key, value);
             ft_set_env(key, value, envcp);
-        }
         free(key);
         free(value);
         free(replaced);
@@ -170,10 +180,10 @@ static int find_char_index(const char *s, char c)
     while (s[i])
     {
         if (s[i] == c)
-            return i;
+            return (i);
         i++;
     }
-    return -1;
+    return (-1);
 }
 
 int check_events(char *arg)
@@ -185,9 +195,7 @@ int check_events(char *arg)
     if (index >= 0)
     {
         res = ft_substr(arg, index, ft_strlen(arg) - index);
-        ft_putstr_fd("Minishell: ", STDERR_FILENO);
-        ft_putstr_fd(res, STDERR_FILENO);
-        ft_putstr_fd(": event not found\n", STDERR_FILENO);
+        printf("Minishell: %s: event not found\n", res);
         free(res);
         return (1);
     }
