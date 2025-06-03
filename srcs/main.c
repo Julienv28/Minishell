@@ -12,6 +12,16 @@ int	has_pipe(t_com_list *command)
 	}
 	return (0);
 }
+int	is_blank_line(const char *str)
+{
+	while (*str)
+	{
+		if (*str != ' ' && *str != '\t')
+			return (0);
+		str++;
+	}
+	return (1);
+}
 
 int	main(int ac, char **av, char **envp)
 {
@@ -25,32 +35,59 @@ int	main(int ac, char **av, char **envp)
     (void)ac;
     (void)av;
     envcp = ft_env_dup(envp);
+    // mettre fix 
+    if (isatty(1) == 0)
+    {
+        write(1, "you can't pipe a minishell\n", 27);
+        return (0);
+    }
+    if (isatty(0) == 0)
+    {
+        write(1, "you can't pipe a minishell\n", 27);
+        return (0);
+    }
     signal(SIGTSTP, SIG_IGN);
-    signal(SIGINT, handler_sigint); // pour readline seulement
-    signal(SIGQUIT, SIG_IGN);       // on ignore Ctrl+
+    signal(SIGINT, handler_sigint);
+    signal(SIGQUIT, SIG_IGN);
     while (1)
     {
         set_signal_action();
         input = readline(GREEN "minishell$ " RESET);
         if (!input)
         {
-            printf("DEBUG: readline a retourné NULL, on va quitter\n");
             ft_putstr_fd("exit\n", STDOUT_FILENO);
 			exit(g_exit_status);
 		}
         add_history(input);
         tokens = create_tokens(&input, envcp);
         if (tokens == NULL)
-           g_exit_status = 2;
+        {
+            if (input && is_blank_line(input))
+            {
+                g_exit_status = 0;
+                free(input);
+                free_tokens(tokens);
+                continue;
+            }
+            else
+            {
+                g_exit_status = 2;
+                free(input);
+                free_tokens(tokens);
+                continue;
+            }
+        }
         free(input);
         if (!tokens)
+        {
+            free_tokens(tokens);
             continue ;
+        }
         command = tokens_to_cmds(tokens, envcp);
         t_com_list *start = command;
         while (command)
         {
             has_redir_error = 0;
-
             // Si aucune commande, mais redirection présente
             if (command->command == NULL)
             {
@@ -63,34 +100,26 @@ int	main(int ac, char **av, char **envp)
                     mem_fd_in = mem_fd_err = -1;
                 }
                 command = command->next;
-                continue;
+                continue ;
             }
 
             // Appliquer les redirections
             if (command->infile || command->outfile || command->errfile || command->heredoc_fd > 0)
-            {
-                printf("redirection detecter\n");
                 has_redir_error = ft_redirection(command, &mem_fd_in, &mem_fd_out, &mem_fd_err);
-            }
-
             if (has_redir_error)
             {
                 command = command->next;
-                continue;
+                continue ;
             }
             if (has_pipe(command))
             {
                 exec_pipes(command, envcp);
                 restore_redirections(mem_fd_in, mem_fd_out, mem_fd_err);
                 mem_fd_in = mem_fd_out = mem_fd_err = -1;
-                printf("DEBUG: g_exit_status après exec_pipes = %d\n", g_exit_status);
                 break ;
             }
             else
-            {
                 execute(command, &envcp);
-                printf("DEBUG: g_exit_status après execute = %d\n", g_exit_status);
-            }
             // Restauration des redirections
             if ((command->infile || command->outfile || command->errfile || command->heredoc_fd > 0) && has_redir_error >= 0)
             {

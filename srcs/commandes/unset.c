@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:21 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/03 13:29:27 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/03 17:05:18 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,13 @@ int ft_unset(char **args, char ***envcp)
     i = 1;
     while (args[i])
     {
-        if (args[i][0] == '-' && args[i][1] != '\0') // Si l'argument commence par '-'
+        if (args[i][0] == '-' && args[i][1] != '\0')
         {
             printf("minishell: %s: invalid option\n", args[i]);
             g_exit_status = 2;
             return (g_exit_status);
         }
-        // Cas special avec !
-        if (strchr(args[i], '!')) // Si un '!' est trouvé dans le nom de la variable
+        if (strchr(args[i], '!'))
         {
             printf("minishell: unset: `%s': event not found\n", args[i]);
             g_exit_status = 1;
