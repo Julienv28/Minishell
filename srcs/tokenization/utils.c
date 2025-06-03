@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 10:39:23 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/03 17:23:53 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/03 18:27:35 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void	free_cmd(t_com_list *command)
 		command = tmp;
 	}
 }
-
+/*
 void apply_redirection(t_com_list *curr_cmd, char *expanded, int redir_type)
 {
     if (!curr_cmd || !expanded)
@@ -86,4 +86,4 @@ void apply_redirection(t_com_list *curr_cmd, char *expanded, int redir_type)
         // Définir le mode append ou écriture simple
         curr_cmd->append_mode = (redir_type == APPEND) ? 1 : 0;
     }
-}
+}*/

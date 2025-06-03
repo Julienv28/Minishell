@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 09:00:40 by opique            #+#    #+#             */
-/*   Updated: 2025/06/03 17:45:51 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/03 18:34:06 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	exec_builting(char **args, char ***envcp)
 	else if (ft_strcmp(args[0], "pwd") == 0)
 		return (ft_pwd(args, envcp));
 	else if (ft_strcmp(args[0], "echo") == 0)
-		return (ft_echo(args), 0);
+		return (ft_echo(args, envcp), 0);
 	else if (ft_strcmp(args[0], "export") == 0)
 	{
 		if (!args[1])

@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/03 17:43:44 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/03 18:33:33 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ typedef struct	s_token
 }				t_token;
 
 // Message prompt + history (Oceane) ==> a ameliorer
-int					handle_heredoc(char *limiter, char **envcp);
+char	*handle_heredoc(char *limiter, char **envcp, int expand_var);
 int					limiter_is_quoted(const char *str);
 void				fake_exit_builtin(char **args);
 int					is_valid_numeric_argument(char *str);
@@ -137,7 +137,8 @@ int					check_input(char *str, int i);
 int					ft_isnumber(char *str);
 
 // Commandes
-void				ft_echo(char **args);
+void				ft_echo(char **args, char ***envcp);
+char	*add_space_if_needed(char *arg, char **envcp);
 int					ft_cd(char **args, char ***envcp);
 int					ft_pwd(char **args, char ***envcp);
 int					ft_exit(char **args, int in_child);
@@ -181,5 +182,6 @@ int					count_ags(char **args);
 int					check_events(char *arg);
 char				*clean_spaces(char *str);
 void				add_outfile(t_file_list **list, char *filename, int flag);
+int	syntax_error(void);
 
 #endif
