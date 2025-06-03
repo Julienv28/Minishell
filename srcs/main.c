@@ -44,10 +44,7 @@ int	main(int ac, char **av, char **envp)
            g_exit_status = 2;
         free(input);
         if (!tokens)
-        {
-            free_tokens(tokens);
-            continue;
-        }
+            continue ;
         command = tokens_to_cmds(tokens, envcp);
         t_com_list *start = command;
         while (command)
@@ -87,8 +84,6 @@ int	main(int ac, char **av, char **envp)
                 restore_redirections(mem_fd_in, mem_fd_out, mem_fd_err);
                 mem_fd_in = mem_fd_out = mem_fd_err = -1;
                 printf("DEBUG: g_exit_status après exec_pipes = %d\n", g_exit_status);
-                free_tokens(tokens);
-                free_cmd(start);
                 break ;
             }
             else

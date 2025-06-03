@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 10:25:54 by juvitry           #+#    #+#             */
-/*   Updated: 2025/05/29 13:37:11 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/03 17:01:24 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,11 @@ t_com_list	*list_new(char *command)
 		new->command = ft_strdup(command);
 	else
 		new->command = NULL;
+	new->args = NULL;
 	new->is_pipe = 0;
 	new->next = NULL;
 	new->all_outfilles = NULL;
+	new->heredoc_fd = -1;
 	init_cmds(new);
 	return (new);
 }

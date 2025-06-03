@@ -58,7 +58,10 @@ char	*extract_redir_word(char *str, int *i)
 		&& str[*i] != '<' && str[*i] != '>')
 		(*i)++;
 	if (*i == start)
+    {
+        (*i)++;
 		return (NULL);
+    }
 	return (ft_strndup(str + start, *i - start));
 }
 
@@ -91,13 +94,17 @@ int	handle_redirection(char *str, int *i, t_token **tokens, char **envcp)
 	if (!word)
 		return (printf("Erreur : Redirection sans fichier !\n"), -1);
 	if (type == HEREDOC && limiter_is_quoted(word) == 0)
+    {
 		add_token(tokens, word, ARG);
+        free(word);
+    }
 	else
 	{
-		word = expand_clean_word(word, envcp);
+		char *expanded = expand_clean_word(word, envcp);
 		add_token(tokens, word, ARG);
+        free(expanded);
+        free(word);
 	}
-	free(word);
 	return (1);
 }
 
@@ -116,12 +123,12 @@ int parse_redirection(char *str, int *i)
     }
     if (str[*i] == '<' && str[*i + 1] == '<')
     {
-        *i += 2; // Avancer l'index de 2 pour ignorer "<<"
+        (*i) += 2; // Avancer l'index de 2 pour ignorer "<<"
         return (HEREDOC);
     }
     else if (str[*i] == '>' && str[*i + 1] == '>')
     {
-        *i += 2;
+        (*i) += 2;
         return (APPEND);
     }
     else if (str[*i] == '<')

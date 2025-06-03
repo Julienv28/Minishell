@@ -6,41 +6,37 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 10:45:02 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/03 10:48:54 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/03 14:27:58 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 #include <errno.h>
 
-int execute(t_com_list *cmds, char ***envcp)
+int	execute(t_com_list *cmds, char ***envcp)
 {
-    char **args;
-    pid_t pid;
-	int	status;
+	char	**args;
+	pid_t	pid;
+	int		status;
 
-    if (!cmds)
-        return (-1);
-    args = cmds->args;
-    if (!args || !args[0] || args[0][0] == '\0')
-    {
-        ft_putstr_fd("minishell: ", STDERR_FILENO);
-        ft_putstr_fd(args && args[0] ? args[0] : "", STDERR_FILENO);
-        ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
-        g_exit_status = 127;
-        return (-1);
-    }
-    // printf("command expand %s\n", cmds->command);
-    if (is_builting(args[0]) && ft_strcmp(args[0], "exit") == 0)
-    {
-        ft_exit(args, 0);
-        // exec_builting(args, envcp);
-    }
-    else if (is_builting(args[0]))
-    {
-        status = exec_builting(args, envcp);
-		    g_exit_status = status;
-    }
+	if (!cmds)
+		return (-1);
+	args = cmds->args;
+	if (!args || !args[0] || args[0][0] == '\0')
+	{
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		ft_putstr_fd(args && args[0] ? args[0] : "", STDERR_FILENO);
+		ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+		g_exit_status = 127;
+		return (-1);
+	}
+	if (is_builting(args[0]) && ft_strcmp(args[0], "exit") == 0)
+		ft_exit(args, 0);
+	else if (is_builting(args[0]))
+	{
+		status = exec_builting(args, envcp);
+			g_exit_status = status;
+	}
     else
     {
         // FORK pour les commandes externes
@@ -48,7 +44,6 @@ int execute(t_com_list *cmds, char ***envcp)
         if (pid == -1)
         {
             perror("fork");
-            free_tab(args);
             return (-1);
         }
         if (pid == 0) // Enfant
@@ -59,10 +54,8 @@ int execute(t_com_list *cmds, char ***envcp)
         else // Parent
         {
             int status;
-
             // Ignorer SIGTSTP dans les processus enfants
-            signal(SIGTSTP, SIG_IGN);
-
+            // signal(SIGTSTP, SIG_IGN);
             // Le parent ignore temporairement les signaux pendant que l'enfant s'exécute
             signal(SIGINT, SIG_IGN);
             signal(SIGQUIT, SIG_IGN);
@@ -74,10 +67,7 @@ int execute(t_com_list *cmds, char ***envcp)
             signal(SIGQUIT, SIG_IGN);
 
             if (WIFEXITED(status))
-            {
                 g_exit_status = WEXITSTATUS(status);
-                // printf("DEBUG: g_exit_status après execute = %d\n", g_exit_status);
-            }
             else if (WIFSIGNALED(status))
             {
                 g_exit_status = 128 + WTERMSIG(status);

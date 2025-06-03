@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 16:08:55 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/02 14:35:24 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/03 17:27:59 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ char *concat_command(char *current_command, char *new_part)
     new_command = malloc(len_current + len_new + 2); // +2 pour l'espace et '\0'
     if (new_command == NULL)
         return (NULL);
-    if (current_command)
+    if (current_command && *current_command)
     {
         ft_strcpy(new_command, current_command);
         ft_strcat(new_command, " "); // Ajoute un espace entre les commandes
@@ -60,6 +60,8 @@ int	limiter_is_quoted(const char *str)
 	if (!str)
 		return (0);
 	len = ft_strlen(str);
+	if (len < 2)
+		return (0);
 	if ((str[0] == '"' && str[len - 1] == '"')
 		|| (str[0] == '\'' && str[len - 1] == '\''))
 		return (1);
@@ -114,12 +116,12 @@ int handle_heredoc(char *limiter,char **envcp)
 
 static char	*generate_tmp_filename(void)
 {
-	static int	counter;
+	static int	counter = 0;
 	char		*prefix;
 	char		*pid_str;
 	char		*count_str;
 
-	counter = 0;
+	// counter = 0;
 	prefix = ft_strdup("/tmp/.heredoc_");
 	pid_str = ft_itoa(getpid());
 	count_str = ft_itoa(counter++);
@@ -148,6 +150,8 @@ char	*handle_heredoc(char *limiter, char **envcp, int expand_var)
 	char	*processed;
 
 	filename = generate_tmp_filename();
+	if (!filename)
+		return (NULL);
 	heredoc_fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (heredoc_fd == -1)
 		return(free(filename), NULL);
@@ -156,7 +160,13 @@ char	*handle_heredoc(char *limiter, char **envcp, int expand_var)
 		line = readline("> ");
 		if (!line)
 			break ;
-		cleaned_limiter = remove_quotes_or_slash(ft_strdup(limiter));
+		char *quoted = ft_strdup(limiter);
+		if (!quoted)
+			return (free(filename), NULL);
+		cleaned_limiter = remove_quotes_or_slash(quoted);
+		if (!cleaned_limiter)
+			return (free(filename), free(quoted), NULL);
+		free(quoted);
 		if (ft_strcmp(line, cleaned_limiter) == 0)
 		{
 			free(cleaned_limiter);
@@ -172,7 +182,8 @@ char	*handle_heredoc(char *limiter, char **envcp, int expand_var)
 		if (expand_var)
 			free(processed);
 	}
-	close (heredoc_fd);
+	if (close(heredoc_fd) == -1)
+		perror("close heredoc_fd");
 	return (filename);
 }
 
@@ -237,37 +248,233 @@ char	*handle_heredoc(char *limiter, char **envcp, int expand_var)
 //     return pipefd[0];
 // }
 
+// t_com_list	*tokens_to_cmds(t_token *tokens, char **envcp)
+// {
+// 	t_com_list	*cmd_list = NULL;
+// 	t_com_list	*current_cmd = NULL;
+// 	t_token		*tmp = tokens;
+// 	t_com_list	*new_cmd;
+//     char *filename;
+//     char *pending_outfile = NULL;
+//     int pending_flag_out = -1;
+//     char *pending_infile = NULL;
+//     int pending_flag_in = -1;
+//     int redir_type;
+// 	char *pending_errfile = NULL;
+
+// 	while (tmp)
+// 	{
+//         // Affiche la valeur du token pour débogage
+// 		if (tmp->type == CMD)
+// 		{
+// 			if (!tmp->value)
+// 			{
+// 				fprintf(stderr, "Erreur : token CMD avec valeur NULL\n");
+// 				tmp = tmp->next;
+// 				continue ;
+// 			}
+// 			char *expanded = replace_all_variables(tmp->value, envcp, 0);
+// 			new_cmd = list_new(expanded);
+// 			new_cmd->args = ft_calloc(MAX_ARGS, sizeof(char *));
+// 			if (!new_cmd->args)
+// 				return (NULL);
+// 			new_cmd->args[0] = ft_strdup(expanded);
+// 			new_cmd->args[1] = NULL;
+// 			free(expanded);
+// 			new_cmd->heredoc_fd = -1;
+// 			if (pending_outfile)
+// 			{
+// 				new_cmd->outfile = pending_outfile;
+// 				new_cmd->flag_out = pending_flag_out;
+// 				new_cmd->all_outfilles = NULL;
+// 				add_outfile(&new_cmd->all_outfilles,
+// 					pending_outfile, pending_flag_out);
+// 				pending_outfile = NULL;
+// 				pending_flag_out = -1;
+// 			}
+// 			if (pending_infile)
+// 			{
+// 				new_cmd->infile = pending_infile;
+// 				new_cmd->flag_in = pending_flag_in;
+// 				pending_infile = NULL;
+// 				pending_flag_in = -1;
+// 			}
+// 			if (!cmd_list)
+//                 cmd_list = new_cmd;
+// 			else
+// 				add_bottom(&cmd_list, new_cmd);
+//             current_cmd = new_cmd;
+//         }
+//         else if (tmp->type == ARG && current_cmd)
+//         {
+//             char *expanded = replace_all_variables(tmp->value, envcp, 0);
+//             int i = 0;
+//             while (current_cmd->args[i])
+//                 i++;
+//             current_cmd->args[i] = ft_strdup(expanded);
+//             current_cmd->args[i + 1] = NULL;
+//             free(expanded);
+//         }
+//         else if (tmp->type == PIPE)
+//         {
+//             if (current_cmd)
+//                 current_cmd->is_pipe = 1;
+//             current_cmd = NULL;
+//         }
+// 		else if (tmp->type == TRUNC || tmp->type == INPUT
+// 			|| tmp->type == HEREDOC || tmp->type == APPEND)
+// 		{
+// 			redir_type = tmp->type;
+// 			tmp = tmp->next;
+// 			if (!tmp || tmp->type != ARG)
+// 				return (syntax_error(), NULL);
+// 			filename = ft_strdup(tmp->value);
+// 			if (!filename)
+// 				return (NULL);
+// 			if (redir_type == HEREDOC)
+// 			{
+// 				int expand = !limiter_is_quoted(filename);
+// 				char *expanded = replace_all_variables(filename, envcp, 0);
+// 				char *heredoc_name = handle_heredoc(expanded, envcp, expand);
+
+// 				free(expanded);
+// 				free (filename);
+// 				if (!heredoc_name)
+// 					return (NULL);
+// 				if (!current_cmd)
+// 				{
+// 					pending_infile = ft_strdup(heredoc_name);
+// 					if (!pending_infile)
+// 						return (NULL);
+// 				}
+// 				else
+// 				{
+// 					if (current_cmd->infile)
+// 						free(current_cmd->infile);
+// 					current_cmd->infile = ft_strdup(heredoc_name);
+// 					if (!current_cmd->infile)
+// 						return (NULL);
+// 				}
+// 				free(heredoc_name);
+// 			}
+// 			else if (redir_type == INPUT)
+// 			{
+// 				char *expanded = replace_all_variables(filename, envcp, 0);
+// 				free (filename);
+// 				if (current_cmd)
+// 				{
+// 					free(current_cmd->infile);
+// 					current_cmd->infile = ft_strdup(expanded);
+// 					if (!current_cmd->infile)
+// 						return (NULL);
+// 				}
+// 				else
+// 				{
+// 					free(pending_infile);
+// 					pending_infile = ft_strdup(expanded);
+// 					if (!pending_infile)
+// 						return (NULL);
+// 				}
+// 				free (expanded);
+// 			}
+// 			else
+// 			{
+// 				int flag = (redir_type == APPEND);
+// 				int fd = open_outfile(filename, flag);
+// 				if (fd < 0)
+// 				{
+// 					perror(filename);
+// 					free(filename);
+// 					return (NULL);
+// 				}
+// 				close (fd);
+// 				if (current_cmd)
+// 				{
+// 					free(current_cmd->outfile);
+// 					current_cmd->outfile = filename;
+// 					current_cmd->flag_out = flag;
+// 				}
+// 				else
+// 				{
+// 					free(pending_outfile);
+// 					pending_outfile = filename;
+// 					pending_flag_out = flag;
+// 				}
+// 			}
+// 			// else
+//             // {
+//             //     fprintf(stderr, "minishell: syntax error near unexpected token '%s'\n", tmp->value);
+//             //     return (NULL);
+//             // }
+//         }
+//     }
+//     // Créer une commande vide si redirection seule
+//     if ((pending_outfile || pending_infile) && !current_cmd)
+//     {
+//         new_cmd = list_new(NULL); // Pas de commande
+//         new_cmd->heredoc_fd = -1;
+//         if (pending_outfile)
+//         {
+// 			if (new_cmd->outfile)
+// 				free(new_cmd->outfile);
+//             new_cmd->outfile = pending_outfile;
+//             new_cmd->flag_out = pending_flag_out;
+//             // add_outfile(&new_cmd->all_outfilles, pending_outfile, pending_flag_out);
+//         }
+//         if (pending_infile)
+//         {
+//             new_cmd->infile = pending_infile;
+//             new_cmd->flag_in = pending_flag_in;
+//         }
+//         if (pending_errfile)
+//             new_cmd->errfile = pending_errfile;
+
+//         if (!cmd_list)
+//             cmd_list = new_cmd;
+//         else
+//             add_bottom(&cmd_list, new_cmd);
+//     }
+//     // t_com_list  *iter = cmd_list;
+//     // while (iter)
+//     // {
+//     //     if (iter->args && iter->args[0])
+//     //     {
+//     //         free(iter->command);
+//     //         iter->command = ft_strdup(iter->args[0]);
+//     //     }
+//     //     iter = iter->next;
+//     // }
+//     return (cmd_list);
+// }
+
 t_com_list	*tokens_to_cmds(t_token *tokens, char **envcp)
 {
 	t_com_list	*cmd_list = NULL;
 	t_com_list	*current_cmd = NULL;
 	t_token		*tmp = tokens;
 	t_com_list	*new_cmd;
-    char *filename;
-    char *pending_outfile = NULL;
-    int pending_flag_out = -1;
-    char *pending_errfile = NULL;
-    char *pending_infile = NULL;
-    int pending_flag_in = -1;
-    int flag;
-    int redir_type;
-    t_file_list *pending_all_outfiles = NULL;
-    int fd;
+	char		*filename;
+	char		*pending_outfile = NULL;
+	int			pending_flag_out = -1;
+	char		*pending_infile = NULL;
+	int			pending_flag_in = -1;
+	int			redir_type;
+	char		*pending_errfile = NULL;
+	t_file_list *pending_all_outfiles = NULL;
 
 	while (tmp)
 	{
-        // Affiche la valeur du token pour débogage
 		if (tmp->type == CMD)
 		{
 			if (!tmp->value)
 			{
 				fprintf(stderr, "Erreur : token CMD avec valeur NULL\n");
 				tmp = tmp->next;
-				continue ;
+				continue;
 			}
 			char *expanded = replace_all_variables(tmp->value, envcp, 0);
 			new_cmd = list_new(expanded);
-			new_cmd->args = malloc(sizeof(char *) * MAX_ARGS);
+			new_cmd->args = ft_calloc(MAX_ARGS, sizeof(char *));
 			if (!new_cmd->args)
 				return (NULL);
 			new_cmd->args[0] = ft_strdup(expanded);
@@ -278,6 +485,7 @@ t_com_list	*tokens_to_cmds(t_token *tokens, char **envcp)
 			{
 				new_cmd->outfile = pending_outfile;
 				new_cmd->flag_out = pending_flag_out;
+				new_cmd->all_outfilles = NULL;
 				add_outfile(&new_cmd->all_outfilles, pending_outfile, pending_flag_out);
 				pending_outfile = NULL;
 				pending_flag_out = -1;
@@ -290,167 +498,143 @@ t_com_list	*tokens_to_cmds(t_token *tokens, char **envcp)
 				pending_flag_in = -1;
 			}
 			if (!cmd_list)
-                cmd_list = new_cmd;
+				cmd_list = new_cmd;
 			else
 				add_bottom(&cmd_list, new_cmd);
-            current_cmd = new_cmd;
-        }
-        else if (tmp->type == ARG && current_cmd)
-        {
-            char *expanded = replace_all_variables(tmp->value, envcp, 0);
-            int i = 0;
-            while (current_cmd->args[i])
-                i++;
-            current_cmd->args[i] = ft_strdup(expanded);
-            current_cmd->args[i + 1] = NULL;
-            free(expanded);
-        }
-        else if (tmp->type == PIPE)
-        {
-            if (current_cmd)
-                current_cmd->is_pipe = 1;
-            current_cmd = NULL;
-        }
-        else if (tmp->type == TRUNC || tmp->type == INPUT || tmp->type == HEREDOC || tmp->type == APPEND)
-        {
-            redir_type = tmp->type; // <== Sauvegarde le type de redirection actuel
-            if (tmp->next && tmp->next->type == ARG)
-            {
-                tmp = tmp->next;
-                filename = ft_strdup(tmp->value);
-                flag = (redir_type == APPEND || redir_type == HEREDOC) ? 1 : 0;
-                fd = -1;
-                // if (redir_type == INPUT || redir_type == HEREDOC)
+			current_cmd = new_cmd;
+			tmp = tmp->next;
+		}
+		else if (tmp->type == ARG && current_cmd)
+		{
+			char *expanded = replace_all_variables(tmp->value, envcp, 0);
+			int i = 0;
+			while (current_cmd->args[i])
+				i++;
+			current_cmd->args[i] = ft_strdup(expanded);
+			current_cmd->args[i + 1] = NULL;
+			free(expanded);
+			tmp = tmp->next;
+		}
+		else if (tmp->type == PIPE)
+		{
+			if (current_cmd)
+				current_cmd->is_pipe = 1;
+			current_cmd = NULL;
+			tmp = tmp->next;
+		}
+		else if (tmp->type == TRUNC || tmp->type == INPUT
+			|| tmp->type == HEREDOC || tmp->type == APPEND)
+		{
+			redir_type = tmp->type;
+			tmp = tmp->next;
+			if (!tmp || tmp->type != ARG)
+				return (syntax_error(), NULL);
+			filename = ft_strdup(tmp->value);
+			if (!filename)
+				return (NULL);
 
-                if (redir_type == HEREDOC)
+			if (redir_type == HEREDOC)
+			{
+				int expand = !limiter_is_quoted(filename);
+				char *expanded = replace_all_variables(filename, envcp, 0);
+				char *heredoc_name = handle_heredoc(expanded, envcp, expand);
+				free(expanded);
+				free(filename);
+				if (!heredoc_name)
+					return (NULL);
+				if (!current_cmd)
 				{
-                //     printf("detection HEREDOC\n");
-					char *lim = tmp->value;
-        			int expand = !limiter_is_quoted(lim);
-        			char *expanded = replace_all_variables(lim, envcp, 0);
-        			char *filename = handle_heredoc(expanded, envcp, expand);
-
-        			free(expanded);
-					if (!filename)
-						return(free_and_return_null(&pending_infile, &pending_outfile));
-					if (!current_cmd)
-						pending_infile = ft_strdup(filename);
-					else
-					{
-						free(current_cmd->infile);
-						current_cmd->infile = ft_strdup(filename);
-					}
+					pending_infile = ft_strdup(heredoc_name);
+					if (!pending_infile)
+						return (NULL);
+				}
+				else
+				{
+					free(current_cmd->infile);
+					current_cmd->infile = ft_strdup(heredoc_name);
+					if (!current_cmd->infile)
+						return (NULL);
+				}
+				free(heredoc_name);
+			}
+			else if (redir_type == INPUT)
+			{
+				char *expanded = replace_all_variables(filename, envcp, 0);
+				free(filename);
+				if (current_cmd)
+				{
+					free(current_cmd->infile);
+					current_cmd->infile = ft_strdup(expanded);
+					if (!current_cmd->infile)
+						return (NULL);
+				}
+				else
+				{
+					free(pending_infile);
+					pending_infile = ft_strdup(expanded);
+					if (!pending_infile)
+						return (NULL);
+				}
+				free(expanded);
+			}
+			else // TRUNC ou APPEND
+			{
+				int flag = (redir_type == APPEND);
+				int fd = open_outfile(filename, flag);
+				if (fd < 0)
+				{
+					perror(filename);
 					free(filename);
+					return (NULL);
 				}
-				else if (tmp->type == INPUT || tmp->type == APPEND)
+				close(fd);
+				if (current_cmd)
 				{
-					t_token *file_token = tmp->next;
-					if (!file_token)
-						return (syntax_error(), NULL);
-					char *expanded = replace_all_variables(file_token->value, envcp, 0);
-					if (!current_cmd)
-					{
-						if(tmp->type == INPUT)
-						{
-							free(pending_infile);
-							pending_infile = ft_strdup(expanded);
-						}
-						else
-						{
-							free(pending_outfile);
-							pending_outfile = ft_strdup(expanded);
-						}
-					}
-					else
-						apply_redirection(current_cmd, expanded, tmp->type);
-					free (expanded);
-					tmp = file_token;
+					free(current_cmd->outfile);
+					current_cmd->outfile = ft_strdup(filename);
+					current_cmd->flag_out = flag;
 				}
-                else if (redir_type == ERR_REDIR)
-                {
-                    fd = open_errfile(filename);
-                    if (fd < 0)
-                    {
-                        perror(filename);
-                        free(filename);
-                        return NULL;
-                    }
-                    close(fd);
-                    if (current_cmd)
-                        current_cmd->errfile = filename;
-                    else
-                        pending_errfile = filename;
-                }
-                else // TRUNC or APPEND
-                {
-                    // int mode = O_WRONLY | O_CREAT | (flag ? O_APPEND : O_TRUNC);
-                    fd = open_outfile(filename, flag);
-                    if (fd < 0)
-                    {
-                        perror(filename);
-                        free(filename);
-                        return NULL;
-                    }
-                    close(fd);
-                    if (current_cmd)
-                    {
-                        current_cmd->outfile = filename;
-                        current_cmd->flag_out = flag;
-                    }
-                    else
-                    {
-                        pending_outfile = filename;
-                        pending_flag_out = flag;
-                    }
-                }
-            }
-            else
-            {
-                fprintf(stderr, "minishell: syntax error near unexpected token '%s'\n", tmp->value);
-                return NULL;
-            }
-        }
-        tmp = tmp->next;
-    }
+				else
+				{
+					free(pending_outfile);
+					pending_outfile = ft_strdup(filename);
+					pending_flag_out = flag;
+				}
+				free(filename);
+			}
+			tmp = tmp->next; // avance après l'argument
+		}
+		else
+			tmp = tmp->next; // pour éviter blocage sur token inconnu
+	}
 
-    // Créer une commande vide si redirection seule
-    if ((pending_outfile || pending_infile) && !current_cmd)
-    {
-        new_cmd = list_new(NULL); // Pas de commande
-        new_cmd->heredoc_fd = -1;
-        if (pending_outfile)
-        {
-            new_cmd->outfile = pending_outfile;
-            new_cmd->flag_out = pending_flag_out;
-            new_cmd->all_outfilles = pending_all_outfiles;
-            new_cmd->heredoc_fd = -1;
-            // add_outfile(&new_cmd->all_outfilles, pending_outfile, pending_flag_out);
-        }
-        if (pending_infile)
-        {
-            new_cmd->infile = pending_infile;
-            new_cmd->flag_in = pending_flag_in;
-        }
-        if (pending_errfile)
-            new_cmd->errfile = pending_errfile;
+	// Redirection seule en fin de ligne
+	if ((pending_outfile || pending_infile) && !current_cmd)
+	{
+		new_cmd = list_new(NULL); // commande vide
+		new_cmd->heredoc_fd = -1;
+		if (pending_outfile)
+		{
+			new_cmd->outfile = pending_outfile;
+			new_cmd->flag_out = pending_flag_out;
+			new_cmd->all_outfilles = pending_all_outfiles;
+		}
+		if (pending_infile)
+		{
+			new_cmd->infile = pending_infile;
+			new_cmd->flag_in = pending_flag_in;
+		}
+		if (pending_errfile)
+			new_cmd->errfile = pending_errfile;
 
-        if (!cmd_list)
-            cmd_list = new_cmd;
-        else
-            add_bottom(&cmd_list, new_cmd);
-    }
-    // t_com_list  *iter = cmd_list;
-    // while (iter)
-    // {
-    //     if (iter->args && iter->args[0])
-    //     {
-    //         free(iter->command);
-    //         iter->command = ft_strdup(iter->args[0]);
-    //     }
-    //     iter = iter->next;
-    // }
-    return (cmd_list);
+		if (!cmd_list)
+			cmd_list = new_cmd;
+		else
+			add_bottom(&cmd_list, new_cmd);
+	}
+	return (cmd_list);
 }
+
 
 int	is_builting(char *cmd)
 {

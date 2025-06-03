@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 11:30:12 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/03 14:03:23 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/03 14:20:51 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ int	find_line(char **envp, char *path)
 	i = 0;
 	while (envp[i])
 	{
-		if (ft_strncmp(path, envp[i], ft_strlen(path)) != 0
+		if (ft_strncmp(path, envp[i], ft_strlen(path)) == 0
 			&& envp[i][ft_strlen(path)] == '=')
 			return (i);
 		i++;
@@ -150,38 +150,38 @@ char *path_error_message(char *cmd)
     return (ft_strdup(cmd));
 }
 
-char *get_path(char *cmd, char **envp)
+char	*get_path(char *cmd, char **envp)
 {
-    char **paths;
-    char *path;
-    int line;
+	char	**paths;
+	char	*path;
+	int		line;
 
-    if (ft_strchr(cmd, '/'))
-        return ((path_error_message(cmd)));
-    line = find_line(envp, "PATH");
-    if (!envp[line] || line == -1)
-        return (ft_putstr_fd("minishell: PATH not set\n", STDERR_FILENO), NULL);
-    paths = ft_split(envp[line] + 5, ':');
-    path = search_path(paths, cmd);
-    if (path == NULL)
-    {
-        fprintf(stderr, "minishell: %s : command not found\n", cmd);
-        g_exit_status = 127;
-    }
-    else if (access(path, X_OK) != 0)
-    {
-        printf("minishell: %s : Permission denied\n", cmd);
-        g_exit_status = 126;
-        free(path);
-        path = NULL;
-    }
-    free_tab(paths);
-    return (path);
+	if (ft_strchr(cmd, '/'))
+		return ((path_error_message(cmd)));
+	line = find_line(envp, "PATH");
+	if (!envp[line] || line == -1)
+		return (ft_putstr_fd("minishell: PATH not set\n", STDERR_FILENO), NULL);
+	paths = ft_split(envp[line] + 5, ':');
+	path = search_path(paths, cmd);
+	if (path == NULL)
+	{
+		fprintf(stderr, "minishell: %s : command not found\n", cmd);
+		g_exit_status = 127;
+	}
+	else if (access(path, X_OK) != 0)
+	{
+		printf("minishell: %s : Permission denied\n", cmd);
+		g_exit_status = 126;
+		free(path);
+		path = NULL;
+	}
+	free_tab(paths);
+	return (path);
 }
 
-void exec_cmd(char **args, char ***envcp)
+void	exec_cmd(char **args, char ***envcp)
 {
-    char *path;
+	char	*path;
 
 	path = get_path(args[0], *envcp);
 	if (path == NULL)
@@ -190,18 +190,18 @@ void exec_cmd(char **args, char ***envcp)
 	signal(SIGQUIT, SIG_DFL);
 	if (execve(path, args, *envcp) == -1)
 	{
-        if (errno == EISDIR)
-        {
-            printf("minishell: %s : Is a directory\n", path);
-            g_exit_status = 126;
-        }
-        else
-        {
-            perror("minishell");
-            g_exit_status = 1;
-        }
-        free(path);
-        exit(g_exit_status);
-    }
-    exit(1);
+		if (errno == EISDIR)
+		{
+			printf("minishell: %s : Is a directory\n", path);
+			g_exit_status = 126;
+		}
+		else
+		{
+			perror("minishell");
+			g_exit_status = 1;
+		}
+		free(path);
+		exit(g_exit_status);
+	}
+	exit(1);
 }
