@@ -45,7 +45,10 @@ t_token *create_tokens(char **str, char **envcp)
         if ((*str)[i] == '|')
         {
             if (check_pipe(*str, i) == -1)
+            {
+                free_tokens(tokens);
                 return (NULL);
+            }
             add_token(&tokens, "|", PIPE);
             i++;
             expect_cmd = 1;

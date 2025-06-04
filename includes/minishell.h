@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/04 14:08:36 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/04 13:48:02 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ typedef struct	s_token
 }				t_token;
 
 // Message prompt + history (Oceane) ==> a ameliorer
-char	*handle_heredoc(char *limiter, char **envcp, int expand_var);
+char				*handle_heredoc(char *limiter, char **envcp, int expand_var);
 int					limiter_is_quoted(const char *str);
 void	fake_exit_builtin(char **args, t_com_list *cmds);
 int					is_valid_numeric_argument(char *str);
@@ -138,12 +138,14 @@ int					ft_isnumber(char *str);
 
 // Commandes
 void				ft_echo(char **args, char ***envcp);
-char	*add_space_if_needed(char *arg, char **envcp);
+char				*add_space_if_needed(char *arg, char **envcp);
 int					ft_cd(char **args, char ***envcp);
 int					ft_pwd(char **args, char ***envcp);
 int					ft_exit(char **args, int in_child, t_com_list *cmd);
 void		cleanup_and_exit(int code, t_com_list *cmd);
 int					ft_export(char **arg, char ***envcp);
+char 				*prepare_export_string(char *arg, char **envp, char **key, char **value);
+void 				free_export_vars(char *key, char *value, char *replaced);
 char				*get_env_value(char *name, char **envp);
 char				*get_value_cleaned(char *name, char **envp);
 void				ft_set_env(char *key, char *value, char ***envp);

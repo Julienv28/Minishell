@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 10:39:23 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/04 09:18:10 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/04 15:17:21 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,11 @@ void	free_tokens(t_token *tokens)
 	{
 		tmp = tokens;
 		tokens = tokens->next;
-		free(tmp->value);
+		if (tmp->value)
+		{
+			free(tmp->value);
+			tmp->value = NULL;
+		}
 		free(tmp);
 	}
 }
