@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_commands.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 10:45:02 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/04 08:55:02 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/04 14:11:19 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,14 @@ int	execute(t_com_list *cmds, char ***envcp)
 		return (0);
 	}
 	if (is_builting(args[0]) && ft_strcmp(args[0], "exit") == 0)
-		ft_exit(args, 0);
+	{
+		ft_freeenvp(*envcp);
+    	rl_clear_history();
+		ft_exit(args, 0, cmds);
+	}
 	else if (is_builting(args[0]))
 	{
-		status = exec_builting(args, envcp);
+		status = exec_builting(args, envcp, cmds);
 			g_exit_status = status;
 	}
     else
@@ -99,18 +103,18 @@ static void	wait_children(pid_t last_pid)
 		write(1, "Quit (core dumped)\n", 20);
 }
 
-void	fake_exit_builtin(char **args)
+void	fake_exit_builtin(char **args, t_com_list *cmds)
 {
 	long long	exit_value;
 
 	exit_value = 0;
 	if (!args[1])
-		exit(0);
+		cleanup_and_exit(0, cmds);
 	if (!is_valid_numeric_argument(args[1]))
 	{
 		fprintf(stderr, "minishell: exit: %s: numeric argument required\n", \
 				args[1]);
-		exit(255);
+		cleanup_and_exit(255, cmds);
 	}
 	exit_value = ft_atoull(args[1]);
 	exit((unsigned char)(exit_value));
@@ -171,13 +175,17 @@ int	exec_pipes(t_com_list *cmds, char **envcp)
 				ft_putstr_fd("minishell: ", STDERR_FILENO);
 				ft_putstr_fd(args && args[0] ? args[0] : "", STDERR_FILENO);
 				ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+				rl_clear_history();
 				exit(127);
 			}
 			if (is_builting(args[0]) && ft_strcmp(args[0], "exit") == 0)
-				fake_exit_builtin(args);
+			{
+				ft_freeenvp(envcp);
+				fake_exit_builtin(args, cmds);
+			}
 			else if (is_builting(args[0]))
 			{
-				status = exec_builting(args, &envcp);
+				status = exec_builting(args, &envcp, cmds);
 				g_exit_status = status;
 			}
 			else

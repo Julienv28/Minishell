@@ -86,6 +86,12 @@ int	main(int ac, char **av, char **envp)
             continue ;
         }
         command = tokens_to_cmds(tokens, envcp);
+        if (!command)
+        {
+            free_tokens(tokens);
+            continue ;
+        }
+        free_tokens(tokens);
         t_com_list *start = command;
         while (command)
         {
@@ -102,7 +108,6 @@ int	main(int ac, char **av, char **envp)
                     mem_fd_in = mem_fd_err = -1;
                 }
                 command = command->next;
-                free_tokens(tokens);
                 continue ;
             }
 
@@ -131,7 +136,6 @@ int	main(int ac, char **av, char **envp)
             }
             command = command->next;
         }
-        free_tokens(tokens);
         free_cmd(start);
     }
     ft_freeenvp(envcp);
