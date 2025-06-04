@@ -81,7 +81,8 @@ int	cd_check_args(char **args)
 	}
 	return (0);
 }
-int ft_cd(char **args, char ***envcp)
+
+int	ft_cd(char **args, char ***envcp)
 {
 	char	current_dir[1024];
 	char	new_dir[1024];
