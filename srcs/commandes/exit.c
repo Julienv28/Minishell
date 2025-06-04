@@ -72,7 +72,14 @@ int	is_valid_numeric_argument(char *str)
 	return (1);
 }
 
-int	ft_exit(char **args, int in_child)
+void	cleanup_and_exit(int code, t_com_list *cmd)
+{
+	free_cmd(cmd);
+	rl_clear_history();
+	exit(code);
+}
+
+int	ft_exit(char **args, int in_child, t_com_list *cmd)
 {
 	int	i;
 
@@ -82,7 +89,7 @@ int	ft_exit(char **args, int in_child)
 	if (in_child)
 		printf("exit\n");
 	if (i == 1)
-		exit(0);
+		cleanup_and_exit(0, cmd);
 	else if (!is_valid_numeric_argument(args[1]))
 	{
 		printf("exit\n");
@@ -96,6 +103,6 @@ int	ft_exit(char **args, int in_child)
 		g_exit_status = 1;
 		return (g_exit_status);
 	}
-	exit(ft_atoi(args[1]));
+	cleanup_and_exit(ft_atoi(args[1]), cmd);
 	return (g_exit_status);
 }

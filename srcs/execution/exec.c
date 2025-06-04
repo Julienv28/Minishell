@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 09:00:40 by opique            #+#    #+#             */
-/*   Updated: 2025/06/03 18:34:06 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/04 14:39:57 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,13 @@ int	count_ags(char **args)
 	return (i);
 }
 
-int	exec_builting(char **args, char ***envcp)
+int	exec_builting(char **args, char ***envcp, t_com_list *cmd)
 {
 	if (ft_strcmp(args[0], "exit") == 0)
-		return (ft_exit(args, 1), 0);
+	{
+		ft_freeenvp(*envcp);
+		return (ft_exit(args, 1, cmd), 0);
+	}
 	else if (ft_strcmp(args[0], "cd") == 0)
 		return (ft_cd(args, envcp));
 	else if (ft_strcmp(args[0], "pwd") == 0)

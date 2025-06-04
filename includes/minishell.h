@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
 /*   Updated: 2025/06/04 13:48:02 by opique           ###   ########.fr       */
@@ -91,7 +91,7 @@ typedef struct	s_token
 // Message prompt + history (Oceane) ==> a ameliorer
 char				*handle_heredoc(char *limiter, char **envcp, int expand_var);
 int					limiter_is_quoted(const char *str);
-void				fake_exit_builtin(char **args);
+void	fake_exit_builtin(char **args, t_com_list *cmds);
 int					is_valid_numeric_argument(char *str);
 unsigned long long	ft_atoull(const char *str);
 
@@ -141,7 +141,8 @@ void				ft_echo(char **args, char ***envcp);
 char				*add_space_if_needed(char *arg, char **envcp);
 int					ft_cd(char **args, char ***envcp);
 int					ft_pwd(char **args, char ***envcp);
-int					ft_exit(char **args, int in_child);
+int					ft_exit(char **args, int in_child, t_com_list *cmd);
+void		cleanup_and_exit(int code, t_com_list *cmd);
 int					ft_export(char **arg, char ***envcp);
 char 				*prepare_export_string(char *arg, char **envp, char **key, char **value);
 void 				free_export_vars(char *key, char *value, char *replaced);
@@ -156,7 +157,7 @@ int					ft_unset(char **args, char ***envcp);
 // Exec
 void				exec_cmd(char **args, char ***envcp);
 int					is_builting(char *cmd);
-int					exec_builting(char **args, char ***envcp);
+int		exec_builting(char **args, char ***envcp, t_com_list *cmd);
 char				*get_path(char *cmd, char **envp);
 int					find_line(char **envp, char *path);
 char				*search_path(char **paths, char *cmd);
@@ -168,7 +169,6 @@ char				**split_pipe_respect_quotes(const char *line);
 int					parse_pipes(char **args);
 
 // Utils
-void				exit_error(void);
 void				free_tab(char **tab);
 void				free_file_list(t_file_list *list);
 char				**split_args(const char *s, char sep);

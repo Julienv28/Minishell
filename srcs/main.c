@@ -86,6 +86,12 @@ int	main(int ac, char **av, char **envp)
             continue ;
         }
         command = tokens_to_cmds(tokens, envcp);
+        if (!command)
+        {
+            free_tokens(tokens);
+            continue ;
+        }
+        free_tokens(tokens);
         t_com_list *start = command;
         while (command)
         {
@@ -131,7 +137,6 @@ int	main(int ac, char **av, char **envp)
             }
             command = command->next;
         }
-        free_tokens(tokens);
         free_cmd(start);
     }
     
