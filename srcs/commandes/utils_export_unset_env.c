@@ -67,8 +67,7 @@ char    **ft_realloc_env(char **envcp, char *new_entry)
 		{
 			while (--j >= 0)
 				free(new_env[j]);
-			free(new_env);
-			return (NULL);
+			return (free(new_env), NULL);
 		}
 		j++;
 	}
@@ -77,8 +76,7 @@ char    **ft_realloc_env(char **envcp, char *new_entry)
 	{
 		while (--j >= 0)
 			free(new_env[j]);
-		free(new_env);
-		return (NULL);
+		return (free(new_env), NULL);
 	}
 	new_env[i + 1] = NULL;
 	return (new_env);

@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 09:31:19 by opique            #+#    #+#             */
-/*   Updated: 2025/06/04 15:21:04 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/04 16:49:32 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,6 @@ char	*extract_redir_word(char *str, int *i)
 	while (str[*i] == ' ')
 		(*i)++;
 	start = *i;
-
-	// Ne rien trouver = retour NULL
 	if (!str[*i] || str[*i] == '<' || str[*i] == '>' || str[*i] == '|')
 		return (NULL);
 	while (str[*i] && str[*i] != ' ' && str[*i] != '|'
@@ -45,29 +43,26 @@ char	*expand_clean_word(char *word, char **envcp)
 int	handle_redirection(char *str, int *i, t_token **tokens, char **envcp)
 {
 	int		type;
-	char	*symbol = NULL;
-	char	*word = NULL;
-	char	*final = NULL;
+	char	*symbol;
+	char	*word;
+	char	*final;
 
+	symbol = NULL;
+	word = NULL;
+	final = NULL;
 	type = parse_redirection(str, i);
 	if (!type)
 		return (0);
-
 	if (check_redirection(str, i) == -1)
 		return (g_exit_status = 2, -1);
-
 	word = extract_redir_word(str, i);
 	if (!word)
 		return (g_exit_status = 1, printf("minishell: syntax error near redirection\n"), -1);
-
 	symbol = add_symbol(type);
 	if (!symbol)
 		return (free(word), -1);
-
-	// Ajoute le symbole SEULEMENT si tout va bien
 	add_token(tokens, symbol, type);
 	free(symbol);
-
 	if (type == HEREDOC && limiter_is_quoted(word) == 0)
 		add_token(tokens, word, ARG);
 	else
@@ -80,40 +75,21 @@ int	handle_redirection(char *str, int *i, t_token **tokens, char **envcp)
 	return (1);
 }
 
-
 // Analyser les redirections et avancer l'index
 int	parse_redirection(char *str, int *i)
 {
     if (str[*i] == '2' && str[*i + 1] == '>' && str[*i + 2] == '>')
-    {
-        (*i) += 3;
-        return (ERR_REDIR);
-    }
+        return ((*i) += 3, ERR_REDIR);
     else if (str[*i] == '2' && str[*i + 1] == '>')
-    {
-        (*i) += 2;
-        return (ERR_REDIR);
-    }
+        return ((*i) += 2, ERR_REDIR);
     if (str[*i] == '<' && str[*i + 1] == '<')
-    {
-        (*i) += 2;
-        return (HEREDOC);
-    }
+        return ((*i) += 2, HEREDOC);
     else if (str[*i] == '>' && str[*i + 1] == '>')
-    {
-        (*i) += 2;
-        return (APPEND);
-    }
+        return ((*i) += 2, APPEND);
     else if (str[*i] == '<')
-    {
-        (*i)++;
-        return (INPUT);
-    }
+        return ((*i)++, INPUT);
     else if (str[*i] == '>')
-    {
-        (*i)++;
-        return (TRUNC);
-    }
+        return ((*i)++, TRUNC);
     return (0);
 }
 

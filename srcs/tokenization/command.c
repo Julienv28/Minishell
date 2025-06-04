@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 16:08:55 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/03 17:27:59 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/04 16:25:55 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,12 +116,14 @@ int handle_heredoc(char *limiter,char **envcp)
 
 static char	*generate_tmp_filename(void)
 {
-	static int	counter = 0;
+	static int	counter;
 	char		*prefix;
 	char		*pid_str;
 	char		*count_str;
+	char		*tmp;
+	char		*final;
 
-	// counter = 0;
+	counter = 0;
 	prefix = ft_strdup("/tmp/.heredoc_");
 	pid_str = ft_itoa(getpid());
 	count_str = ft_itoa(counter++);
@@ -132,8 +134,8 @@ static char	*generate_tmp_filename(void)
 		free(count_str);
 		return (NULL);
 	}
-	char	*tmp = ft_strjoin(prefix, pid_str);
-	char	*final = ft_strjoin(tmp, count_str);
+	tmp = ft_strjoin(prefix, pid_str);
+	final = ft_strjoin(tmp, count_str);
 	free(prefix);
 	free(pid_str);
 	free(count_str);

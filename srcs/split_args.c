@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:06:45 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/03 08:57:11 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/04 16:20:00 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static int	count_words(const char *s, char sep)
 		while (s[i] == sep)
 			i++;
 		if (!s[i])
-			break;
+			break ;
 		count++;
 		while (s[i])
 		{
@@ -37,7 +37,7 @@ static int	count_words(const char *s, char sep)
 			else if (s[i] == '"' && !single_quote)
 				double_quote = !double_quote;
 			else if (s[i] == sep && !single_quote && !double_quote)
-				break;
+				break ;
 			i++;
 		}
 	}
@@ -74,7 +74,7 @@ char	**split_args(const char *s, char sep)
 	single_quote = 0;
 	double_quote = 0;
 	if (!s)
-		return NULL;
+		return (NULL);
 	tab = malloc(sizeof(char *) * (count_words(s, sep) + 1));
 	if (!tab)
 		return (NULL);
@@ -83,7 +83,7 @@ char	**split_args(const char *s, char sep)
 		while (s[i] == sep)
 			i++;
 		if (!s[i])
-			break;
+			break ;
 		start = i;
 		while (s[i])
 		{
@@ -92,7 +92,7 @@ char	**split_args(const char *s, char sep)
 			else if (s[i] == '"' && !single_quote)
 				double_quote = !double_quote;
 			else if (s[i] == sep && !single_quote && !double_quote)
-				break;
+				break ;
 			i++;
 		}
 		raw_word = word_dup(s, start, i);

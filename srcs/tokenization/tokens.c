@@ -24,7 +24,6 @@ t_token	*add_token(t_token **head, char *str, int type)
 	return (new);
 }
 
-
 // Analyser la ligne de commande et créer des tokens
 t_token *create_tokens(char **str, char **envcp)
 {

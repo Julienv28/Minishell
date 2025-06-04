@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   arguments.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:06:51 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/03 17:05:58 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/04 16:48:07 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,48 +47,51 @@ int	ensure_newline_at_end(char **str)
 	}
 	return (0);
 }
-
-int prompt_for_quotes(char **str)
+int	update_str_with_input(char **str, char *input)
 {
-    char *input;
-    char *tmp;
-    char *join;
+	char	*tmp;
+	char	*join;
 
-    ensure_newline_at_end(str);
-    while (check_mismatched_quotes(*str) == 1)
-    {
+	tmp = ft_strjoin(*str, input);
+	if (!tmp)
+		return (free(input), -1);
+	if (check_mismatched_quotes(tmp) == 1)
+	{
+		join = ft_strjoin(tmp, "\n");
+		free(tmp);
+	}
+	else
+		join = tmp;
+	free(*str);
+	*str = join;
+	free(input);
+	return (0);
+}
+
+int	prompt_for_quotes(char **str)
+{
+	char	*input;
+	int		status;
+
+	ensure_newline_at_end(str);
+	while (check_mismatched_quotes(*str) == 1)
+	{
 		signal(SIGINT, heredoc_sigint_handler);
-        input = readline("> ");
+		input = readline("> ");
 		signal(SIGINT, handler_sigint);
 		if (g_exit_status == 130)
-        {
-            free(input);
-            return (-1);
-        }
+			return (free(input), -1);
 		if (!input)
 		{
 			ft_putstr_fd("minishell: unexpected EOF while looking for matching `''\n", STDERR_FILENO);
-            ft_putstr_fd("syntax error: unexpected end of file\n", STDERR_FILENO);
-            return (-1);
-		}
-        tmp = ft_strjoin(*str, input);
-		if (!tmp)
-		{
-			free(input);
+			ft_putstr_fd("syntax error: unexpected end of file\n", STDERR_FILENO);
 			return (-1);
 		}
-        if (check_mismatched_quotes(tmp) == 1)
-        {
-            join = ft_strjoin(tmp, "\n");
-            free(tmp);
-        }
-        else
-            join = tmp;
-        free(*str);
-        *str = join;
-        free(input);
-    }
-    return (g_exit_status);
+		status = update_str_with_input(str, input);
+		if (status == -1)
+			return (-1);
+	}
+	return (g_exit_status);
 }
 
 int	handle_quotes(char **str)

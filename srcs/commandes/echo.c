@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:42:01 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/04 11:51:18 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/04 17:02:36 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,10 +121,7 @@ char *clean_spaces(char *str)
         return (NULL);
     res = malloc(ft_strlen(trimmed) + 1); // +1 pour le \0
     if (!res)
-    {
-        free(trimmed);
-        return (NULL);
-    }
+		return (free(trimmed), NULL);
     i = 0;
     while (trimmed[i])
     {
@@ -146,6 +143,19 @@ char *clean_spaces(char *str)
     res[j] = '\0';
     free(trimmed);
     return (res);
+}
+
+char *free_all(char *before, char *var_key, char *spaced, char *value)
+{
+	if (before)
+		free(before);
+	if (var_key)
+		free(var_key);
+	if (spaced)
+		free(spaced);
+	if (value)
+		free(value);
+	return (NULL);
 }
 
 char	*add_space_if_needed(char *arg, char **envcp)

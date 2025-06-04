@@ -34,16 +34,16 @@ char	*expand_exit_status(char *res)
 char	*expand_env_variable(char *str, int *i, char *res, char **envcp, int quoted)
 {
 	char	var_name[256];
-	int		j = 0;
+	int		j;
 	char	*tmp;
 	char	*env_value;
-	int		need_free = 0;
+	int		need_free;
 
+    j = 0;
+    need_free = 0;
     while (str[*i] && (ft_isalnum(str[*i]) || str[*i] == '_'))
         var_name[j++] = str[(*i)++];
     var_name[j] = '\0';
-    printf("Expanding env variable: %s\n", var_name); 
-    // Choix entre get_env_value ou get_value_cleaned selon le flag quoted
 	if (quoted)
 		env_value = get_env_value(var_name, envcp);
 	else
@@ -51,9 +51,9 @@ char	*expand_env_variable(char *str, int *i, char *res, char **envcp, int quoted
 		env_value = get_value_cleaned(var_name, envcp);
 		need_free = 1;
 	}
-	if (!env_value) // Si variable inexistante → chaîne vide, ne pas free
+	if (!env_value)
     {
-		env_value = ""; // En cas d'absence de variable
+		env_value = "";
         need_free = 0;
     }
 	tmp = ft_strjoin(res, env_value);
