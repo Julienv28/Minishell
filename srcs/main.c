@@ -56,6 +56,8 @@ int	main(int ac, char **av, char **envp)
         if (!input)
         {
             ft_putstr_fd("exit\n", STDOUT_FILENO);
+            rl_clear_history();
+            ft_freeenvp(envcp);
 			exit(g_exit_status);
 		}
         add_history(input);
@@ -100,6 +102,7 @@ int	main(int ac, char **av, char **envp)
                     mem_fd_in = mem_fd_err = -1;
                 }
                 command = command->next;
+                free_tokens(tokens);
                 continue ;
             }
 
@@ -128,9 +131,10 @@ int	main(int ac, char **av, char **envp)
             }
             command = command->next;
         }
-            free_tokens(tokens);
-            free_cmd(start);
+        free_tokens(tokens);
+        free_cmd(start);
     }
     ft_freeenvp(envcp);
+    rl_clear_history();
     return (g_exit_status);
 }

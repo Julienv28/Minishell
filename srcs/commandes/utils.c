@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 14:23:42 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/03 13:47:33 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/04 12:01:17 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	free_tab(char **tab)
 	free(tab);
 	tab = NULL;
 }
-
+// Duplication environnement
 char	**ft_env_dup(char **envp)
 {
 	int		i;
@@ -55,7 +55,7 @@ char	**ft_env_dup(char **envp)
 	envcp[i] = NULL;
 	return (envcp);
 }
-
+// Free environnement
 void	ft_freeenvp(char **envcp)
 {
 	int	i;
@@ -84,39 +84,3 @@ char	*ft_srjoin3(char *s1, char *s2, char *s3)
 	return (result);
 }
 
-char    **ft_realloc_env(char **envcp, char *new_entry)
-{
-	int		i;
-	int		j;
-	char	**new_env;
-
-	i = 0;
-	while (envcp && envcp[i])
-		i++;
-	new_env = malloc(sizeof(char *) * (i + 2));
-	if (!new_env)
-		return (NULL);
-	j = 0;
-	while (j < i)
-	{
-		new_env[j] = ft_strdup(envcp[j]);
-		if (!new_env[j])
-		{
-			while (--j >= 0)
-				free(new_env[j]);
-			free(new_env);
-			return (NULL);
-		}
-		j++;
-	}
-	new_env[i] = new_entry;
-	if (!new_env[i])
-	{
-		while (--j >= 0)
-			free(new_env[j]);
-		free(new_env);
-		return (NULL);
-	}
-	new_env[i + 1] = NULL;
-	return (new_env);
-}

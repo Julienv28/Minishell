@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:42:01 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/03 11:39:59 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/04 11:51:18 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,10 +75,7 @@ int parse_args_echo(char **args)
     int i;
 
     if (count_ags(args) == 1)
-    {
-        ft_putchar_fd('\n', 1);
-        return (1);
-    }
+        return (ft_putchar_fd('\n', 1), 1);
     else if (ft_strncmp(args[1], "-n", 2) == 0 && ft_strlen(args[1]) != 2 && count_ags(args) == 2)
     {
         i = 2;

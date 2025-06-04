@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 10:45:02 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/03 17:12:40 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/04 08:55:02 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	execute(t_com_list *cmds, char ***envcp)
 		// ft_putstr_fd(args && args[0] ? args[0] : "", STDERR_FILENO);
 		// ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
 		//g_exit_status = 127;
-		free_tab(args);
+		//free_tab(args);
 		g_exit_status = 0;
 		return (0);
 	}

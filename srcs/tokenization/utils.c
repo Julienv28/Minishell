@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 10:39:23 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/03 18:27:35 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/04 09:18:10 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,8 @@ void	free_cmd(t_com_list *command)
 			free_tab(command->args);
 		if (command->all_outfilles)
 			free_file_list_2(command->all_outfilles);
+		if (command->heredoc_fd > 0)
+			close(command->heredoc_fd);
 		free(command);
 		command = tmp;
 	}

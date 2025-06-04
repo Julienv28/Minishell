@@ -51,14 +51,17 @@ char	*expand_env_variable(char *str, int *i, char *res, char **envcp, int quoted
 		env_value = get_value_cleaned(var_name, envcp);
 		need_free = 1;
 	}
-	if (!env_value)
+	if (!env_value) // Si variable inexistante → chaîne vide, ne pas free
+    {
 		env_value = ""; // En cas d'absence de variable
+        need_free = 0;
+    }
 	tmp = ft_strjoin(res, env_value);
 	if (!tmp)
 		return (NULL);
 	free(res);
 	if (need_free)
-		free(env_value);
+		free(env_value); // SEGFAULT ICI
 	return (tmp);
 }
 

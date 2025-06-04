@@ -38,10 +38,13 @@ SRCS        = 	$(SRC_DIR)/main.c \
 				$(SRC_DIR)/tokenization/arguments.c \
 				$(SRC_DIR)/dollard.c \
 				$(SRC_DIR)/commandes/echo.c \
-				$(SRC_DIR)/commandes/cd_and_pwd.c \
+				$(SRC_DIR)/commandes/cd.c \
+				$(SRC_DIR)/commandes/pwd.c \
 				$(SRC_DIR)/commandes/exit.c \
 				$(SRC_DIR)/commandes/utils.c \
-				$(SRC_DIR)/commandes/export_and_env.c \
+				$(SRC_DIR)/commandes/export.c \
+				$(SRC_DIR)/commandes/env.c \
+				$(SRC_DIR)/commandes/utils_export_unset_env.c \
 				$(SRC_DIR)/execution/exec.c \
 				$(SRC_DIR)/signal.c \
 				$(SRC_DIR)/commandes/unset.c \
