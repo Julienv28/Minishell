@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/04 13:48:02 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/04 17:00:48 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,10 +161,20 @@ int		exec_builting(char **args, char ***envcp, t_com_list *cmd);
 char				*get_path(char *cmd, char **envp);
 int					find_line(char **envp, char *path);
 char				*search_path(char **paths, char *cmd);
-int					exec_pipes(t_com_list *cmds, char **envcp);
+// int					exec_pipes(t_com_list *cmds, char **envcp);
 int					execute(t_com_list *cmds, char ***envcp);
 
-// Pipes (revoir les args pour pipex)
+//Pipes
+void				wait_children(pid_t last_pid);
+void				reset_signals(void);
+void				set_signals_child(void);
+void				set_signals_parent(void);
+void				handle_commands_pipes(char **args, t_com_list *cmds, char ***envcp);
+void				child_proc(t_com_list *curr, int prev_fd, int pipefd[2], char ***envcp);
+void	parent_pro(t_com_list *curr, int *prev_fd, int pipefd[2], pid_t pid, pid_t *last_pid);
+int					exec_pipes(t_com_list *cmds, char **envcp);
+int					fork_exec(t_com_list *curr, int *prev_fd, pid_t *last_pid, char ***envcp);
+int					setup_pipe(t_com_list *curr, int pipefd[2]);
 char				**split_pipe_respect_quotes(const char *line);
 int					parse_pipes(char **args);
 

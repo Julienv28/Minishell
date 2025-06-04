@@ -12,6 +12,7 @@ int	has_pipe(t_com_list *command)
 	}
 	return (0);
 }
+
 int	is_blank_line(const char *str)
 {
 	while (*str)

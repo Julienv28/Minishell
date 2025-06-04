@@ -49,6 +49,8 @@ SRCS        = 	$(SRC_DIR)/main.c \
 				$(SRC_DIR)/signal.c \
 				$(SRC_DIR)/commandes/unset.c \
 				$(SRC_DIR)/execution/execute_commands.c \
+				$(SRC_DIR)/execution/exec_pipes.c \
+				$(SRC_DIR)/execution/utils_pipes.c \
 				$(SRC_DIR)/split_pipes.c
 
 #=== Object Files ===
