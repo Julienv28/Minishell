@@ -83,3 +83,10 @@ char    **ft_realloc_env(char **envcp, char *new_entry)
 	new_env[i + 1] = NULL;
 	return (new_env);
 }
+
+void free_export_vars(char *key, char *value, char *replaced)
+{
+    free(key);
+    free(value);
+    free(replaced);
+}

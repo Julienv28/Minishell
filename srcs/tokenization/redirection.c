@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 09:31:19 by opique            #+#    #+#             */
-/*   Updated: 2025/06/03 17:07:47 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/04 15:21:04 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,15 @@ char	*extract_redir_word(char *str, int *i)
 	while (str[*i] == ' ')
 		(*i)++;
 	start = *i;
+
+	// Ne rien trouver = retour NULL
+	if (!str[*i] || str[*i] == '<' || str[*i] == '>' || str[*i] == '|')
+		return (NULL);
 	while (str[*i] && str[*i] != ' ' && str[*i] != '|'
 		&& str[*i] != '<' && str[*i] != '>')
 		(*i)++;
 	if (*i == start)
-    {
-        (*i)++;
 		return (NULL);
-    }
 	return (ft_strndup(str + start, *i - start));
 }
 
@@ -44,34 +45,41 @@ char	*expand_clean_word(char *word, char **envcp)
 int	handle_redirection(char *str, int *i, t_token **tokens, char **envcp)
 {
 	int		type;
-	char	*symbol;
-	char	*word;
+	char	*symbol = NULL;
+	char	*word = NULL;
+	char	*final = NULL;
 
 	type = parse_redirection(str, i);
 	if (!type)
 		return (0);
-	symbol = add_symbol(type);
-	add_token(tokens, symbol, type);
-	free(symbol);
+
 	if (check_redirection(str, i) == -1)
 		return (g_exit_status = 2, -1);
+
 	word = extract_redir_word(str, i);
 	if (!word)
-		return (printf("Erreur : Redirection sans fichier !\n"), -1);
+		return (g_exit_status = 1, printf("minishell: syntax error near redirection\n"), -1);
+
+	symbol = add_symbol(type);
+	if (!symbol)
+		return (free(word), -1);
+
+	// Ajoute le symbole SEULEMENT si tout va bien
+	add_token(tokens, symbol, type);
+	free(symbol);
+
 	if (type == HEREDOC && limiter_is_quoted(word) == 0)
-    {
 		add_token(tokens, word, ARG);
-        free(word);
-    }
 	else
 	{
-		char *expanded = expand_clean_word(word, envcp);
-		add_token(tokens, word, ARG);
-        free(expanded);
-        free(word);
+		final = expand_clean_word(word, envcp);
+		add_token(tokens, final, ARG);
+		free(final);
 	}
+	free(word);
 	return (1);
 }
+
 
 // Analyser les redirections et avancer l'index
 int	parse_redirection(char *str, int *i)

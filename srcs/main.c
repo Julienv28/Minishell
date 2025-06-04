@@ -102,7 +102,7 @@ int	main(int ac, char **av, char **envp)
                     mem_fd_in = mem_fd_err = -1;
                 }
                 command = command->next;
-                free_tokens(tokens);
+                //free_tokens(tokens); ATTENTION SEGFAULT < PWD > PWD
                 continue ;
             }
 
@@ -134,6 +134,7 @@ int	main(int ac, char **av, char **envp)
         free_tokens(tokens);
         free_cmd(start);
     }
+    
     ft_freeenvp(envcp);
     rl_clear_history();
     return (g_exit_status);
