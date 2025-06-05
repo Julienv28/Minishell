@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initialisation_args.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 10:25:54 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/03 17:01:24 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/05 16:27:59 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,13 +95,4 @@ void	add_outfile(t_file_list **list, char *filename, int flag)
 			tmp = tmp->next;
 		tmp->next = new;
 	}
-}
-
-void	init_cmds(t_com_list *command)
-{
-	command->outfile = NULL;
-	command->infile = NULL;
-	command->errfile = NULL;
-	command->flag_in = 0;
-	command->flag_out = 0;
 }
