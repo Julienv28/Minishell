@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_cmd.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 15:19:26 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/04 16:24:40 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/05 16:20:38 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	check_redirection(char *str, int *i)
 	if (str[*i] == '<' || str[*i] == '>' || str[*i] == '|')
 	{
 		if (((str[*i] == '>' && str[*i + 1] == '>')
-			|| (str[*i] == '<' && str[*i + 1] == '<'))
+				|| (str[*i] == '<' && str[*i + 1] == '<'))
 			&& str[*i + 1])
 			printf("Erreur : syntax error near unexpected token `%c%c'\n", \
 					str[*i], str[*i]);

@@ -73,10 +73,11 @@ int process_redirection(char *str, int *i, t_token **tokens, char **envcp)
 
 int process_word(char **str, int *i, t_token **tokens, int *expect_cmd)
 {
-    if (handle_word(str, i, tokens, expect_cmd) == -1)
-        return (-1);
-    return (0);
+	if (handle_word(str, i, tokens, expect_cmd) == -1)
+		return (-1);
+	return (0);
 }
+
 t_token	*process_token_loop(char *str, char **envcp)
 {
 	int		i;
