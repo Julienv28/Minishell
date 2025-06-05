@@ -6,129 +6,12 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 09:00:40 by opique            #+#    #+#             */
-/*   Updated: 2025/06/04 14:39:57 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/05 11:42:37 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	count_ags(char **args)
-{
-	int	i;
-
-	i = 0;
-	while (args[i])
-		i++;
-	return (i);
-}
-
-int	exec_builting(char **args, char ***envcp, t_com_list *cmd)
-{
-	if (ft_strcmp(args[0], "exit") == 0)
-	{
-		ft_freeenvp(*envcp);
-		return (ft_exit(args, 1, cmd), 0);
-	}
-	else if (ft_strcmp(args[0], "cd") == 0)
-		return (ft_cd(args, envcp));
-	else if (ft_strcmp(args[0], "pwd") == 0)
-		return (ft_pwd(args, envcp));
-	else if (ft_strcmp(args[0], "echo") == 0)
-		return (ft_echo(args, envcp), 0);
-	else if (ft_strcmp(args[0], "export") == 0)
-	{
-		if (!args[1])
-			return (ft_env(*envcp), 0);
-		else
-		{
-			if (check_events(args[1]) == 0)
-				return (ft_export(args, envcp));
-			else
-				return (1);
-		}
-	}
-	else if (ft_strcmp(args[0], "env") == 0)
-	{
-		if (args[1] && args[1][0] == '-')
-		{
-			printf("bash: env: -%c: invalid option\n", args[1][1]);
-			g_exit_status = 2;
-			return (g_exit_status);
-		}
-		else
-			return (ft_env(*envcp), 0);
-	}
-	else if (ft_strcmp(args[0], "unset") == 0)
-	{
-		if (!args[1])
-			return (0);
-		if (check_events(args[1]) == 0)
-			return (ft_unset(args, envcp));
-		else
-			return (1);
-	}
-	return (g_exit_status);
-}
-
-int	is_valid_n_flag(const char *str)
-{
-	int	i;
-
-	i = 1;
-	if (str[0] != '-' || str[1] != 'n')
-		return (0);
-	while (str[i])
-	{
-		if (str[i] != 'n')
-			return (0);
-		i++;
-	}
-	return (1);
-}
-
-char	*search_path(char **paths, char *cmd)
-{
-	int		i;
-	char	*path;
-	char	*part_path;
-
-	i = 0;
-	while (paths[i])
-	{
-		part_path = ft_strjoin(paths[i], "/");
-		path = ft_strjoin(part_path, cmd);
-		free(part_path);
-		if (access(path, F_OK) == 0)
-			return (path);
-		free(path);
-		i++;
-	}
-	return (0);
-}
-
-int	find_line(char **envp, char *path)
-{
-	int	i;
-
-	i = 0;
-	while (envp[i])
-	{
-		if (ft_strncmp(path, envp[i], ft_strlen(path)) == 0
-			&& envp[i][ft_strlen(path)] == '=')
-			return (i);
-		i++;
-	}
-	return (-1);
-}
-
-int	is_directory(char *path)
-{
-	struct stat	sb;
-
-	if (stat(path, &sb) == 0 && S_ISDIR(sb.st_mode))
-		return (1);
-	return (0);
-}
 char	*path_error_message(char *cmd)
 {
 	if (access(cmd, F_OK) != 0)
@@ -162,7 +45,8 @@ char	*get_path(char *cmd, char **envp)
 		return ((path_error_message(cmd)));
 	line = find_line(envp, "PATH");
 	if (!envp[line] || line == -1)
-		return (ft_putstr_fd("minishell: No such file or directory\n", STDERR_FILENO), NULL);
+		return (ft_putstr_fd("minishell: No such file or directory\n", \
+			STDERR_FILENO), NULL);
 	paths = ft_split(envp[line] + 5, ':');
 	path = search_path(paths, cmd);
 	if (path == NULL)
@@ -177,8 +61,7 @@ char	*get_path(char *cmd, char **envp)
 		free(path);
 		path = NULL;
 	}
-	free_tab(paths);
-	return (path);
+	return (free_tab(paths), path);
 }
 
 void	exec_cmd(char **args, char ***envcp)

@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 14:23:42 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/04 15:29:23 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/04 15:49:48 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ void	free_tab(char **tab)
 	}
 	free(tab);
 }
+
 // Duplication environnement
 char	**ft_env_dup(char **envp)
 {
@@ -54,6 +55,7 @@ char	**ft_env_dup(char **envp)
 	envcp[i] = NULL;
 	return (envcp);
 }
+
 // Free environnement
 void	ft_freeenvp(char **envcp)
 {
