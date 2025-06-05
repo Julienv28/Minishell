@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/05 14:44:09 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/05 16:07:21 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,17 +48,18 @@
 # define ARG 7
 # define ERR_REDIR 8
 
-// variable globale pour suivre l'état des erreurs
+// Variable globale pour suivre l'état des erreurs
 extern int	g_exit_status;
 
-typedef struct	s_file_list
+// Structures
+typedef struct s_file_list
 {
 	char				*filename;
 	struct s_file_list	*next;
 	int					flag;
 }			t_file_list;
 
-typedef struct	s_com_list
+typedef struct s_com_list
 {
 	char				*command;
 	char				**args;
@@ -75,18 +76,19 @@ typedef struct	s_com_list
 	struct s_com_list	*next;
 }						t_com_list;
 
-typedef struct	s_minishell
+typedef struct s_minishell
 {
-	char	    **token;
+	char		**token;
 	int			have_pipes;
 }			t_minishell;
 
-typedef struct	s_token
+typedef struct s_token
 {
 	char			*value;
 	int				type;
 	struct s_token	*next;
 }				t_token;
+
 
 typedef struct s_expand {
 	char	**envcp;
@@ -96,10 +98,45 @@ typedef struct s_expand {
 }	t_expand;
 
 
-// Message prompt + history (Oceane) ==> a ameliorer
+typedef struct s_execinfo
+{
+	t_com_list	*curr;
+	int			*prev_fd;
+	int			pipefd[2];
+	pid_t		pid;
+	pid_t		*last_pid;
+}	t_execinfo;
+
+typedef struct s_filename
+{
+	char		*prefix;
+	char		*pid_str;
+	char		*count_str;
+	char		*tmp;
+	char		*final;
+}	t_filename;
+
+typedef struct s_parser_context
+{
+	t_com_list	*cmd_list;
+	t_com_list	*current_cmd;
+	t_com_list	*new_cmd;
+	char		*filename;
+	char		*pending_infile;
+	int			pending_flag_in;
+	char		*pending_outfile;
+	int			pending_flag_out;
+	char		*pending_errfile;
+	t_file_list	*pending_all_outfiles;
+	t_token		*current_token;
+	char		**envcp;
+}	t_parser_context;
+
+
+// Message prompt + history
 char				*handle_heredoc(char *limiter, char **envcp, int expand_var);
 int					limiter_is_quoted(const char *str);
-void	fake_exit_builtin(char **args, t_com_list *cmds);
+void				fake_exit_builtin(char **args, t_com_list *cmds);
 int					is_valid_numeric_argument(char *str);
 unsigned long long	ft_atoull(const char *str);
 int					has_pipe(t_com_list *command);
@@ -117,16 +154,18 @@ char				*handle_special_cases(char *str, char *res, t_expand *var);
 char				*handle_quote(char *str, char *res, t_expand *var);
 char				*get_variable_name(char *str, t_expand *var, char *var_name);
 char				*handle_brace_variable(char *str, char *res, t_expand *var);
+char				*replace_all_variables(char *str, char **envcp,
+						int avoid_expand);
 
 // Tokens
 t_token				*add_token(t_token **head, char *str, int type);
 t_token				*create_tokens(char **str, char **envcp);
 void				free_tokens(t_token *tokens);
-t_com_list			*tokens_to_cmds(t_token *tokens, char **envcp);
 char				*concat_command(char *current_command, char *new_part);
-int 				parse_redirection(char *str, int *i);
+int					parse_redirection(char *str, int *i);
 char				*add_symbol(int type);
-int					handle_word(char **str, int *i, t_token **tokens, int *expect_cmd);
+int					handle_word(char **str, int *i, t_token **tokens,
+						int *expect_cmd);
 void				restore_redirections(int mem_fd_in, int mem_fd_out, int mem_fd_err);
 int					ft_redirection(t_com_list *command, int *mem_fd_in, int *mem_fd_out, int *mem_fd_err);
 int					open_file_cmd(char *infile);
@@ -135,11 +174,21 @@ int					open_errfile(char *errfile);
 int					extract_word(char **str, int *i, char **word, int *start);
 int					update_str_with_input(char **str, char *input);
 
+// Tokens To Commands
+t_com_list			*tokens_to_cmds(t_token *tokens, char **envcp);
+void				handle_pipe_token(t_parser_context *ctx);
+int					handle_arg_token(t_parser_context *ctx);
+int					handle_redir_token(t_parser_context *ctx);
+int					handle_cmd_token(t_parser_context *ctx);
+t_com_list			*finalize_pending_redirs(t_parser_context *ctx);
+
+
 // Parsing
 t_com_list			*fill_values(char **commands);
 void				add_bottom(t_com_list **list, t_com_list *new);
 t_com_list			*list_new(char *command);
-int					handle_redirection(char *str, int *i, t_token **tokens, char **envcp);
+int					handle_redirection(char *str, int *i, t_token **tokens,
+						char **envcp);
 int					prompt_for_quotes(char **str);
 int					is_directory(char *path);
 void				handler_sigint(int sig);
@@ -165,6 +214,7 @@ char 				*prepare_export_string(char *arg, char **envp, char **key, char **value
 void 				free_export_vars(char *key, char *value, char *replaced);
 int 				handle_export_error(char *replaced);
 char				*build_env_entry(char *key, char *value);
+
 char				*get_env_value(char *name, char **envp);
 char				*get_value_cleaned(char *name, char **envp);
 void				ft_set_env(char *key, char *value, char ***envp);
@@ -173,6 +223,13 @@ int					is_valid_name(char *name);
 int					is_valid_n_flag(const char *str);
 int					ft_unset(char **args, char ***envcp);
 
+//Heredoc
+char				*generate_tmp_filename(void);
+void				heredoc_sigint_handler(int sig);
+char				*handle_heredoc(char *limiter, char **envcp,
+						int expand_var);
+int					limiter_is_quoted(const char *str);
+
 // Exec
 void				exec_cmd(char **args, char ***envcp);
 int					is_builting(char *cmd);
@@ -180,10 +237,23 @@ int					exec_builting(char **args, char ***envcp, t_com_list *cmd);
 char				*get_path(char *cmd, char **envp);
 int					find_line(char **envp, char *path);
 char				*search_path(char **paths, char *cmd);
-int					exec_pipes(t_com_list *cmds, char **envcp);
+int					exec_external(char **args, char ***envcp);
 int					execute(t_com_list *cmds, char ***envcp);
 
-// Pipes (revoir les args pour pipex)
+//Pipes
+void				wait_children(pid_t last_pid);
+void				reset_signals(void);
+void				set_signals_child(void);
+void				set_signals_parent(void);
+void				handle_commands_pipes(char **args, t_com_list *cmds,
+						char ***envcp);
+void				child_proc(t_com_list *curr, int prev_fd,
+						int pipefd[2], char ***envcp);
+void				parent_pro(t_execinfo *ex);
+int					exec_pipes(t_com_list *cmds, char **envcp);
+int					fork_exec(t_com_list *curr, int *prev_fd,
+						pid_t *last_pid, char ***envcp);
+int					setup_pipe(t_com_list *curr, int pipefd[2]);
 char				**split_pipe_respect_quotes(const char *line);
 int					parse_pipes(char **args);
 
