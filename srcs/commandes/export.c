@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:36 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/05 16:45:18 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/05 17:42:52 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	ft_set_env(char *key, char *value, char ***envcp)
 	new_env = ft_realloc_env(*envcp, new_entry);
 	if (!new_env)
 		return (free(new_entry));
-	ft_freeenvp(*envcp);
+	//ft_freeenvp(*envcp); //SEFAULT 
 	*envcp = new_env;
 }
 

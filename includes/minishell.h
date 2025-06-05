@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/05 16:55:46 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/05 17:32:21 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,6 +142,8 @@ typedef struct s_redirs
 
 // Message prompt + history
 int	check_isatty(void);
+
+int	is_blank_line(const char *str);
 void	init_redirs(t_redirs *fds);
 void	init_signals(void);
 char				*handle_heredoc(char *limiter, char **envcp, int expand_var);
