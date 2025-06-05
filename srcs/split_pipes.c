@@ -6,18 +6,18 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 11:35:17 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/05 14:37:36 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/05 14:53:55 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static int	is_quote(char c)
+int	is_quote(char c)
 {
 	return (c == '\'' || c == '"');
 }
 
-static int	count_pipes(const char *line)
+int	count_pipes(const char *line)
 {
 	int	i;
 	int	count;
@@ -41,7 +41,7 @@ static int	count_pipes(const char *line)
 	return (count + 1);
 }
 
-static void	fill_result(const char *line, char **result)
+void	fill_result(const char *line, char **result)
 {
 	int	i;
 	int	start;

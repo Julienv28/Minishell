@@ -23,73 +23,101 @@ t_token	*add_token(t_token **head, char *str, int type)
 	}
 	return (new);
 }
-/*
-int	handle_redirection_wrapper(char *str, int *i, t_token **tokens, char **envcp)
-{
-	int status;
 
-	status = handle_redirection(str, i, tokens, envcp);
-	if (status == -1)
-		return (-1);
-	return (status);
+void	skip_spaces(char *str, int *i)
+{
+	while (str[*i] == ' ')
+		(*i)++;
 }
 
-int handle_special_chars(char **str, int *i, t_token **tokens, int *expect_cmd)
+int	process_pipe(char *str, int *i, t_token **tokens, int *expect_cmd)
 {
-    if ((*str)[*i] == '|')
-    {
-        if (check_pipe(*str, *i) == -1)
-            return (-1);
-        add_token(tokens, "|", PIPE);
-        (*i)++;
-        *expect_cmd = 1;
-        return (1);
-    }
-    else if ((*str)[*i] == '&' || (*str)[*i] == ':' || (*str)[*i] == '!' 
-             || (*str)[*i] == '#' || (*str)[*i] == ';')
-    {
-        if (check_input(*str, *i) == -1)
-            return (-1);
-        return (1);
-    }
-    else
-    {
-        if (handle_word(str, i, tokens, expect_cmd) == -1)
-            return (-1);
-        return (1);
-    }
+	if (str[*i] == '|')
+	{
+		if (check_pipe(str, *i) == -1)
+		{
+			free_tokens(*tokens);
+			return (-1);
+		}
+		add_token(tokens, "|", PIPE);
+		(*i)++;
+		*expect_cmd = 1;
+		return (1);
+	}
+	return (0);
 }
 
-t_token	*create_tokens(char **str, char **envcp)
+int	process_special_chars(char *str, int i)
+{
+	if (str[i] == '&' || str[i] == ':' 
+        || str[i] == '!' || str[i] == '#' || str[i] == ';')
+	{
+		if (check_input(str, i) == -1)
+			return (-1);
+	}
+	return (0);
+}
+
+int process_redirection(char *str, int *i, t_token **tokens, char **envcp)
+{
+    int redirection_status;
+
+    redirection_status = handle_redirection(str, i, tokens, envcp);
+    if (redirection_status == -1)
+    {
+        free_tokens(*tokens);
+        return (-1);
+    }
+    return (redirection_status);
+}
+
+int process_word(char **str, int *i, t_token **tokens, int *expect_cmd)
+{
+    if (handle_word(str, i, tokens, expect_cmd) == -1)
+        return (-1);
+    return (0);
+}
+t_token	*process_token_loop(char *str, char **envcp)
 {
 	int		i;
 	int		expect_cmd;
 	t_token	*tokens;
-	int		status;
+	int		ret;
 
 	i = 0;
-	tokens = NULL;
 	expect_cmd = 1;
-	while ((*str)[i])
+	tokens = NULL;
+	while (str[i])
 	{
-		while ((*str)[i] == ' ')
-			i++;
-		if (!(*str)[i])
+		skip_spaces(str, &i);
+		if (!str[i])
 			break ;
-		status = handle_special_chars(str, &i, &tokens, &expect_cmd);
-		if (status == -1)
+		ret = process_pipe(str, &i, &tokens, &expect_cmd);
+		if (ret == -1 || process_special_chars(str, i) == -1)
 			return (free_tokens(tokens), NULL);
-		if (status == 1)
+		if (ret == 1)
 			continue ;
-		status = handle_redirection_wrapper(*str, &i, &tokens, envcp);
-		if (status == -1)
+		ret = process_redirection(str, &i, &tokens, envcp);
+		if (ret == -1)
 			return (free_tokens(tokens), NULL);
-		if (status == 1)
+		if (ret == 1)
 			continue ;
+		if (process_word(&str, &i, &tokens, &expect_cmd) == -1)
+			break ;
 	}
 	return (tokens);
-}*/
+}
 
+t_token	*create_tokens(char **str, char **envcp)
+{
+	t_token	*tokens;
+
+	tokens = process_token_loop(*str, envcp);
+	return (tokens);
+}
+
+
+/*
 // Analyser la ligne de commande et créer des tokens
 t_token *create_tokens(char **str, char **envcp)
 {
@@ -138,4 +166,4 @@ t_token *create_tokens(char **str, char **envcp)
         }
     }
     return (tokens);
-}
+}*/
