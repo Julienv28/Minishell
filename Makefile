@@ -31,7 +31,6 @@ SRCS        = 	$(SRC_DIR)/main.c \
 				$(SRC_DIR)/error_handler.c \
 				$(SRC_DIR)/tokenization/tokens.c \
 				$(SRC_DIR)/tokenization/utils.c \
-				$(SRC_DIR)/tokenization/command.c \
 				$(SRC_DIR)/tokenization/ft_redirection.c \
 				$(SRC_DIR)/tokenization/handle_redirection.c \
 				$(SRC_DIR)/tokenization/open_file.c \

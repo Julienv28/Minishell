@@ -59,7 +59,7 @@ int	ft_redirection(t_com_list *cmd, int *fd_in, int *fd_out, int *fd_err)
 	if (cmd->infile && ft_redirect_in(cmd->infile, fd_in) < 0)
 		return (-1);
 	if (cmd->outfile && ft_redirect_out(cmd->outfile,
-    			cmd->flag_out, fd_out) < 0)
+			cmd->flag_out, fd_out) < 0)
 		return (-1);
 	tmp = cmd->all_outfilles;
 	while (tmp)

@@ -2,17 +2,6 @@
 
 int g_exit_status = 0;
 
-int	has_pipe(t_com_list *command)
-{
-	while (command)
-	{
-		if (command->is_pipe)
-			return (1);
-		command = command->next;
-	}
-	return (0);
-}
-
 int	is_blank_line(const char *str)
 {
 	while (*str)

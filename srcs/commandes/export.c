@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:36 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/05 14:03:22 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/05 16:45:18 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,34 +66,44 @@ char *prepare_export_string(char *arg, char **envp, char **key, char **value)
     return (replaced);
 }
 
-int process_export_entry(char *arg, char ***envcp, int *exit_status)
+static int	check_and_export(char *arg, char *key, char *value,
+	char ***envcp)
 {
-    char *key;
-    char *value;
-    char *replaced;
-    int err;
+	if (!is_valid_name(key))
+	{
+		if (ft_strchr(arg, '=') || !ft_isalpha(arg[0]))
+			printf("bash: export: `%s': not a valid identifier\n", arg);
+		return (1);
+	}
+	if (ft_strchr(arg, '='))
+		ft_set_env(key, value, envcp);
+	return (0);
+}
 
-    key = NULL;
-    value = NULL;
-    replaced = prepare_export_string(arg, *envcp, &key, &value);
-    err = handle_export_error(replaced);
-    if (err)
-    {
-        *exit_status = (err == 2) ? 2 : 1;
-        return (1);
-    }
-    if (!is_valid_name(key))
-    {
-        if (ft_strchr(replaced, '=') || !ft_isalpha(replaced[0]))
-            printf("bash: export: `%s': not a valid identifier\n", replaced);
-        free_export_vars(key, value, replaced);
-        *exit_status = 1;
-        return (1);
-    }
-    if (ft_strchr(arg, '='))
-        ft_set_env(key, value, envcp);
-    free_export_vars(key, value, replaced);
-    return (0);
+int	process_export_entry(char *arg, char ***envcp, int *exit_status)
+{
+	char	*key;
+	char	*value;
+	char	*replaced;
+	int		err;
+
+	key = NULL;
+	value = NULL;
+	replaced = prepare_export_string(arg, *envcp, &key, &value);
+	err = handle_export_error(replaced);
+	if (err)
+	{
+		if (err == 2)
+			*exit_status = 2;
+		else
+			*exit_status = 1;
+		return (1);
+	}
+	err = check_and_export(arg, key, value, envcp);
+	if (err)
+		*exit_status = 1;
+	free_export_vars(key, value, replaced);
+	return (0);
 }
 
 // affiche les variables d’environnement sans arguments
