@@ -23,6 +23,72 @@ t_token	*add_token(t_token **head, char *str, int type)
 	}
 	return (new);
 }
+/*
+int	handle_redirection_wrapper(char *str, int *i, t_token **tokens, char **envcp)
+{
+	int status;
+
+	status = handle_redirection(str, i, tokens, envcp);
+	if (status == -1)
+		return (-1);
+	return (status);
+}
+
+int handle_special_chars(char **str, int *i, t_token **tokens, int *expect_cmd)
+{
+    if ((*str)[*i] == '|')
+    {
+        if (check_pipe(*str, *i) == -1)
+            return (-1);
+        add_token(tokens, "|", PIPE);
+        (*i)++;
+        *expect_cmd = 1;
+        return (1);
+    }
+    else if ((*str)[*i] == '&' || (*str)[*i] == ':' || (*str)[*i] == '!' 
+             || (*str)[*i] == '#' || (*str)[*i] == ';')
+    {
+        if (check_input(*str, *i) == -1)
+            return (-1);
+        return (1);
+    }
+    else
+    {
+        if (handle_word(str, i, tokens, expect_cmd) == -1)
+            return (-1);
+        return (1);
+    }
+}
+
+t_token	*create_tokens(char **str, char **envcp)
+{
+	int		i;
+	int		expect_cmd;
+	t_token	*tokens;
+	int		status;
+
+	i = 0;
+	tokens = NULL;
+	expect_cmd = 1;
+	while ((*str)[i])
+	{
+		while ((*str)[i] == ' ')
+			i++;
+		if (!(*str)[i])
+			break ;
+		status = handle_special_chars(str, &i, &tokens, &expect_cmd);
+		if (status == -1)
+			return (free_tokens(tokens), NULL);
+		if (status == 1)
+			continue ;
+		status = handle_redirection_wrapper(*str, &i, &tokens, envcp);
+		if (status == -1)
+			return (free_tokens(tokens), NULL);
+		if (status == 1)
+			continue ;
+	}
+	return (tokens);
+}*/
 
 // Analyser la ligne de commande et créer des tokens
 t_token *create_tokens(char **str, char **envcp)

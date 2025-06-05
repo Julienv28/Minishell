@@ -32,19 +32,24 @@ SRCS        = 	$(SRC_DIR)/main.c \
 				$(SRC_DIR)/tokenization/tokens.c \
 				$(SRC_DIR)/tokenization/utils.c \
 				$(SRC_DIR)/tokenization/command.c \
-				$(SRC_DIR)/tokenization/redirection.c \
+				$(SRC_DIR)/tokenization/ft_redirection.c \
+				$(SRC_DIR)/tokenization/handle_redirection.c \
 				$(SRC_DIR)/tokenization/open_file.c \
 				$(SRC_DIR)/tokenization/check_cmd.c \
 				$(SRC_DIR)/tokenization/arguments.c \
+				$(SRC_DIR)/tokenization/arguments_2.c \
 				$(SRC_DIR)/dollard.c \
+				$(SRC_DIR)/dollard_2.c \
 				$(SRC_DIR)/commandes/echo.c \
+				$(SRC_DIR)/commandes/echo_2.c \
 				$(SRC_DIR)/commandes/cd.c \
 				$(SRC_DIR)/commandes/pwd.c \
 				$(SRC_DIR)/commandes/exit.c \
-				$(SRC_DIR)/commandes/utils.c \
+				$(SRC_DIR)/commandes/building_utils.c \
 				$(SRC_DIR)/commandes/export.c \
+				$(SRC_DIR)/commandes/export_2.c \
 				$(SRC_DIR)/commandes/env.c \
-				$(SRC_DIR)/commandes/utils_export_unset_env.c \
+				$(SRC_DIR)/commandes/free_building.c \
 				$(SRC_DIR)/execution/exec.c \
 				$(SRC_DIR)/signal.c \
 				$(SRC_DIR)/commandes/unset.c \

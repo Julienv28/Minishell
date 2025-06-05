@@ -6,34 +6,11 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:06:51 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/04 16:48:07 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/05 14:18:27 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-// Vérification des guillemets
-int	check_mismatched_quotes(char *str)
-{
-	int	single_quote;
-	int	double_quote;
-	int	i;
-
-	single_quote = 0;
-	double_quote = 0;
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == '\'' && !double_quote)
-			single_quote = !single_quote;
-		else if (str[i] == '\"' && !single_quote)
-			double_quote = !double_quote;
-		i++;
-	}
-	if (single_quote || double_quote)
-		return (1);
-	return (0);
-}
 
 int	ensure_newline_at_end(char **str)
 {
@@ -45,26 +22,6 @@ int	ensure_newline_at_end(char **str)
 		free(*str);
 		*str = tmp;
 	}
-	return (0);
-}
-int	update_str_with_input(char **str, char *input)
-{
-	char	*tmp;
-	char	*join;
-
-	tmp = ft_strjoin(*str, input);
-	if (!tmp)
-		return (free(input), -1);
-	if (check_mismatched_quotes(tmp) == 1)
-	{
-		join = ft_strjoin(tmp, "\n");
-		free(tmp);
-	}
-	else
-		join = tmp;
-	free(*str);
-	*str = join;
-	free(input);
 	return (0);
 }
 
@@ -93,6 +50,28 @@ int	prompt_for_quotes(char **str)
 	}
 	return (g_exit_status);
 }
+// Vérification des guillemets
+int	check_mismatched_quotes(char *str)
+{
+	int	single_quote;
+	int	double_quote;
+	int	i;
+
+	single_quote = 0;
+	double_quote = 0;
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '\'' && !double_quote)
+			single_quote = !single_quote;
+		else if (str[i] == '\"' && !single_quote)
+			double_quote = !double_quote;
+		i++;
+	}
+	if (single_quote || double_quote)
+		return (1);
+	return (0);
+}
 
 int	handle_quotes(char **str)
 {
@@ -101,34 +80,6 @@ int	handle_quotes(char **str)
 		if (prompt_for_quotes(str) == -1)
 			return (-1);
 	}
-	return (0);
-}
-
-int	extract_word(char **str, int *i, char **word, int *start)
-{
-	while ((*str)[*i] && (*str)[*i] != ' ' && (*str)[*i] != '|' &&
-			(*str)[*i] != '<' && (*str)[*i] != '>')
-	{
-		if ((*str)[*i] == '\'')
-		{
-			(*i)++;
-			while ((*str)[*i] && (*str)[*i] != '\'')
-				(*i)++;
-			(*i)++;
-		}
-		else if ((*str)[*i] == '\"')
-		{
-			(*i)++;
-			while ((*str)[*i] && (*str)[*i] != '\"')
-				(*i)++;
-			(*i)++;
-		}
-		else
-			(*i)++;
-	}
-	*word = ft_strndup(*str + *start, *i - *start);
-	if (!word)
-		return (-1);
 	return (0);
 }
 

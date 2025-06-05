@@ -6,27 +6,64 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:36 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/04 14:08:16 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/05 14:03:22 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int handle_export_error(char *replaced)
+void	ft_set_env(char *key, char *value, char ***envcp)
 {
-    if (!replaced || replaced[0] == '\0')
+	int		i;
+	char	*new_entry;
+	char	**new_env;
+
+	new_entry = build_env_entry(key, value);
+	if (!new_entry)
+		return ;
+	i = 0;
+	while (*envcp && (*envcp)[i])
+	{
+		if (ft_strncmp((*envcp)[i], key, ft_strlen(key)) == 0
+			&& (*envcp)[i][ft_strlen(key)] == '=')
+		{
+			free((*envcp)[i]);
+			(*envcp)[i] = new_entry;
+			return ;
+		}
+		i++;
+	}
+	new_env = ft_realloc_env(*envcp, new_entry);
+	if (!new_env)
+		return (free(new_entry));
+	ft_freeenvp(*envcp);
+	*envcp = new_env;
+}
+
+char *prepare_export_string(char *arg, char **envp, char **key, char **value)
+{
+    char *equal;
+    char *replaced;
+    char *expanded;
+    char *tmp;
+
+    *key = NULL;
+    *value = NULL;
+    equal = ft_strchr(arg, '=');
+    if (equal)
     {
-        ft_putstr_fd("export: `': not a valid identifier\n", STDERR_FILENO);
-        free(replaced);
-        return (1);
+        *key = ft_substr(arg, 0, equal - arg);
+        *value = ft_strdup(equal + 1);
+        expanded = replace_all_variables(*value, envp, 0);
+        free(*value);
+        *value = expanded ? expanded : ft_strdup("");
+        tmp = ft_strjoin(*key, "=");
+        replaced = ft_strjoin(tmp, *value);
+        free(tmp);
     }
-    if (replaced[0] == '-')
-    {
-        printf("bash: export: -%c: invalid option\n", replaced[1]);
-        free(replaced);
-        return (2);
-    }
-    return (0);
+    else
+        replaced = ft_strdup(arg);
+    return (replaced);
 }
 
 int process_export_entry(char *arg, char ***envcp, int *exit_status)
@@ -57,32 +94,6 @@ int process_export_entry(char *arg, char ***envcp, int *exit_status)
         ft_set_env(key, value, envcp);
     free_export_vars(key, value, replaced);
     return (0);
-}
-
-char *prepare_export_string(char *arg, char **envp, char **key, char **value)
-{
-    char *equal;
-    char *replaced;
-    char *expanded;
-    char *tmp;
-
-    *key = NULL;
-    *value = NULL;
-    equal = ft_strchr(arg, '=');
-    if (equal)
-    {
-        *key = ft_substr(arg, 0, equal - arg);
-        *value = ft_strdup(equal + 1);
-        expanded = replace_all_variables(*value, envp, 0);
-        free(*value);
-        *value = expanded ? expanded : ft_strdup("");
-        tmp = ft_strjoin(*key, "=");
-        replaced = ft_strjoin(tmp, *value);
-        free(tmp);
-    }
-    else
-        replaced = ft_strdup(arg);
-    return (replaced);
 }
 
 // affiche les variables d’environnement sans arguments
@@ -125,38 +136,6 @@ int ft_export(char **args, char ***envcp)
     return (exit_status);
 }
 
-void	ft_set_env(char *key, char *value, char ***envcp)
-{
-	int		i;
-	char	*new_entry;
-	char	*tmp;
-	char	**new_env;
-
-	tmp = ft_strjoin(key, "=");
-	if (!tmp)
-		return ;
-	new_entry = ft_strjoin(tmp, value ? value : "");
-	free(tmp);
-	if (!new_entry)
-		return ;
-	i = 0;
-	while (*envcp && (*envcp)[i])
-	{
-		if (ft_strncmp((*envcp)[i], key, ft_strlen(key)) == 0
-			&& (*envcp)[i][ft_strlen(key)] == '=')
-		{
-			free((*envcp)[i]);
-			(*envcp)[i] = new_entry;
-			return ;
-		}
-		i++;
-	}
-	new_env = ft_realloc_env(*envcp, new_entry);
-	if (!new_env)
-		return (free(new_entry));
-	ft_freeenvp(*envcp);
-	*envcp = new_env;
-}
 
 /*
 int ft_export(char **args, char ***envcp)
