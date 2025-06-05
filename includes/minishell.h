@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/05 11:25:26 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/05 14:35:26 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,10 @@
 # define ARG 7
 # define ERR_REDIR 8
 
-// variable globale pour suivre l'état des erreurs
+// Variable globale pour suivre l'état des erreurs
 extern int	g_exit_status;
 
+// Structures
 typedef struct s_file_list
 {
 	char				*filename;
@@ -97,11 +98,34 @@ typedef struct s_execinfo
 	pid_t		*last_pid;
 }	t_execinfo;
 
+typedef struct s_filename
+{
+	char		*prefix;
+	char		*pid_str;
+	char		*count_str;
+	char		*tmp;
+	char		*final;
+}	t_filename;
+
+typedef struct s_parser_context
+{
+	t_com_list	*cmd_list;
+	t_com_list	*current_cmd;
+	t_com_list	*new_cmd;
+	char		*filename;
+	char		*pending_infile;
+	int			pending_flag_in;
+	char		*pending_outfile;
+	int			pending_flag_out;
+	char		*pending_errfile;
+	t_file_list	*pending_all_outfiles;
+	t_token		*current_token;
+	char		**envcp;
+}	t_parser_context;
+
 
 // Message prompt + history
-char				*handle_heredoc(char *limiter, char **envcp,
-						int expand_var);
-int					limiter_is_quoted(const char *str);
+
 void				fake_exit_builtin(char **args, t_com_list *cmds);
 int					is_valid_numeric_argument(char *str);
 unsigned long long	ft_atoull(const char *str);
@@ -113,13 +137,12 @@ char				*replace_all_variables(char *str, char **envcp,
 void				expand_variables(char **args, char **envcp, int is_heredoc);
 char				*replace_variable_or_special(char *str, int *i, char *res, char **envcp, int quoted);
 char				*append_char(char *res, char c);
-void				heredoc_sigint_handler(int sig);
+
 
 // Tokens
 t_token				*add_token(t_token **head, char *str, int type);
 t_token				*create_tokens(char **str, char **envcp);
 void				free_tokens(t_token *tokens);
-t_com_list			*tokens_to_cmds(t_token *tokens, char **envcp);
 char				*concat_command(char *current_command, char *new_part);
 int					parse_redirection(char *str, int *i);
 char				*add_symbol(int type);
@@ -130,6 +153,15 @@ int					ft_redirection(t_com_list *command, int *mem_fd_in, int *mem_fd_out, int
 int					open_file_cmd(char *infile);
 int					open_outfile(char *outfile, int append);
 int					open_errfile(char *errfile);
+
+// Tokens To Commands
+t_com_list			*tokens_to_cmds(t_token *tokens, char **envcp);
+void				handle_pipe_token(t_parser_context *ctx);
+int					handle_arg_token(t_parser_context *ctx);
+int					handle_redir_token(t_parser_context *ctx);
+int					handle_cmd_token(t_parser_context *ctx);
+t_com_list			*finalize_pending_redirs(t_parser_context *ctx);
+
 
 // Parsing
 t_com_list			*fill_values(char **commands);
@@ -156,10 +188,11 @@ char				*add_space_if_needed(char *arg, char **envcp);
 int					ft_cd(char **args, char ***envcp);
 int					ft_pwd(char **args, char ***envcp);
 int					ft_exit(char **args, int in_child, t_com_list *cmd);
-void		cleanup_and_exit(int code, t_com_list *cmd);
+void				cleanup_and_exit(int code, t_com_list *cmd);
 int					ft_export(char **arg, char ***envcp);
-char 				*prepare_export_string(char *arg, char **envp, char **key, char **value);
-void 				free_export_vars(char *key, char *value, char *replaced);
+char				*prepare_export_string(char *arg, char **envp,
+						char **key, char **value);
+void				free_export_vars(char *key, char *value, char *replaced);
 char				*get_env_value(char *name, char **envp);
 char				*get_value_cleaned(char *name, char **envp);
 void				ft_set_env(char *key, char *value, char ***envp);
@@ -167,6 +200,13 @@ void				ft_env(char **envp);
 int					is_valid_name(char *name);
 int					is_valid_n_flag(const char *str);
 int					ft_unset(char **args, char ***envcp);
+
+//Heredoc
+char				*generate_tmp_filename(void);
+void				heredoc_sigint_handler(int sig);
+char				*handle_heredoc(char *limiter, char **envcp,
+						int expand_var);
+int					limiter_is_quoted(const char *str);
 
 // Exec
 void				exec_cmd(char **args, char ***envcp);

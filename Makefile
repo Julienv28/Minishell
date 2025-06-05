@@ -31,7 +31,6 @@ SRCS        = 	$(SRC_DIR)/main.c \
 				$(SRC_DIR)/error_handler.c \
 				$(SRC_DIR)/tokenization/tokens.c \
 				$(SRC_DIR)/tokenization/utils.c \
-				$(SRC_DIR)/tokenization/command.c \
 				$(SRC_DIR)/tokenization/redirection.c \
 				$(SRC_DIR)/tokenization/open_file.c \
 				$(SRC_DIR)/tokenization/check_cmd.c \
@@ -54,6 +53,15 @@ SRCS        = 	$(SRC_DIR)/main.c \
 				$(SRC_DIR)/execution/utils_pipes.c \
 				$(SRC_DIR)/execution/exec_builtings.c \
 				$(SRC_DIR)/execution/exec_utils.c \
+				$(SRC_DIR)/tokens_to_commands/command.c\
+				$(SRC_DIR)/tokens_to_commands/ft_heredocs.c \
+				$(SRC_DIR)/tokens_to_commands/heredoc_utils.c \
+				$(SRC_DIR)/tokens_to_commands/tkn_to_cmds.c \
+				$(SRC_DIR)/tokens_to_commands/handle_arg.c \
+				$(SRC_DIR)/tokens_to_commands/handle_cmd.c \
+				$(SRC_DIR)/tokens_to_commands/handle_pipes.c \
+				$(SRC_DIR)/tokens_to_commands/handle_redirections.c \
+				$(SRC_DIR)/tokens_to_commands/finalize_redirs.c \
 				$(SRC_DIR)/split_pipes.c
 
 #=== Object Files ===
