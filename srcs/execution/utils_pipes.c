@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 16:07:39 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/04 17:03:43 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/05 11:49:48 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,10 @@ void	handle_commands_pipes(char **args, t_com_list *cmds, char ***envcp)
 	if (!args || !args[0] || args[0][0] == '\0')
 	{
 		ft_putstr_fd("minishell: ", STDERR_FILENO);
-		ft_putstr_fd(args && args[0] ? args[0] : "", STDERR_FILENO);
+		if (args && args[0])
+			ft_putstr_fd(args[0], STDERR_FILENO);
+		else
+			ft_putstr_fd("", STDERR_FILENO);
 		ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
 		rl_clear_history();
 		ft_freeenvp(*envcp);

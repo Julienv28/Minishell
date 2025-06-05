@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 16:03:35 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/04 17:03:21 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/05 11:24:45 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,21 +133,23 @@ int	exec_pipes(t_com_list *cmds, char **envcp)
 
 int	fork_exec(t_com_list *curr, int *prev_fd, pid_t *last_pid, char ***envcp)
 {
-	int		pipefd[2];
-	pid_t	pid;
+	t_execinfo	ex;
 
-	if (setup_pipe(curr, pipefd) < 0)
+	ex.curr = curr;
+	ex.prev_fd = prev_fd;
+	ex.last_pid = last_pid;
+	if (setup_pipe(curr, ex.pipefd) < 0)
 		return (-1);
-	pid = fork();
-	if (pid < 0)
+	ex.pid = fork();
+	if (ex.pid < 0)
 	{
 		perror("fork");
 		return (-1);
 	}
-	if (pid == 0)
-		child_proc(curr, *prev_fd, pipefd, envcp);
-	parent_pro(curr, prev_fd, pipefd, pid, last_pid);
-	return (pid);
+	if (ex.pid == 0)
+		child_proc(curr, *prev_fd, ex.pipefd, envcp);
+	parent_pro(&ex);
+	return (ex.pid);
 }
 
 int	setup_pipe(t_com_list *curr, int pipefd[2])
@@ -168,22 +170,22 @@ int	setup_pipe(t_com_list *curr, int pipefd[2])
 	return (0);
 }
 
-void	parent_pro(t_com_list *curr, int *prev_fd, int pipefd[2], pid_t pid, pid_t *last_pid)
+void	parent_pro(t_execinfo *ex)
 {
 	set_signals_parent();
-	if (*prev_fd != -1)
-		close(*prev_fd);
-	if (curr->next)
+	if (*(ex->prev_fd) != -1)
+		close(*(ex->prev_fd));
+	if (ex->curr->next)
 	{
-		close(pipefd[1]);
-		*prev_fd = pipefd[0];
+		close(ex->pipefd[1]);
+		*(ex->prev_fd) = ex->pipefd[0];
 	}
 	else
 	{
-		*last_pid = pid;
-		if (pipefd[0] != -1)
-			close(pipefd[0]);
-		*prev_fd = -1;
+		*(ex->last_pid) = ex->pid;
+		if (ex->pipefd[0] != -1)
+			close(ex->pipefd[0]);
+		*(ex->prev_fd) = -1;
 	}
 }
 
