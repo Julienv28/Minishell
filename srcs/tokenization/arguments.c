@@ -3,15 +3,53 @@
 /*                                                        :::      ::::::::   */
 /*   arguments.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:06:51 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/03 17:05:58 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/05 14:18:27 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
+int	ensure_newline_at_end(char **str)
+{
+	char	*tmp;
+
+	if ((*str)[ft_strlen(*str) - 1] != '\n')
+	{
+		tmp = ft_strjoin(*str, "\n");
+		free(*str);
+		*str = tmp;
+	}
+	return (0);
+}
+
+int	prompt_for_quotes(char **str)
+{
+	char	*input;
+	int		status;
+
+	ensure_newline_at_end(str);
+	while (check_mismatched_quotes(*str) == 1)
+	{
+		signal(SIGINT, heredoc_sigint_handler);
+		input = readline("> ");
+		signal(SIGINT, handler_sigint);
+		if (g_exit_status == 130)
+			return (free(input), -1);
+		if (!input)
+		{
+			ft_putstr_fd("minishell: unexpected EOF while looking for matching `''\n", STDERR_FILENO);
+			ft_putstr_fd("syntax error: unexpected end of file\n", STDERR_FILENO);
+			return (-1);
+		}
+		status = update_str_with_input(str, input);
+		if (status == -1)
+			return (-1);
+	}
+	return (g_exit_status);
+}
 // Vérification des guillemets
 int	check_mismatched_quotes(char *str)
 {
@@ -35,62 +73,6 @@ int	check_mismatched_quotes(char *str)
 	return (0);
 }
 
-int	ensure_newline_at_end(char **str)
-{
-	char	*tmp;
-
-	if ((*str)[ft_strlen(*str) - 1] != '\n')
-	{
-		tmp = ft_strjoin(*str, "\n");
-		free(*str);
-		*str = tmp;
-	}
-	return (0);
-}
-
-int prompt_for_quotes(char **str)
-{
-    char *input;
-    char *tmp;
-    char *join;
-
-    ensure_newline_at_end(str);
-    while (check_mismatched_quotes(*str) == 1)
-    {
-		signal(SIGINT, heredoc_sigint_handler);
-        input = readline("> ");
-		signal(SIGINT, handler_sigint);
-		if (g_exit_status == 130)
-        {
-            free(input);
-            return (-1);
-        }
-		if (!input)
-		{
-			ft_putstr_fd("minishell: unexpected EOF while looking for matching `''\n", STDERR_FILENO);
-            ft_putstr_fd("syntax error: unexpected end of file\n", STDERR_FILENO);
-            return (-1);
-		}
-        tmp = ft_strjoin(*str, input);
-		if (!tmp)
-		{
-			free(input);
-			return (-1);
-		}
-        if (check_mismatched_quotes(tmp) == 1)
-        {
-            join = ft_strjoin(tmp, "\n");
-            free(tmp);
-        }
-        else
-            join = tmp;
-        free(*str);
-        *str = join;
-        free(input);
-    }
-    return (g_exit_status);
-}
-
 int	handle_quotes(char **str)
 {
 	if (check_mismatched_quotes(*str) == 1)
@@ -98,34 +80,6 @@ int	handle_quotes(char **str)
 		if (prompt_for_quotes(str) == -1)
 			return (-1);
 	}
-	return (0);
-}
-
-int	extract_word(char **str, int *i, char **word, int *start)
-{
-	while ((*str)[*i] && (*str)[*i] != ' ' && (*str)[*i] != '|' &&
-			(*str)[*i] != '<' && (*str)[*i] != '>')
-	{
-		if ((*str)[*i] == '\'')
-		{
-			(*i)++;
-			while ((*str)[*i] && (*str)[*i] != '\'')
-				(*i)++;
-			(*i)++;
-		}
-		else if ((*str)[*i] == '\"')
-		{
-			(*i)++;
-			while ((*str)[*i] && (*str)[*i] != '\"')
-				(*i)++;
-			(*i)++;
-		}
-		else
-			(*i)++;
-	}
-	*word = ft_strndup(*str + *start, *i - *start);
-	if (!word)
-		return (-1);
 	return (0);
 }
 

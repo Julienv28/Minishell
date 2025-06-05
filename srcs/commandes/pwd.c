@@ -6,11 +6,30 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 16:04:31 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/04 11:18:54 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/05 14:10:58 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+char	*get_env_value(char *name, char **envp)
+{
+	int		i;
+	size_t	len;
+
+	i = 0;
+	len = ft_strlen(name);
+	if (!name || !envp)
+		return (NULL);
+	while (envp[i])
+	{
+		if (envp[i] && ft_strncmp(envp[i], name, len) == 0
+			&& envp[i][len] == '=')
+			return (envp[i] + len + 1);
+		i++;
+	}
+	return (NULL);
+}
 
 // PWD
 // Affiche le chemin absolu du répertoire courant.
@@ -26,18 +45,12 @@ int ft_pwd(char **args, char ***envcp)
 		return (g_exit_status);
 	}
 	if (getcwd(path, sizeof(path)) != NULL)
-	{
-		printf("%s\n", path);
-		return (0);
-	}
+		return (printf("%s\n", path), 0);
 	else
 	{
 		char *pwd = get_env_value("PWD", *envcp);
 		if (pwd)
-		{
-			printf("%s\n", pwd);
-			return (0);
-		}
+			return (printf("%s\n", pwd), 0);
 		ft_putstr_fd("minishell: pwd: error retrieving current directory: getcwd: cannot access parent directories: ", STDERR_FILENO);
 		return (1);
     }

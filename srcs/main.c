@@ -36,7 +36,6 @@ int	main(int ac, char **av, char **envp)
     (void)ac;
     (void)av;
     envcp = ft_env_dup(envp);
-    // mettre fix 
     if (isatty(1) == 0)
     {
         write(1, "you can't pipe a minishell\n", 27);
@@ -97,7 +96,6 @@ int	main(int ac, char **av, char **envp)
         while (command)
         {
             has_redir_error = 0;
-            // Si aucune commande, mais redirection présente
             if (command->command == NULL)
             {
                 if (command->infile || command->outfile || command->errfile || command->heredoc_fd > 0)
@@ -109,11 +107,8 @@ int	main(int ac, char **av, char **envp)
                     mem_fd_in = mem_fd_err = -1;
                 }
                 command = command->next;
-                //free_tokens(tokens); ATTENTION SEGFAULT < PWD > PWD
                 continue ;
             }
-
-            // Appliquer les redirections
             if (command->infile || command->outfile || command->errfile || command->heredoc_fd > 0)
                 has_redir_error = ft_redirection(command, &mem_fd_in, &mem_fd_out, &mem_fd_err);
             if (has_redir_error)
@@ -130,7 +125,6 @@ int	main(int ac, char **av, char **envp)
             }
             else
                 execute(command, &envcp);
-            // Restauration des redirections
             if ((command->infile || command->outfile || command->errfile || command->heredoc_fd > 0) && has_redir_error >= 0)
             {
                 restore_redirections(mem_fd_in, mem_fd_out, mem_fd_err);

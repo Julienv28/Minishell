@@ -72,13 +72,6 @@ int	is_valid_numeric_argument(char *str)
 	return (1);
 }
 
-void	cleanup_and_exit(int code, t_com_list *cmd)
-{
-	free_cmd(cmd);
-	rl_clear_history();
-	exit(code);
-}
-
 int	ft_exit(char **args, int in_child, t_com_list *cmd)
 {
 	int	i;

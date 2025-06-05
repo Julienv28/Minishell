@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:21 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/04 11:47:00 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/05 14:11:15 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	should_unset_var(char *env_entry, char **args)
 		if (!is_valid_name(args[i]))
 		{
 			i++;
-			continue;
+			continue ;
 		}
 		len = ft_strlen(args[i]);
 		if (ft_strncmp(env_entry, args[i], len) == 0 && env_entry[len] == '=')
@@ -32,6 +32,7 @@ int	should_unset_var(char *env_entry, char **args)
 	}
 	return (0);
 }
+
 int	unset_remove_vars(char **args, char ***envcp)
 {
 	int		j;

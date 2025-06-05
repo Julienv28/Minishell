@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/05 14:35:26 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/05 16:07:21 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,15 @@ typedef struct s_token
 	struct s_token	*next;
 }				t_token;
 
+
+typedef struct s_expand {
+	char	**envcp;
+	int		is_heredoc;
+	int		quoted;
+	int		*i; // pointeur vers l'index de la chaîne
+}	t_expand;
+
+
 typedef struct s_execinfo
 {
 	t_com_list	*curr;
@@ -125,19 +134,28 @@ typedef struct s_parser_context
 
 
 // Message prompt + history
-
+char				*handle_heredoc(char *limiter, char **envcp, int expand_var);
+int					limiter_is_quoted(const char *str);
 void				fake_exit_builtin(char **args, t_com_list *cmds);
 int					is_valid_numeric_argument(char *str);
 unsigned long long	ft_atoull(const char *str);
+int					has_pipe(t_com_list *command);
 
 // Signaux
 void				set_signal_action(void);
+char				*replace_all_variables(char *str, char **envcp, int is_heredoc);
+//char	*replace_all_variables(char *str, t_expand *var);
+//void				expand_variables(char **args, char **envcp, int is_heredoc);
+//char				*replace_variable_or_special(char *str, int *i, char *res, char **envcp, int quoted);
+char 				*replace_variable_or_special(char *str, char *res, t_expand *var);
+char				*append_char(char *res, char c);
+void				heredoc_sigint_handler(int sig);
+char				*handle_special_cases(char *str, char *res, t_expand *var);
+char				*handle_quote(char *str, char *res, t_expand *var);
+char				*get_variable_name(char *str, t_expand *var, char *var_name);
+char				*handle_brace_variable(char *str, char *res, t_expand *var);
 char				*replace_all_variables(char *str, char **envcp,
 						int avoid_expand);
-void				expand_variables(char **args, char **envcp, int is_heredoc);
-char				*replace_variable_or_special(char *str, int *i, char *res, char **envcp, int quoted);
-char				*append_char(char *res, char c);
-
 
 // Tokens
 t_token				*add_token(t_token **head, char *str, int type);
@@ -153,6 +171,8 @@ int					ft_redirection(t_com_list *command, int *mem_fd_in, int *mem_fd_out, int
 int					open_file_cmd(char *infile);
 int					open_outfile(char *outfile, int append);
 int					open_errfile(char *errfile);
+int					extract_word(char **str, int *i, char **word, int *start);
+int					update_str_with_input(char **str, char *input);
 
 // Tokens To Commands
 t_com_list			*tokens_to_cmds(t_token *tokens, char **envcp);
@@ -190,9 +210,11 @@ int					ft_pwd(char **args, char ***envcp);
 int					ft_exit(char **args, int in_child, t_com_list *cmd);
 void				cleanup_and_exit(int code, t_com_list *cmd);
 int					ft_export(char **arg, char ***envcp);
-char				*prepare_export_string(char *arg, char **envp,
-						char **key, char **value);
-void				free_export_vars(char *key, char *value, char *replaced);
+char 				*prepare_export_string(char *arg, char **envp, char **key, char **value);
+void 				free_export_vars(char *key, char *value, char *replaced);
+int 				handle_export_error(char *replaced);
+char				*build_env_entry(char *key, char *value);
+
 char				*get_env_value(char *name, char **envp);
 char				*get_value_cleaned(char *name, char **envp);
 void				ft_set_env(char *key, char *value, char ***envp);
@@ -238,19 +260,19 @@ int					parse_pipes(char **args);
 // Utils
 void				free_tab(char **tab);
 void				free_file_list(t_file_list *list);
-char				**split_args(const char *s, char sep);
+//char				**split_args(const char *s, char sep);
 char				*remove_quotes_or_slash(char *str);
 void				free_cmd(t_com_list *command);
 char				**ft_env_dup(char **envp);
 void				ft_freeenvp(char **envcp);
-char				*ft_srjoin3(char *s1, char *s2, char *s3);
 char				**ft_realloc_env(char **envcp, char *new_entry);
 void				init_cmds(t_com_list *command);
-int					parse_args_echo(char **args);
 int					count_ags(char **args);
 int					check_events(char *arg);
 char				*clean_spaces(char *str);
 void				add_outfile(t_file_list **list, char *filename, int flag);
+char				*ft_strjoin_free(char *s1, char *s2);
+char 				*free_all(char *before, char *var_key, char *spaced, char *value);
 int					syntax_error(void);
 
 #endif
