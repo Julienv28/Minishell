@@ -26,7 +26,6 @@ LDFLAGS     = -L$(READLINE_LIB) -lreadline -L$(LIBFT_DIR) -lft
 #=== Source Files ===
 SRCS        = 	$(SRC_DIR)/main.c \
 				$(SRC_DIR)/pipes_manager.c \
-				$(SRC_DIR)/initialisation_args.c \
 				$(SRC_DIR)/split_args.c \
 				$(SRC_DIR)/error_handler.c \
 				$(SRC_DIR)/tokenization/tokens.c \
@@ -67,7 +66,9 @@ SRCS        = 	$(SRC_DIR)/main.c \
 				$(SRC_DIR)/tokens_to_commands/handle_pipes.c \
 				$(SRC_DIR)/tokens_to_commands/handle_redirections.c \
 				$(SRC_DIR)/tokens_to_commands/finalize_redirs.c \
-				$(SRC_DIR)/split_pipes.c
+				$(SRC_DIR)/tokens_to_commands/create_cmd.c \
+				$(SRC_DIR)/split_pipes.c \
+				$(SRC_DIR)/initialisation.c
 
 #=== Object Files ===
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
