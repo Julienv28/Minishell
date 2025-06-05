@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   arguments.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:06:51 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/05 14:18:27 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/05 16:20:27 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ int	prompt_for_quotes(char **str)
 	}
 	return (g_exit_status);
 }
+
 // Vérification des guillemets
 int	check_mismatched_quotes(char *str)
 {
