@@ -80,8 +80,16 @@ void	minishell_loop(char ***envcp)
 			exit_shell(*envcp);
 		add_history(input);
 		tokens = create_tokens(&input, *envcp);
-		if (!handle_null_tokens(tokens, input))
+		if (!tokens)
+		{
+			free(input);
 			continue ;
+		}
+		if (!handle_null_tokens(tokens, input))
+		{
+			free_tokens(tokens);
+			continue ;
+		}
 		free(input);
 		commands = tokens_to_cmds(tokens, *envcp);
 		free_tokens(tokens);
