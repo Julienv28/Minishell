@@ -1,5 +1,5 @@
 #include "../includes/minishell.h"
-
+/*
 // CRÉATION ET GESTION DES TOKENS
 t_token	*add_token(t_token **head, char *str, int type)
 {
@@ -11,6 +11,30 @@ t_token	*add_token(t_token **head, char *str, int type)
 		return (NULL);
 	new->value = ft_strdup(str);
 	new->type = type;
+	new->next = NULL;
+	if (!*head)
+		*head = new;
+	else
+	{
+		tmp = *head;
+		while (tmp->next)
+			tmp = tmp->next;
+		tmp->next = new;
+	}
+	return (new);
+}*/
+
+t_token	*add_token(t_token **head, char *str, int type, int is_quoted)
+{
+	t_token	*new;
+	t_token	*tmp;
+
+	new = malloc(sizeof(t_token));
+	if (!new)
+		return (NULL);
+	new->value = ft_strdup(str);
+	new->type = type;
+	new->is_quoted = is_quoted;
 	new->next = NULL;
 	if (!*head)
 		*head = new;
@@ -42,7 +66,7 @@ int	process_pipe(char *str, int *i, t_token **tokens, int *expect_cmd)
 			free_tokens(*tokens);
 			return (-1);
 		}
-		add_token(tokens, "|", PIPE);
+		add_token(tokens, "|", PIPE, 0);
 		(*i)++;
 		*expect_cmd = 1;
 		return (1);

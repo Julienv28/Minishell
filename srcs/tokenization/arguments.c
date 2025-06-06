@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   arguments.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:06:51 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/05 16:20:27 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/06 15:05:24 by pique            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,35 @@ int	handle_word(char **str, int *i, t_token **tokens, int *expect_cmd)
 	int		start;
 	int		type;
 	char	*word;
+	int		is_quoted;
+
+	start = *i;
+
+	if (handle_quotes(str) == -1)
+		return (-1);
+
+	is_quoted = extract_word(str, i, &word, &start); // ← récupéré ici
+	if (!word)
+		return (-1);
+	if (*expect_cmd)
+		type = CMD;
+	else
+		type = ARG;
+	t_token *new = add_token(tokens, word, type, is_quoted);
+	if (!new)
+		return (free(word), -1);
+
+	free(word);
+	*expect_cmd = 0;
+	return (0);
+}
+
+/*
+int	handle_word(char **str, int *i, t_token **tokens, int *expect_cmd)
+{
+	int		start;
+	int		type;
+	char	*word;
 
 	start = *i;
 	if (handle_quotes(str) == -1)
@@ -102,4 +131,4 @@ int	handle_word(char **str, int *i, t_token **tokens, int *expect_cmd)
 	free(word);
 	*expect_cmd = 0;
 	return (0);
-}
+}*/

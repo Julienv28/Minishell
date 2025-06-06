@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/06 10:22:51 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/06 17:17:29 by pique            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ typedef struct s_token
 {
 	char			*value;
 	int				type;
+	int				is_quoted;
 	struct s_token	*next;
 }				t_token;
 
@@ -94,6 +95,7 @@ typedef struct s_expand {
 	char	**envcp;
 	int		is_heredoc;
 	int		quoted;
+	int		expand_vars;
 	int		*i; // pointeur vers l'index de la chaîne
 }	t_expand;
 
@@ -146,8 +148,6 @@ int	check_isatty(void);
 int	is_blank_line(const char *str);
 void	init_redirs(t_redirs *fds);
 void	init_signals(void);
-char				*handle_heredoc(char *limiter, char **envcp, int expand_var);
-int					limiter_is_quoted(const char *str);
 void				fake_exit_builtin(char **args, t_com_list *cmds);
 int					is_valid_numeric_argument(char *str);
 unsigned long long	ft_atoull(const char *str);
@@ -155,7 +155,6 @@ int					has_pipe(t_com_list *command);
 
 // Signaux
 void				set_signal_action(void);
-char				*replace_all_variables(char *str, char **envcp, int is_heredoc);
 //char	*replace_all_variables(char *str, t_expand *var);
 //void				expand_variables(char **args, char **envcp, int is_heredoc);
 //char				*replace_variable_or_special(char *str, int *i, char *res, char **envcp, int quoted);
@@ -166,11 +165,13 @@ char				*handle_special_cases(char *str, char *res, t_expand *var);
 char				*handle_quote(char *str, char *res, t_expand *var);
 char				*get_variable_name(char *str, t_expand *var, char *var_name);
 char				*handle_brace_variable(char *str, char *res, t_expand *var);
-char				*replace_all_variables(char *str, char **envcp,
-						int avoid_expand);
+//char				*replace_all_variables(char *str, char **envcp,
+//						int avoid_expand);
+char				*replace_all_variables(char *str, char **envcp, int is_heredoc, int expand_vars);
 
 // Tokens
-t_token				*add_token(t_token **head, char *str, int type);
+//t_token				*add_token(t_token **head, char *str, int type);
+t_token				*add_token(t_token **head, char *str, int type, int is_quoted);
 t_token				*create_tokens(char **str, char **envcp);
 void				free_tokens(t_token *tokens);
 char				*concat_command(char *current_command, char *new_part);
@@ -238,7 +239,7 @@ int					ft_unset(char **args, char ***envcp);
 char				*generate_tmp_filename(void);
 void				heredoc_sigint_handler(int sig);
 char				*handle_heredoc(char *limiter, char **envcp,
-						int expand_var);
+						int *expand_var);
 int					limiter_is_quoted(const char *str);
 
 // Exec

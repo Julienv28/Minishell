@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:36 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/06 10:01:43 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/06 16:19:26 by pique            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ char *prepare_export_string(char *arg, char **envp, char **key, char **value)
     {
         *key = ft_substr(arg, 0, equal - arg);
         *value = ft_strdup(equal + 1);
-        expanded = replace_all_variables(*value, envp, 0);
+        expanded = replace_all_variables(*value, envp, 0, 1);
         free(*value);
         *value = expanded ? expanded : ft_strdup("");
         tmp = ft_strjoin(*key, "=");

@@ -20,7 +20,11 @@ READLINE_LIB = /usr/lib
 READLINE_INCLUDE = /opt/homebrew/opt/readline/include 
 READLINE_LIB = /opt/homebrew/opt/readline/lib
 
-CFLAGS      = -Wall -Wextra -Werror -I $(INC_DIR) -I $(LIBFT_DIR) -I$(READLINE_INCLUDE)
+READLINE_INCLUDE = /usr/local/opt/readline/include
+READLINE_LIB = /usr/local/opt/readline/lib
+
+
+CFLAGS      = -Wall -Wextra -Werror -g -I $(INC_DIR) -I $(LIBFT_DIR) -I$(READLINE_INCLUDE)
 LDFLAGS     = -L$(READLINE_LIB) -lreadline -L$(LIBFT_DIR) -lft
 
 #=== Source Files ===
