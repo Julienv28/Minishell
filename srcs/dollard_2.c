@@ -31,8 +31,8 @@ char	*handle_special_cases(char *str, char *res, t_expand *var)
 		return ((*var->i)++, expand_exit_status(res));
 	if (ft_isdigit(str[*var->i]))
 		return ((*var->i)++, res);
-	if (str[*var->i] == '"' &&
-		(ft_isalpha(str[*var->i + 1]) || str[*var->i + 1] == '_'))
+	if (str[*var->i] == '"'
+		&& (ft_isalpha(str[*var->i + 1]) || str[*var->i + 1] == '_'))
 	{
 		res = append_char(res, '$');
 		res = append_char(res, str[(*var->i)++]);
@@ -64,7 +64,7 @@ char	*handle_brace_variable(char *str, char *res, t_expand *var)
 
 char	*handle_quote(char *str, char *res, t_expand *var)
 {
- 	if (str[*var->i] == '"' && str[*var->i + 1] == '"')
+	if (str[*var->i] == '"' && str[*var->i + 1] == '"')
 	{
 		(*var->i) += 2;
 		return (append_char(res, '\0'));
@@ -87,6 +87,7 @@ char	*handle_quote(char *str, char *res, t_expand *var)
 		(*var->i)++;
 	return (res);
 }
+
 char	*get_variable_name(char *str, t_expand *var, char *var_name)
 {
 	int	j;

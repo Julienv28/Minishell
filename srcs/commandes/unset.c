@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:21 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/05 14:11:15 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/06 10:40:17 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ int	should_unset_var(char *env_entry, char **args)
 int	unset_remove_vars(char **args, char ***envcp)
 {
 	int		j;
-    int     k;
-    int     size;
+	int		k;
+	int		size;
 	char	**new_env;
 
 	size = 0;

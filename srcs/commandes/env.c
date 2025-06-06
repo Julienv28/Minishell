@@ -1,14 +1,26 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/06 10:36:25 by juvitry           #+#    #+#             */
+/*   Updated: 2025/06/06 10:36:47 by juvitry          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
-void ft_env(char **envcp)
+void	ft_env(char **envcp)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    while (envcp && envcp[i])
-    {
-        printf("%s\n", envcp[i]);
-        i++;
-    }
+	i = 0;
+	while (envcp && envcp[i])
+	{
+		printf("%s\n", envcp[i]);
+		i++;
+	}
 }
 

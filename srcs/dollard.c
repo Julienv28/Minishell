@@ -47,7 +47,8 @@ char	*replace_variable_or_special(char *str, char *res, t_expand *var)
 	return (handle_special_cases(str, res, var));
 }
 
-char	*handle_quotes_and_dollar(char *str, char *res,t_expand *var, int *quotes)
+char	*handle_quotes_and_dollar(char *str, char *res,
+		t_expand *var, int *quotes)
 {
 	if (str[*var->i] == '\'' && !quotes[1])
 	{

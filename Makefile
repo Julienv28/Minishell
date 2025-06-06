@@ -17,11 +17,14 @@ CC          = gcc
 READLINE_INCLUDE = /usr/include
 READLINE_LIB = /usr/lib
 
-READLINE_INCLUDE = /opt/homebrew/opt/readline/include 
-READLINE_LIB = /opt/homebrew/opt/readline/lib
+#====== MacOS Flags======
+# READLINE_INCLUDE = /opt/homebrew/opt/readline/include 
+# READLINE_LIB = /opt/homebrew/opt/readline/lib
 
 CFLAGS      = -Wall -Wextra -Werror -I $(INC_DIR) -I $(LIBFT_DIR) -I$(READLINE_INCLUDE)
 LDFLAGS     = -L$(READLINE_LIB) -lreadline -L$(LIBFT_DIR) -lft
+
+.SUFFIXES:
 
 #=== Source Files ===
 SRCS        = 	$(SRC_DIR)/main.c \
@@ -96,13 +99,13 @@ $(NAME): $(LIBFT) $(OBJS)
 clean:
 	@echo "\033[0;31m==> Cleaning object files...\033[0m"
 	@rm -rf $(OBJ_DIR)
-	@make clean -sC $(LIBFT_DIR)
+	@make -s -C $(LIBFT_DIR) clean 
 	@echo "\033[1;32m==> Clean complete.\033[0m"
 
 fclean: clean
 	@echo "\033[0;31m==> Removing executable $(NAME)...\033[0m"
 	@rm -f $(NAME)
-	@make fclean -sC $(LIBFT_DIR)
+	@make -s -C $(LIBFT_DIR) fclean
 	@echo "\033[1;32m==> Full clean complete.\033[0m"
 
 re: fclean all

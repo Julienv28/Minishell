@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:36 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/06 10:01:43 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/06 10:38:55 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,34 +36,33 @@ void	ft_set_env(char *key, char *value, char ***envcp)
 	new_env = ft_realloc_env(*envcp, new_entry);
 	if (!new_env)
 		return (free(new_entry));
-	//ft_freeenvp(*envcp); //SEFAULT 
 	*envcp = new_env;
 }
 
-char *prepare_export_string(char *arg, char **envp, char **key, char **value)
+char	*prepare_export_string(char *arg, char **envp, char **key, char **value)
 {
-    char *equal;
-    char *replaced;
-    char *expanded;
-    char *tmp;
+	char	*equal;
+	char	*replaced;
+	char	*expanded;
+	char	*tmp;
 
-    *key = NULL;
-    *value = NULL;
-    equal = ft_strchr(arg, '=');
-    if (equal)
-    {
-        *key = ft_substr(arg, 0, equal - arg);
-        *value = ft_strdup(equal + 1);
-        expanded = replace_all_variables(*value, envp, 0);
-        free(*value);
-        *value = expanded ? expanded : ft_strdup("");
-        tmp = ft_strjoin(*key, "=");
-        replaced = ft_strjoin(tmp, *value);
-        free(tmp);
-    }
-    else
-        replaced = ft_strdup(arg);
-    return (replaced);
+	*key = NULL;
+	*value = NULL;
+	equal = ft_strchr(arg, '=');
+	if (equal)
+	{
+		*key = ft_substr(arg, 0, equal - arg);
+		*value = ft_strdup(equal + 1);
+		expanded = replace_all_variables(*value, envp, 0);
+		free(*value);
+		*value = expanded ? expanded : ft_strdup("");
+		tmp = ft_strjoin(*key, "=");
+		replaced = ft_strjoin(tmp, *value);
+		free(tmp);
+	}
+	else
+		replaced = ft_strdup(arg);
+	return (replaced);
 }
 
 int	check_and_export(char *arg, char *key, char *value, char ***envcp)

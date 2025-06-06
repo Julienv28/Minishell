@@ -1,7 +1,6 @@
 NAME =		libft.a
 
 CC =		gcc
-
 CFLAGS =	-Wall -Wextra -Werror
 
 SRC =		ft_atoi.c ft_bzero.c ft_memset.c ft_memcpy.c \
@@ -16,13 +15,18 @@ SRC =		ft_atoi.c ft_bzero.c ft_memset.c ft_memcpy.c \
 
 OBJ =		${SRC:.c=.o}
 
+.SUFFIXES:
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
 all:		${NAME}
 
 ${NAME}:	${OBJ}
 			ar rc ${NAME} ${OBJ}
 			ranlib ${NAME}
 
-.c.o:		${CC} ${CFLAGS} -c $< -o ${<:.c=.o}
+# .c.o:		${CC} ${CFLAGS} -c $< -o ${<:.c=.o}
 
 clean:
 			rm -f ${OBJ}
