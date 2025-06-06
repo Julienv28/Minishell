@@ -6,24 +6,14 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 09:31:19 by opique            #+#    #+#             */
-/*   Updated: 2025/06/05 16:22:21 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/06 16:04:07 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-char	*expand_clean_word(char *word, char **envcp)
-{
-	char	*expanded;
-	char	*cleaned;
-
-	expanded = replace_all_variables(word, envcp, 0);
-	cleaned = remove_quotes_or_slash(expanded);
-	free(expanded);
-	return (cleaned);
-}
-
-int	process_redirection_value(int type, char *word, t_token **tokens, char **envcp)
+int	process_redirection_value(int type, char *word,
+		t_token **tokens, char **envcp)
 {
 	char	*final;
 

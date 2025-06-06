@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:21 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/05 14:11:15 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/06 16:12:28 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	should_unset_var(char *env_entry, char **args)
 {
-	int	i;
+	int		i;
 	size_t	len;
 
 	i = 1;
@@ -36,8 +36,8 @@ int	should_unset_var(char *env_entry, char **args)
 int	unset_remove_vars(char **args, char ***envcp)
 {
 	int		j;
-    int     k;
-    int     size;
+	int		k;
+	int		size;
 	char	**new_env;
 
 	size = 0;
@@ -54,7 +54,7 @@ int	unset_remove_vars(char **args, char ***envcp)
 			free((*envcp)[j]);
 		else
 			new_env[k++] = (*envcp)[j];
-        j++;
+		j++;
 	}
 	new_env[k] = NULL;
 	free(*envcp);
@@ -118,7 +118,6 @@ int	ft_unset(char **args, char ***envcp)
 	unset_remove_vars(args, envcp);
 	return (exit_status);
 }
-
 
 /*
 // La fonction est longue, il faudrna la raccourcir...

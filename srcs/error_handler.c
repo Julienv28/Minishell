@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error_handler.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 10:45:29 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/05 16:32:26 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/06 10:45:44 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ int	syntax_error(void)
 	g_exit_status = 258;
 	return (1);
 }
+
 void	exit_shell(char **envcp)
 {
 	ft_putstr_fd("exit\n", STDOUT_FILENO);

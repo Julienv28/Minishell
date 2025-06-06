@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:42:01 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/06 09:21:01 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/06 16:12:15 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@ char	*build_spaced_result(char *arg, int i, int len, char **envcp)
 	if (!var_key)
 		return (free(before), NULL);
 	value = get_value_cleaned(var_key, envcp);
-    if (!value)
-        return (free_all(before, var_key, NULL, NULL), NULL);
+	if (!value)
+		return (free_all(before, var_key, NULL, NULL), NULL);
 	spaced = ft_strjoin(before, " ");
 	if (!spaced)
 		return (free_all(before, var_key, NULL, value), NULL);
@@ -58,7 +58,8 @@ char	*add_space_if_needed(char *arg, char **envcp)
 		{
 			var_name = arg + i + 1;
 			len = 0;
-			while (var_name[len] && (ft_isalnum(var_name[len]) || var_name[len] == '_'))
+			while (var_name[len] && (ft_isalnum(var_name[len])
+					|| var_name[len] == '_'))
 				len++;
 			if (len > 0)
 				return (build_spaced_result(arg, i, len, envcp));
@@ -169,4 +170,3 @@ char	*add_space_if_needed(char *arg, char **envcp)
 	}
 	return (ft_strdup(arg));
 }*/
-

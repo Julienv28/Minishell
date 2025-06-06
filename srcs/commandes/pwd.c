@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 16:04:31 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/05 14:10:58 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/06 15:14:37 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,12 @@ char	*get_env_value(char *name, char **envp)
 
 // PWD
 // Affiche le chemin absolu du répertoire courant.
-int ft_pwd(char **args, char ***envcp)
+int	ft_pwd(char **args, char ***envcp)
 {
-	(void)args;
-    char    path[1024];
+	char	path[1024];
+	char	*pwd;
 
+	(void)args;
 	if (args[1] && args[1][0] == '-' && args[1][1] != '\0')
 	{
 		printf("minishell: pwd: -%c: invalid option\n", args[1][1]);
@@ -48,10 +49,11 @@ int ft_pwd(char **args, char ***envcp)
 		return (printf("%s\n", path), 0);
 	else
 	{
-		char *pwd = get_env_value("PWD", *envcp);
+		pwd = get_env_value("PWD", *envcp);
 		if (pwd)
 			return (printf("%s\n", pwd), 0);
-		ft_putstr_fd("minishell: pwd: error retrieving current directory: getcwd: cannot access parent directories: ", STDERR_FILENO);
+		ft_putstr_fd("minishell: pwd: error retrieving current directory: \
+			getcwd: cannot access parent directories: ", STDERR_FILENO);
 		return (1);
-    }
+	}
 }
