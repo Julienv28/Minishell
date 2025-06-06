@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/05 17:32:21 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/06 10:22:51 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -250,10 +250,10 @@ int					find_line(char **envp, char *path);
 char				*search_path(char **paths, char *cmd);
 int					exec_external(char **args, char ***envcp);
 int					execute(t_com_list *cmds, char ***envcp);
-void	execute_commands(t_com_list *cmd, char **envcp);
+void	execute_commands(t_com_list *cmd, char ***envcp);
 int	handle_empty_command(t_com_list *cmd, t_redirs *fds);
-int	handle_execution(t_com_list *cmd, char **envcp, t_redirs *fds);
-void	minishell_loop(char **envcp);
+int	handle_execution(t_com_list *cmd, char ***envcp, t_redirs *fds);
+void	minishell_loop(char ***envcp);
 int	handle_null_tokens(t_token *tokens, char *input);
 void	exit_shell(char **envcp);
 void	init_redirs(t_redirs *fds);

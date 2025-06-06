@@ -24,10 +24,13 @@ t_token	*add_token(t_token **head, char *str, int type)
 	return (new);
 }
 
-void	skip_spaces(char *str, int *i)
+int skip_spaces(char *str, int *i)
 {
 	while (str[*i] == ' ')
 		(*i)++;
+    if (!str[*i])
+        return (-1);
+    return (0);
 }
 
 int	process_pipe(char *str, int *i, t_token **tokens, int *expect_cmd)
@@ -81,29 +84,29 @@ int process_word(char **str, int *i, t_token **tokens, int *expect_cmd)
 t_token	*process_token_loop(char *str, char **envcp)
 {
 	int		i;
-	int		expect_cmd;
+	// int		expect_cmd;
+    int     tab[2];
 	t_token	*tokens;
-	int		ret;
+	// int		ret;
 
 	i = 0;
-	expect_cmd = 1;
+	tab[0] = 1; //expect_cmd = 1;
 	tokens = NULL;
 	while (str[i])
 	{
-		skip_spaces(str, &i);
-		if (!str[i])
+		if (skip_spaces(str, &i) == -1)
 			break ;
-		ret = process_pipe(str, &i, &tokens, &expect_cmd);
-		if (ret == -1 || process_special_chars(str, i) == -1)
+        tab[1] = process_pipe(str, &i, &tokens, &tab[0]);
+		if (tab[1] == -1 || process_special_chars(str, i) == -1)
 			return (free_tokens(tokens), NULL);
-		if (ret == 1)
+		if (tab[1] == 1)
 			continue ;
-		ret = process_redirection(str, &i, &tokens, envcp);
-		if (ret == -1)
+        tab[1] = process_redirection(str, &i, &tokens, envcp);
+		if (tab[1] == -1)
 			return (free_tokens(tokens), NULL);
-		if (ret == 1)
+		if (tab[1] == 1)
 			continue ;
-		if (process_word(&str, &i, &tokens, &expect_cmd) == -1)
+		if (process_word(&str, &i, &tokens, &tab[0]) == -1)
 			break ;
 	}
 	return (tokens);

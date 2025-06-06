@@ -60,9 +60,13 @@ char	*clean_spaces(char *str)
 char	*get_value_cleaned(char *name, char **envp)
 {
 	char	*raw;
+    char    *value;
 
 	raw = get_env_value(name, envp);
 	if (!raw)
 		return (NULL);
-	return (clean_spaces(raw));
+    value = clean_spaces(raw);
+    if (!value)
+		value = ft_strdup("");
+	return (value);
 }

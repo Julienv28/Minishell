@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split_pipes.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 11:35:17 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/05 14:53:55 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/06 09:15:07 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,11 +48,11 @@ void	fill_result(const char *line, char **result)
 	int	j;
 	char	quote;
 
-	i = 0;
+	i = -1;
 	start = 0;
 	j = 0;
 	quote = 0;
-	while (line[i])
+	while (line[++i])
 	{
 		if (is_quote(line[i]))
 		{
@@ -65,7 +65,6 @@ void	fill_result(const char *line, char **result)
 			result[j++] = ft_substr(line, start, i - start);
 			start = i + 1;
 		}
-		i++;
 	}
 	result[j++] = ft_substr(line, start, i - start);
 	result[j] = NULL;

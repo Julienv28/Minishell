@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_builtings.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:29:59 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/05 11:52:25 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/06 10:12:16 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static int	handle_export(char **args, char ***envcp)
 	return (1);
 }
 
-static int	handle_env(char **args, char **envcp)
+static int	handle_env(char **args, char ***envcp)
 {
 	if (args[1] && args[1][0] == '-')
 	{
@@ -36,7 +36,7 @@ static int	handle_env(char **args, char **envcp)
 		g_exit_status = 2;
 		return (g_exit_status);
 	}
-	return (ft_env(envcp), 0);
+	return (ft_env(*envcp), 0);
 }
 
 static int	handle_unset(char **args, char ***envcp)
@@ -61,7 +61,7 @@ int	exec_builting(char **args, char ***envcp, t_com_list *cmd)
 	else if (ft_strcmp(args[0], "export") == 0)
 		return (handle_export(args, envcp));
 	else if (ft_strcmp(args[0], "env") == 0)
-		return (handle_env(args, *envcp));
+		return (handle_env(args, envcp));
 	else if (ft_strcmp(args[0], "unset") == 0)
 		return (handle_unset(args, envcp));
 	return (g_exit_status);

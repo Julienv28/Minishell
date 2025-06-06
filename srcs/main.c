@@ -7,7 +7,7 @@ int	has_redirection(t_com_list *cmd)
 	return (cmd->infile || cmd->outfile || cmd->errfile || cmd->heredoc_fd > 0);
 }
 
-int	handle_execution(t_com_list *cmd, char **envcp, t_redirs *fds)
+int	handle_execution(t_com_list *cmd, char ***envcp, t_redirs *fds)
 {
 	int	error;
 
@@ -18,12 +18,12 @@ int	handle_execution(t_com_list *cmd, char **envcp, t_redirs *fds)
 		return (0);
 	if (has_pipe(cmd))
 	{
-		exec_pipes(cmd, envcp);
+		exec_pipes(cmd, *envcp);
 		restore_redirections(fds->in, fds->out, fds->err);
 		init_redirs(fds);
 		return (1);
 	}
-	execute(cmd, &envcp);
+	execute(cmd, envcp);
 	if (has_redirection(cmd))
 		restore_redirections(fds->in, fds->out, fds->err);
 	init_redirs(fds);
@@ -46,7 +46,7 @@ int	handle_empty_command(t_com_list *cmd, t_redirs *fds)
 	return (1);
 }
 
-void	execute_commands(t_com_list *cmd, char **envcp)
+void	execute_commands(t_com_list *cmd, char ***envcp)
 {
 	t_com_list	*cur;
 	t_redirs	fds;
@@ -66,7 +66,7 @@ void	execute_commands(t_com_list *cmd, char **envcp)
 	}
 }
 
-void	minishell_loop(char **envcp)
+void	minishell_loop(char ***envcp)
 {
 	char		*input;
 	t_token		*tokens;
@@ -77,13 +77,13 @@ void	minishell_loop(char **envcp)
 		set_signal_action();
 		input = readline(GREEN "minishell$ " RESET);
 		if (!input)
-			exit_shell(envcp);
+			exit_shell(*envcp);
 		add_history(input);
-		tokens = create_tokens(&input, envcp);
+		tokens = create_tokens(&input, *envcp);
 		if (!handle_null_tokens(tokens, input))
 			continue ;
 		free(input);
-		commands = tokens_to_cmds(tokens, envcp);
+		commands = tokens_to_cmds(tokens, *envcp);
 		free_tokens(tokens);
 		if (!commands)
 			continue ;
@@ -102,7 +102,7 @@ int	main(int ac, char **av, char **envp)
 		return (0);
 	envcp = ft_env_dup(envp);
 	init_signals();
-	minishell_loop(envcp);
+	minishell_loop(&envcp);
 	ft_freeenvp(envcp);
 	rl_clear_history();
 	return (g_exit_status);

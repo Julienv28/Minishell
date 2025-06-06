@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:42:01 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/05 16:51:07 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/06 09:21:01 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,8 @@ char	*build_spaced_result(char *arg, int i, int len, char **envcp)
 	if (!var_key)
 		return (free(before), NULL);
 	value = get_value_cleaned(var_key, envcp);
-	if (!value)
-	{
-		value = ft_strdup("");
-		if (!value)
-			return (free_all(before, var_key, NULL, NULL), NULL);
-	}
+    if (!value)
+        return (free_all(before, var_key, NULL, NULL), NULL);
 	spaced = ft_strjoin(before, " ");
 	if (!spaced)
 		return (free_all(before, var_key, NULL, value), NULL);

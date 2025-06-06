@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:36 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/05 17:42:52 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/06 10:01:43 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,7 @@ char *prepare_export_string(char *arg, char **envp, char **key, char **value)
     return (replaced);
 }
 
-static int	check_and_export(char *arg, char *key, char *value,
-	char ***envcp)
+int	check_and_export(char *arg, char *key, char *value, char ***envcp)
 {
 	if (!is_valid_name(key))
 	{
