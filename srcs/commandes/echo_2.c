@@ -64,9 +64,14 @@ char	*get_value_cleaned(char *name, char **envp)
 
 	raw = get_env_value(name, envp);
 	if (!raw)
-		return (NULL);
-	value = clean_spaces(raw);
-	if (!value)
-		value = ft_strdup("");
+		return (ft_strdup(""));
+    value = clean_spaces(raw);
+	printf("[DEBUG] get_value_cleaned: returning '%s'\n", value);
+    if (!value)
+	{
+		printf("[DEBUG] get_value_cleaned: clean_spaces failed\n");
+		return (ft_strdup(""));
+	}
+	printf("[DEBUG] get_value_cleaned: returning '%s'\n", value);
 	return (value);
 }

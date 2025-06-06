@@ -12,6 +12,7 @@
 
 #include "../includes/minishell.h"
 
+/* VERSION QUI MACHE SANS HEREDOC
 int	extract_word(char **str, int *i, char **word, int *start)
 {
 	while ((*str)[*i] && (*str)[*i] != ' ' && (*str)[*i] != '|' &&
@@ -38,7 +39,41 @@ int	extract_word(char **str, int *i, char **word, int *start)
 	if (!word)
 		return (-1);
 	return (0);
+}*/
+
+// VERSION QUI MACHE AVEC HEREDOC
+int	extract_word(char **str, int *i, char **word, int *start)
+{
+	int		j;
+	char	quote;
+	int		has_quotes = 0;
+
+	j = *i;
+
+	if ((*str)[j] == '\'' || (*str)[j] == '"')
+	{
+		has_quotes = 1;
+		quote = (*str)[j];
+		j++;
+		while ((*str)[j] && (*str)[j] != quote)
+			j++;
+		if ((*str)[j] == quote)
+			j++;
+	}
+	else
+	{
+		while ((*str)[j] && (*str)[j] != ' ' && (*str)[j] != '|' &&
+			(*str)[j] != '<' && (*str)[j] != '>')
+			j++;
+	}
+
+	*word = ft_strndup(*str + *start, j - *start);
+	if (!*word)
+		return (-1);
+	*i = j;
+	return has_quotes; // ← on retourne ici 1 ou 0
 }
+
 
 int	update_str_with_input(char **str, char *input)
 {

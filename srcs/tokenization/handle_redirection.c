@@ -3,24 +3,36 @@
 /*                                                        :::      ::::::::   */
 /*   handle_redirection.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 09:31:19 by opique            #+#    #+#             */
-/*   Updated: 2025/06/06 16:04:07 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/06 16:17:36 by pique            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	process_redirection_value(int type, char *word,
-		t_token **tokens, char **envcp)
+char	*expand_clean_word(char *word, char **envcp)
+{
+	char	*expanded;
+	char	*cleaned;
+
+	expanded = replace_all_variables(word, envcp, 0, 1);
+	cleaned = remove_quotes_or_slash(expanded);
+	free(expanded);
+	return (cleaned);
+}
+
+int	process_redirection_value(int type, char *word, t_token **tokens, char **envcp)
 {
 	char	*final;
+	int		is_quoted;
 
 	final = NULL;
-	if (type == HEREDOC && limiter_is_quoted(word) == 0)
+	is_quoted = limiter_is_quoted(word);
+	if (type == HEREDOC && is_quoted)
 	{
-		add_token(tokens, word, ARG);
+		add_token(tokens, word, ARG, 1);
 		free(word);
 		return (1);
 	}
@@ -30,7 +42,8 @@ int	process_redirection_value(int type, char *word,
 		free(word);
 		return (-1);
 	}
-	add_token(tokens, final, ARG);
+	printf("[DEBUG] Expanding '%s' to '%s'\n", word, final);
+	add_token(tokens, final, ARG, 0);
 	free(final);
 	free(word);
 	return (1);
@@ -109,7 +122,7 @@ int	handle_redirection(char *str, int *i, t_token **tokens, char **envcp)
 	symbol = add_symbol(type);
 	if (!symbol)
 		return (free(word), -1);
-	add_token(tokens, symbol, type);
+	add_token(tokens, symbol, type, 0);
 	free(symbol);
 	return (process_redirection_value(type, word, tokens, envcp));
 }

@@ -1,5 +1,5 @@
 #include "../includes/minishell.h"
-
+/*
 // CRÉATION ET GESTION DES TOKENS
 t_token	*add_token(t_token **head, char *str, int type)
 {
@@ -22,13 +22,85 @@ t_token	*add_token(t_token **head, char *str, int type)
 		tmp->next = new;
 	}
 	return (new);
+}*/
+
+t_token	*add_token(t_token **head, char *str, int type, int is_quoted)
+{
+	t_token	*new;
+	t_token	*tmp;
+
+	new = malloc(sizeof(t_token));
+	if (!new)
+		return (NULL);
+	new->value = ft_strdup(str);
+	new->type = type;
+	new->is_quoted = is_quoted;
+	new->next = NULL;
+	if (!*head)
+		*head = new;
+	else
+	{
+		tmp = *head;
+		while (tmp->next)
+			tmp = tmp->next;
+		tmp->next = new;
+	}
+	return (new);
 }
 
 int	skip_spaces(char *str, int *i)
 {
 	while (str[*i] == ' ')
 		(*i)++;
-	if (!str[*i])
+    if (!str[*i])
+        return (-1);
+    return (0);
+}
+
+int	process_pipe(char *str, int *i, t_token **tokens, int *expect_cmd)
+{
+	if (str[*i] == '|')
+	{
+		if (check_pipe(str, *i) == -1)
+		{
+			free_tokens(*tokens);
+			return (-1);
+		}
+		add_token(tokens, "|", PIPE, 0);
+		(*i)++;
+		*expect_cmd = 1;
+		return (1);
+	}
+	return (0);
+}
+
+int	process_special_chars(char *str, int i)
+{
+	if (str[i] == '&' || str[i] == ':' 
+        || str[i] == '!' || str[i] == '#' || str[i] == ';')
+	{
+		if (check_input(str, i) == -1)
+			return (-1);
+	}
+	return (0);
+}
+
+int process_redirection(char *str, int *i, t_token **tokens, char **envcp)
+{
+    int redirection_status;
+
+    redirection_status = handle_redirection(str, i, tokens, envcp);
+    if (redirection_status == -1)
+    {
+        free_tokens(*tokens);
+        return (-1);
+    }
+    return (redirection_status);
+}
+
+int process_word(char **str, int *i, t_token **tokens, int *expect_cmd)
+{
+	if (handle_word(str, i, tokens, expect_cmd) == -1)
 		return (-1);
 	return (0);
 }

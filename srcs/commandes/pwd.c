@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 16:04:31 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/06 15:14:37 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/06 15:39:02 by pique            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,23 @@ char	*get_env_value(char *name, char **envp)
 	len = ft_strlen(name);
 	if (!name || !envp)
 		return (NULL);
+	if (!envp)
+	{
+		printf("[DEBUG] get_env_value: envp is NULL\n");
+		return (NULL);
+	}
+		
 	while (envp[i])
 	{
 		if (envp[i] && ft_strncmp(envp[i], name, len) == 0
 			&& envp[i][len] == '=')
+		{
+			printf("[DEBUG] get_env_value: found '%s' → '%s'\n", name, envp[i] + len + 1);
 			return (envp[i] + len + 1);
+		}
 		i++;
 	}
+	printf("[DEBUG] get_env_value: '%s' not found in envp\n", name);
 	return (NULL);
 }
 
