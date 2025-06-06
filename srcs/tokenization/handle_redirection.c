@@ -6,22 +6,12 @@
 /*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 09:31:19 by opique            #+#    #+#             */
-/*   Updated: 2025/06/06 16:17:36 by pique            ###   ########.fr       */
+/*   Updated: 2025/06/06 18:08:17 by pique            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-char	*expand_clean_word(char *word, char **envcp)
-{
-	char	*expanded;
-	char	*cleaned;
-
-	expanded = replace_all_variables(word, envcp, 0, 1);
-	cleaned = remove_quotes_or_slash(expanded);
-	free(expanded);
-	return (cleaned);
-}
 
 int	process_redirection_value(int type, char *word, t_token **tokens, char **envcp)
 {

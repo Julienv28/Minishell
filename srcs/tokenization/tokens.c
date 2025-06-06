@@ -57,54 +57,6 @@ int	skip_spaces(char *str, int *i)
     return (0);
 }
 
-int	process_pipe(char *str, int *i, t_token **tokens, int *expect_cmd)
-{
-	if (str[*i] == '|')
-	{
-		if (check_pipe(str, *i) == -1)
-		{
-			free_tokens(*tokens);
-			return (-1);
-		}
-		add_token(tokens, "|", PIPE, 0);
-		(*i)++;
-		*expect_cmd = 1;
-		return (1);
-	}
-	return (0);
-}
-
-int	process_special_chars(char *str, int i)
-{
-	if (str[i] == '&' || str[i] == ':' 
-        || str[i] == '!' || str[i] == '#' || str[i] == ';')
-	{
-		if (check_input(str, i) == -1)
-			return (-1);
-	}
-	return (0);
-}
-
-int process_redirection(char *str, int *i, t_token **tokens, char **envcp)
-{
-    int redirection_status;
-
-    redirection_status = handle_redirection(str, i, tokens, envcp);
-    if (redirection_status == -1)
-    {
-        free_tokens(*tokens);
-        return (-1);
-    }
-    return (redirection_status);
-}
-
-int process_word(char **str, int *i, t_token **tokens, int *expect_cmd)
-{
-	if (handle_word(str, i, tokens, expect_cmd) == -1)
-		return (-1);
-	return (0);
-}
-
 // int		ret;
 // int		expect_cmd;
 //expect_cmd = 1;

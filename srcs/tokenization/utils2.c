@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 16:03:54 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/06 16:19:45 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/06 18:08:28 by pique            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ char	*expand_clean_word(char *word, char **envcp)
 	char	*expanded;
 	char	*cleaned;
 
-	expanded = replace_all_variables(word, envcp, 0);
+	expanded = replace_all_variables(word, envcp, 0, 1);
 	cleaned = remove_quotes_or_slash(expanded);
 	free(expanded);
 	return (cleaned);

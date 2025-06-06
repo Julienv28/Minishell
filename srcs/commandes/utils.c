@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 14:23:42 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/06 16:10:05 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/06 18:10:28 by pique            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ char	*prepare_export_string(char *arg, char **envp, char **key, char **value)
 	{
 		*key = ft_substr(arg, 0, equal - arg);
 		*value = ft_strdup(equal + 1);
-		expanded = replace_all_variables(*value, envp, 0);
+		expanded = replace_all_variables(*value, envp, 0, 1);
 		free(*value);
 		if (expanded)
 			*value = expanded;

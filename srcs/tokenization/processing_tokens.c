@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   processing_tokens.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:56:26 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/06 15:59:03 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/06 18:14:38 by pique            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	process_pipe(char *str, int *i, t_token **tokens, int *expect_cmd)
 	{
 		if (check_pipe(str, *i) == -1)
 			return (-1);
-		add_token(tokens, "|", PIPE);
+		add_token(tokens, "|", PIPE, 0);
 		(*i)++;
 		*expect_cmd = 1;
 		return (1);
