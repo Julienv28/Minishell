@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 15:19:26 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/05 16:20:38 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/06 15:35:45 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,16 +50,20 @@ int	check_pipe(char *str, int i)
 	if (!str)
 		return (-1);
 	if (str[i] == '|' && str[i + 1] == '|' && str[i + 1])
-		return (printf("Erreur : syntax error near unexpected token `||'\n"), -1);
+		return (printf("Erreur : syntax error near unexpected \
+			token `||'\n"), -1);
 	if (i == 0)
-		return (printf("Erreur : syntax error near unexpected token `%c'\n", str[i]), -1);
+		return (printf("Erreur : syntax error near unexpected \
+			token `%c'\n", str[i]), -1);
 	j = i + 1;
 	while (str[j] && str[j] == ' ')
 		j++;
 	if (str[j] == '\0')
-		return (printf("Erreur : syntax error near unexpected token `newline'\n"), -1);
+		return (printf("Erreur : syntax error near unexpected token \
+			`newline'\n"), -1);
 	if (str[j] == '|')
-		return (printf("Erreur : syntax error near unexpected token `%c'\n", str[j]), -1);
+		return (printf("Erreur : syntax error near unexpected token \
+			`%c'\n", str[j]), -1);
 	return (0);
 }
 

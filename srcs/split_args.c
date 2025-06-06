@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split_args.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:06:45 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/05 15:16:48 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/06 16:23:02 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,6 @@ char	*remove_quotes_or_slash(char *str)
 	new_str[j] = '\0';
 	return (new_str);
 }
-
 
 /*
 char	*remove_quotes_or_slash(char *str)

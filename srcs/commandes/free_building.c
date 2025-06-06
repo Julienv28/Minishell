@@ -2,9 +2,9 @@
 
 void	free_export_vars(char *key, char *value, char *replaced)
 {
-    free(key);
-    free(value);
-    free(replaced);
+	free(key);
+	free(value);
+	free(replaced);
 }
 
 // Free environnement
@@ -38,7 +38,7 @@ void	free_tab(char **tab)
 	free(tab);
 }
 
-char *free_all(char *before, char *var_key, char *spaced, char *value)
+char	*free_all(char *before, char *var_key, char *spaced, char *value)
 {
 	if (before)
 		free(before);

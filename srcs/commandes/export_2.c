@@ -53,26 +53,29 @@ char	*build_env_entry(char *key, char *value)
 	tmp = ft_strjoin(key, "=");
 	if (!tmp)
 		return (NULL);
-	new_entry = ft_strjoin(tmp, value ? value : "");
+	if (value)
+		new_entry = ft_strjoin(tmp, value);
+	else
+		new_entry = ft_strjoin(tmp, "");
 	free(tmp);
 	return (new_entry);
 }
 
-int handle_export_error(char *replaced)
+int	handle_export_error(char *replaced)
 {
-    if (!replaced || replaced[0] == '\0')
-    {
-        ft_putstr_fd("export: `': not a valid identifier\n", STDERR_FILENO);
-        free(replaced);
-        return (1);
-    }
-    if (replaced[0] == '-')
-    {
-        printf("bash: export: -%c: invalid option\n", replaced[1]);
-        free(replaced);
-        return (2);
-    }
-    return (0);
+	if (!replaced || replaced[0] == '\0')
+	{
+		ft_putstr_fd("export: `': not a valid identifier\n", STDERR_FILENO);
+		free(replaced);
+		return (1);
+	}
+	if (replaced[0] == '-')
+	{
+		printf("bash: export: -%c: invalid option\n", replaced[1]);
+		free(replaced);
+		return (2);
+	}
+	return (0);
 }
 
 // Le nom doit commencer par une lettre ou un underscore

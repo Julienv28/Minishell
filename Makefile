@@ -17,8 +17,9 @@ CC          = gcc
 READLINE_INCLUDE = /usr/include
 READLINE_LIB = /usr/lib
 
-READLINE_INCLUDE = /opt/homebrew/opt/readline/include 
-READLINE_LIB = /opt/homebrew/opt/readline/lib
+#====== MacOS Flags======
+# READLINE_INCLUDE = /opt/homebrew/opt/readline/include 
+# READLINE_LIB = /opt/homebrew/opt/readline/lib
 
 READLINE_INCLUDE = /usr/local/opt/readline/include
 READLINE_LIB = /usr/local/opt/readline/lib
@@ -27,13 +28,18 @@ READLINE_LIB = /usr/local/opt/readline/lib
 CFLAGS      = -Wall -Wextra -Werror -g -I $(INC_DIR) -I $(LIBFT_DIR) -I$(READLINE_INCLUDE)
 LDFLAGS     = -L$(READLINE_LIB) -lreadline -L$(LIBFT_DIR) -lft
 
+.SUFFIXES:
+
 #=== Source Files ===
 SRCS        = 	$(SRC_DIR)/main.c \
+				$(SRC_DIR)/minishell_loop.c \
 				$(SRC_DIR)/pipes_manager.c \
 				$(SRC_DIR)/split_args.c \
 				$(SRC_DIR)/error_handler.c \
 				$(SRC_DIR)/tokenization/tokens.c \
 				$(SRC_DIR)/tokenization/utils.c \
+				$(SRC_DIR)/tokenization/utils2.c \
+				$(SRC_DIR)/tokenization/processing_tokens.c \
 				$(SRC_DIR)/tokenization/ft_redirection.c \
 				$(SRC_DIR)/tokenization/handle_redirection.c \
 				$(SRC_DIR)/tokenization/open_file.c \
@@ -52,6 +58,7 @@ SRCS        = 	$(SRC_DIR)/main.c \
 				$(SRC_DIR)/commandes/export_2.c \
 				$(SRC_DIR)/commandes/env.c \
 				$(SRC_DIR)/commandes/free_building.c \
+				$(SRC_DIR)/commandes/utils.c \
 				$(SRC_DIR)/execution/exec.c \
 				$(SRC_DIR)/signal.c \
 				$(SRC_DIR)/commandes/unset.c \
@@ -100,13 +107,13 @@ $(NAME): $(LIBFT) $(OBJS)
 clean:
 	@echo "\033[0;31m==> Cleaning object files...\033[0m"
 	@rm -rf $(OBJ_DIR)
-	@make clean -sC $(LIBFT_DIR)
+	@make -s -C $(LIBFT_DIR) clean 
 	@echo "\033[1;32m==> Clean complete.\033[0m"
 
 fclean: clean
 	@echo "\033[0;31m==> Removing executable $(NAME)...\033[0m"
 	@rm -f $(NAME)
-	@make fclean -sC $(LIBFT_DIR)
+	@make -s -C $(LIBFT_DIR) fclean
 	@echo "\033[1;32m==> Full clean complete.\033[0m"
 
 re: fclean all

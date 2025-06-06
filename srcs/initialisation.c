@@ -16,6 +16,7 @@ int	check_isatty(void)
 	}
 	return (1);
 }
+
 void	init_cmds(t_com_list *command)
 {
 	command->outfile = NULL;

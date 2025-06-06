@@ -36,7 +36,7 @@ void	ft_set_env(char *key, char *value, char ***envcp)
 	new_env = ft_realloc_env(*envcp, new_entry);
 	if (!new_env)
 		return (free(new_entry));
-	//ft_freeenvp(*envcp); //SEFAULT 
+	ft_freeenvp(*envcp);
 	*envcp = new_env;
 }
 
@@ -106,45 +106,44 @@ int	process_export_entry(char *arg, char ***envcp, int *exit_status)
 }
 
 // affiche les variables d’environnement sans arguments
-int export_no_args(char **envp)
+int	export_no_args(char **envp)
 {
-    int i;
-    int j;
+	int	i;
+	int	j;
 
-    i = 0;
-    while (envp[i])
-    {
-        printf("declare -x ");
-        j = 0;
-        while (envp[i][j] && envp[i][j] != '=')
-            putchar(envp[i][j++]);
-        if (envp[i][j] == '=')
-            printf("=\"%s\"\n", envp[i] + j + 1);
-        else
-            printf("\n");
-        i++;
-    }
-    return (0);
+	i = 0;
+	while (envp[i])
+	{
+		printf("declare -x ");
+		j = 0;
+		while (envp[i][j] && envp[i][j] != '=')
+			putchar(envp[i][j++]);
+		if (envp[i][j] == '=')
+			printf("=\"%s\"\n", envp[i] + j + 1);
+		else
+			printf("\n");
+		i++;
+	}
+	return (0);
 }
 
 // Fonction principale
-int ft_export(char **args, char ***envcp)
+int	ft_export(char **args, char ***envcp)
 {
-    int i;
-    int exit_status;
+	int	i;
+	int	exit_status;
 
-    i = 1;
-    exit_status = 0;
-    if (!args[1])
-        return (export_no_args(*envcp));
-    while (args[i])
-    {
-        process_export_entry(args[i], envcp, &exit_status);
-        i++;
-    }
-    return (exit_status);
+	i = 1;
+	exit_status = 0;
+	if (!args[1])
+		return (export_no_args(*envcp));
+	while (args[i])
+	{
+		process_export_entry(args[i], envcp, &exit_status);
+		i++;
+	}
+	return (exit_status);
 }
-
 
 /*
 int ft_export(char **args, char ***envcp)
@@ -247,4 +246,3 @@ int ft_export(char **args, char ***envcp)
     }
     return (exit_status);
 }*/
-

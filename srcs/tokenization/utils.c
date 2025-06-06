@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 10:39:23 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/05 14:35:26 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/06 10:41:14 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ void	free_tokens(t_token *tokens)
 		free(tmp);
 	}
 }
+
 char	*ft_strjoin_free(char *s1, char *s2)
 {
 	char	*res;

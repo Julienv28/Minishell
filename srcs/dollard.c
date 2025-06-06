@@ -72,7 +72,8 @@ char	*replace_variable_or_special(char *str, char *res, t_expand *var)
 	return (handle_special_cases(str, res, var));
 }
 
-char	*handle_quotes_and_dollar(char *str, char *res,t_expand *var, int *quotes)
+char	*handle_quotes_and_dollar(char *str, char *res,
+		t_expand *var, int *quotes)
 {
 	if (str[*var->i] == '\'' && !quotes[1])
 	{
@@ -153,7 +154,6 @@ char	*replace_all_variables(char *str, char **envcp, int is_heredoc, int expand_
 		return (NULL);
 	return (expand_loop(str, res, &var));
 }
-
 
 /*
 char	*expand_env_variable(char *str, char *res, t_expand *var)
@@ -271,7 +271,8 @@ char *replace_variable_or_special(char *str, char *res, t_expand *var)
     }
     if (ft_isdigit(str[*var->i]))
         return ((*var->i)++, res);
-    if (str[*var->i] == '"' && (ft_isalpha(str[*var->i + 1]) || str[*var->i + 1] == '_'))
+    if (str[*var->i] == '"' && (ft_isalpha(str[*var->i + 1]) ||
+     str[*var->i + 1] == '_'))
     {
         res = append_char(res, '$');
         res = append_char(res, str[(*var->i)++]);
@@ -280,7 +281,6 @@ char *replace_variable_or_special(char *str, char *res, t_expand *var)
     }
     return (res);
 }*/
-
 
 /*
 char *replace_all_variables(char *str, char **envcp, int is_heredoc)
@@ -337,10 +337,10 @@ char *replace_all_variables(char *str, char **envcp, int is_heredoc)
     return res;
 }*/
 
-
 // N EST PAS UTILISER
 /*
-// Fonction pour remplacer toutes les variables d'environnement dans un tableau d'arguments
+// Fonction pour remplacer toutes les variables d'environnement dans un 
+tableau d'arguments
 void expand_variables(char **args, char **envcp, int is_heredoc)
 {
     int     i;
