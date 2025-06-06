@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:21 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/06 10:40:17 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/06 13:58:25 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	should_unset_var(char *env_entry, char **args)
 {
-	int	i;
+	int		i;
 	size_t	len;
 
 	i = 1;
@@ -54,7 +54,7 @@ int	unset_remove_vars(char **args, char ***envcp)
 			free((*envcp)[j]);
 		else
 			new_env[k++] = (*envcp)[j];
-        j++;
+		j++;
 	}
 	new_env[k] = NULL;
 	free(*envcp);

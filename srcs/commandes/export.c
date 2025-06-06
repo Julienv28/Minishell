@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:36 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/06 10:38:55 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/06 13:12:56 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ void	ft_set_env(char *key, char *value, char ***envcp)
 	new_env = ft_realloc_env(*envcp, new_entry);
 	if (!new_env)
 		return (free(new_entry));
+	ft_freeenvp(*envcp);
 	*envcp = new_env;
 }
 
