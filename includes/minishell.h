@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/06 14:49:37 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/06 16:07:14 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,8 +144,8 @@ typedef struct s_redirs
 int	check_isatty(void);
 
 int	is_blank_line(const char *str);
-void	init_redirs(t_redirs *fds);
-void	init_signals(void);
+void				init_redirs(t_redirs *fds);
+void				init_signals(void);
 char				*handle_heredoc(char *limiter, char **envcp, int expand_var);
 int					limiter_is_quoted(const char *str);
 void				fake_exit_builtin(char **args, t_com_list *cmds);
@@ -185,6 +185,10 @@ int					open_outfile(char *outfile, int append);
 int					open_errfile(char *errfile);
 int					extract_word(char **str, int *i, char **word, int *start);
 int					update_str_with_input(char **str, char *input);
+int					process_pipe(char *str, int *i, t_token **tokens, int *expect_cmd);
+int					process_special_chars(char *str, int i);
+int					process_redirection(char *str, int *i, t_token **tokens, char **envcp);
+int 				process_word(char **str, int *i, t_token **tokens, int *expect_cmd);
 
 // Tokens To Commands
 t_com_list			*tokens_to_cmds(t_token *tokens, char **envcp);
@@ -250,13 +254,13 @@ int					find_line(char **envp, char *path);
 char				*search_path(char **paths, char *cmd);
 int					exec_external(char **args, char ***envcp);
 int					execute(t_com_list *cmds, char ***envcp);
-void	execute_commands(t_com_list *cmd, char ***envcp);
-int	handle_empty_command(t_com_list *cmd, t_redirs *fds);
-int	handle_execution(t_com_list *cmd, char ***envcp, t_redirs *fds);
-void	minishell_loop(char ***envcp);
-int	handle_null_tokens(t_token *tokens, char *input);
-void	exit_shell(char **envcp);
-void	init_redirs(t_redirs *fds);
+void				execute_commands(t_com_list *cmd, char ***envcp);
+int					handle_empty_command(t_com_list *cmd, t_redirs *fds);
+int					handle_execution(t_com_list *cmd, char ***envcp, t_redirs *fds);
+void				minishell_loop(char ***envcp);
+int					handle_null_tokens(t_token *tokens, char *input);
+void				exit_shell(char **envcp);
+void				init_redirs(t_redirs *fds);
 
 //Pipes
 void				wait_children(pid_t last_pid);
@@ -292,5 +296,7 @@ void				add_outfile(t_file_list **list, char *filename, int flag);
 char				*ft_strjoin_free(char *s1, char *s2);
 char 				*free_all(char *before, char *var_key, char *spaced, char *value);
 int					syntax_error(void);
+char				*expand_clean_word(char *word, char **envcp);
+char				*prepare_export_string(char *arg, char **envp, char **key, char **value);
 
 #endif

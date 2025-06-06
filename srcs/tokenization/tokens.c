@@ -33,48 +33,6 @@ int	skip_spaces(char *str, int *i)
 	return (0);
 }
 
-int	process_pipe(char *str, int *i, t_token **tokens, int *expect_cmd)
-{
-	if (str[*i] == '|')
-	{
-		if (check_pipe(str, *i) == -1)
-			return (-1);
-		add_token(tokens, "|", PIPE);
-		(*i)++;
-		*expect_cmd = 1;
-		return (1);
-	}
-	return (0);
-}
-
-int	process_special_chars(char *str, int i)
-{
-	if (str[i] == '&' || str[i] == ':'
-		|| str[i] == '!' || str[i] == '#' || str[i] == ';')
-	{
-		if (check_input(str, i) == -1)
-			return (-1);
-	}
-	return (0);
-}
-
-int	process_redirection(char *str, int *i, t_token **tokens, char **envcp)
-{
-	int	redirection_status;
-
-	redirection_status = handle_redirection(str, i, tokens, envcp);
-	if (redirection_status == -1)
-		return (-1);
-	return (redirection_status);
-}
-
-int process_word(char **str, int *i, t_token **tokens, int *expect_cmd)
-{
-	if (handle_word(str, i, tokens, expect_cmd) == -1)
-		return (-1);
-	return (0);
-}
-
 // int		ret;
 // int		expect_cmd;
 //expect_cmd = 1;
@@ -91,12 +49,12 @@ t_token	*process_token_loop(char *str, char **envcp)
 	{
 		if (skip_spaces(str, &i) == -1)
 			break ;
-        tab[1] = process_pipe(str, &i, &tokens, &tab[0]);
+		tab[1] = process_pipe(str, &i, &tokens, &tab[0]);
 		if (tab[1] == -1 || process_special_chars(str, i) == -1)
 			return (free_tokens(tokens), NULL);
 		if (tab[1] == 1)
 			continue ;
-        tab[1] = process_redirection(str, &i, &tokens, envcp);
+		tab[1] = process_redirection(str, &i, &tokens, envcp);
 		if (tab[1] == -1)
 			return (free_tokens(tokens), NULL);
 		if (tab[1] == 1)
@@ -114,7 +72,6 @@ t_token	*create_tokens(char **str, char **envcp)
 	tokens = process_token_loop(*str, envcp);
 	return (tokens);
 }
-
 
 /*
 // Analyser la ligne de commande et créer des tokens
@@ -145,7 +102,8 @@ t_token *create_tokens(char **str, char **envcp)
             i++;
             expect_cmd = 1;
         }
-        else if ((*str)[i] == '&' || (*str)[i] == ':' || (*str)[i] == '!' || (*str)[i] == '#' || (*str)[i] == ';')
+        else if ((*str)[i] == '&' || (*str)[i] == ':' || (*str)[i] == '!' 
+		|| (*str)[i] == '#' || (*str)[i] == ';')
         {
             if (check_input(*str, i) == -1)
                 return (NULL);

@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-int g_exit_status = 0;
+int	g_exit_status = 0;
 
 int	has_redirection(t_com_list *cmd)
 {
@@ -63,40 +63,6 @@ void	execute_commands(t_com_list *cmd, char ***envcp)
 		if (handle_execution(cur, envcp, &fds))
 			break ;
 		cur = cur->next;
-	}
-}
-
-void	minishell_loop(char ***envcp)
-{
-	char		*input;
-	t_token		*tokens;
-	t_com_list	*commands;
-
-	while (1)
-	{
-		set_signal_action();
-		input = readline(GREEN "minishell$ " RESET);
-		if (!input)
-			exit_shell(*envcp);
-		add_history(input);
-		tokens = create_tokens(&input, *envcp);
-		if (!tokens)
-		{
-			free(input);
-			continue ;
-		}
-		if (!handle_null_tokens(tokens, input))
-		{
-			free_tokens(tokens);
-			continue ;
-		}
-		free(input);
-		commands = tokens_to_cmds(tokens, *envcp);
-		free_tokens(tokens);
-		if (!commands)
-			continue ;
-		execute_commands(commands, envcp);
-		free_cmd(commands);
 	}
 }
 
@@ -191,9 +157,11 @@ int main(int ac, char **av, char **envp)
             has_redir_error = 0;
             if (command->command == NULL)
             {
-                if (command->infile || command->outfile || command->errfile || command->heredoc_fd > 0)
+                if (command->infile || command->outfile || command->errfile 
+                || command->heredoc_fd > 0)
                 {
-                    has_redir_error = ft_redirection(command, &mem_fd_in, &mem_fd_out, &mem_fd_err);
+                    has_redir_error = ft_redirection(command, &mem_fd_in, 
+                    &mem_fd_out, &mem_fd_err);
                     if (has_redir_error != 0)
                         g_exit_status = 1;
                     restore_redirections(mem_fd_in, mem_fd_out, mem_fd_err);
@@ -202,8 +170,10 @@ int main(int ac, char **av, char **envp)
                 command = command->next;
                 continue ;
             }
-            if (command->infile || command->outfile || command->errfile || command->heredoc_fd > 0)
-                has_redir_error = ft_redirection(command, &mem_fd_in, &mem_fd_out, &mem_fd_err);
+            if (command->infile || command->outfile || command->errfile 
+            || command->heredoc_fd > 0)
+                has_redir_error = ft_redirection(command, &mem_fd_in, 
+                &mem_fd_out, &mem_fd_err);
             if (has_redir_error)
             {
                 command = command->next;
@@ -218,7 +188,8 @@ int main(int ac, char **av, char **envp)
             }
             else
                 execute(command, &envcp);
-            if ((command->infile || command->outfile || command->errfile || command->heredoc_fd > 0) && has_redir_error >= 0)
+            if ((command->infile || command->outfile || command->errfile 
+            || command->heredoc_fd > 0) && has_redir_error >= 0)
             {
                 restore_redirections(mem_fd_in, mem_fd_out, mem_fd_err);
                 mem_fd_in = mem_fd_out = mem_fd_err = -1;

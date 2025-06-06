@@ -1,25 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   utils2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/06 10:36:25 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/06 16:21:28 by juvitry          ###   ########.fr       */
+/*   Created: 2025/06/06 16:03:54 by juvitry           #+#    #+#             */
+/*   Updated: 2025/06/06 16:19:45 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	ft_env(char **envcp)
+char	*expand_clean_word(char *word, char **envcp)
 {
-	int	i;
+	char	*expanded;
+	char	*cleaned;
 
-	i = 0;
-	while (envcp && envcp[i])
-	{
-		printf("%s\n", envcp[i]);
-		i++;
-	}
+	expanded = replace_all_variables(word, envcp, 0);
+	cleaned = remove_quotes_or_slash(expanded);
+	free(expanded);
+	return (cleaned);
 }

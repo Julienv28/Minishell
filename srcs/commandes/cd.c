@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cd.c                                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/06 16:21:13 by juvitry           #+#    #+#             */
+/*   Updated: 2025/06/06 16:21:14 by juvitry          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 
 #include "../includes/minishell.h"
 
@@ -30,7 +42,8 @@ int	cd_change_dir(char *path, char *current_dir, char *new_dir, char ***envcp)
 	}
 	if (!getcwd(new_dir, 1024))
 	{
-		ft_putstr_fd("chdir: error retrieving current directory: getcwd: cannot access parent directories: ", STDERR_FILENO);
+		ft_putstr_fd("chdir: error retrieving current directory: getcwd: \
+			cannot access parent directories: ", STDERR_FILENO);
 		perror("");
 		return (1);
 	}
@@ -150,7 +163,8 @@ int ft_cd(char **args, char ***envcp)
 		}
 		printf("%s\n", path);
 	}
-	else if (args[1][0] == '-' && ft_strcmp(args[1], "-") != 0 && ft_strcmp(args[1], "--") != 0)
+	else if (args[1][0] == '-' && ft_strcmp(args[1], "-") != 0 && 
+	ft_strcmp(args[1], "--") != 0)
 	{
 		printf("minishell: cd: %s: invalid option\n", args[1]);
 		g_exit_status = 2;
@@ -182,7 +196,8 @@ int ft_cd(char **args, char ***envcp)
 	}
 	if (!getcwd(new_dir, sizeof(new_dir)))
 	{
-		ft_putstr_fd("chdir: error retrieving current directory: getcwd: cannot access parent directories: ", STDERR_FILENO);
+		ft_putstr_fd("chdir: error retrieving current directory: getcwd: 
+		cannot access parent directories: ", STDERR_FILENO);
 		perror("");
 		if (args[1] && args[1][0] == '~')
 			free(path);

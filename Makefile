@@ -28,11 +28,14 @@ LDFLAGS     = -L$(READLINE_LIB) -lreadline -L$(LIBFT_DIR) -lft
 
 #=== Source Files ===
 SRCS        = 	$(SRC_DIR)/main.c \
+				$(SRC_DIR)/minishell_loop.c \
 				$(SRC_DIR)/pipes_manager.c \
 				$(SRC_DIR)/split_args.c \
 				$(SRC_DIR)/error_handler.c \
 				$(SRC_DIR)/tokenization/tokens.c \
 				$(SRC_DIR)/tokenization/utils.c \
+				$(SRC_DIR)/tokenization/utils2.c \
+				$(SRC_DIR)/tokenization/processing_tokens.c \
 				$(SRC_DIR)/tokenization/ft_redirection.c \
 				$(SRC_DIR)/tokenization/handle_redirection.c \
 				$(SRC_DIR)/tokenization/open_file.c \
@@ -51,6 +54,7 @@ SRCS        = 	$(SRC_DIR)/main.c \
 				$(SRC_DIR)/commandes/export_2.c \
 				$(SRC_DIR)/commandes/env.c \
 				$(SRC_DIR)/commandes/free_building.c \
+				$(SRC_DIR)/commandes/utils.c \
 				$(SRC_DIR)/execution/exec.c \
 				$(SRC_DIR)/signal.c \
 				$(SRC_DIR)/commandes/unset.c \

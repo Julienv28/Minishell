@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:42:01 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/06 10:35:09 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/06 16:12:15 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,4 +170,3 @@ char	*add_space_if_needed(char *arg, char **envcp)
 	}
 	return (ft_strdup(arg));
 }*/
-

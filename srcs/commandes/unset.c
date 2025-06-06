@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:21 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/06 13:58:25 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/06 16:12:28 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,6 @@ int	ft_unset(char **args, char ***envcp)
 	unset_remove_vars(args, envcp);
 	return (exit_status);
 }
-
 
 /*
 // La fonction est longue, il faudrna la raccourcir...

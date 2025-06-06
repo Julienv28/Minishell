@@ -98,4 +98,3 @@ char	*get_variable_name(char *str, t_expand *var, char *var_name)
 	var_name[j] = '\0';
 	return (var_name);
 }
-

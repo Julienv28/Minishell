@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:06:51 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/05 16:20:27 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/06 15:35:10 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,10 @@ int	prompt_for_quotes(char **str)
 			return (free(input), -1);
 		if (!input)
 		{
-			ft_putstr_fd("minishell: unexpected EOF while looking for matching `''\n", STDERR_FILENO);
-			ft_putstr_fd("syntax error: unexpected end of file\n", STDERR_FILENO);
+			ft_putstr_fd("minishell: unexpected EOF while looking for \
+				matching `''\n", STDERR_FILENO);
+			ft_putstr_fd("syntax error: unexpected end of \
+				file\n", STDERR_FILENO);
 			return (-1);
 		}
 		status = update_str_with_input(str, input);

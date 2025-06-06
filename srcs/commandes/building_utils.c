@@ -1,32 +1,34 @@
 #include "../includes/minishell.h"
 
-static int find_char_index(const char *s, char c)
+static int	find_char_index(const char *s, char c)
 {
-    int i = 0;
-    while (s[i])
-    {
-        if (s[i] == c)
-            return (i);
-        i++;
-    }
-    return (-1);
+	int	i;
+
+	i = 0;
+	while (s[i])
+	{
+		if (s[i] == c)
+			return (i);
+		i++;
+	}
+	return (-1);
 }
 
 // EXPORT 
-int check_events(char *arg)
+int	check_events(char *arg)
 {
-    char *res;
-    int index;
+	char	*res;
+	int		index;
 
-    index = find_char_index(arg, '!');
-    if (index >= 0)
-    {
-        res = ft_substr(arg, index, ft_strlen(arg) - index);
-        printf("Minishell: %s: event not found\n", res);
-        free(res);
-        return (1);
-    }
-    return (0);
+	index = find_char_index(arg, '!');
+	if (index >= 0)
+	{
+		res = ft_substr(arg, index, ft_strlen(arg) - index);
+		printf("Minishell: %s: event not found\n", res);
+		free(res);
+		return (1);
+	}
+	return (0);
 }
 
 void	cleanup_and_exit(int code, t_com_list *cmd)

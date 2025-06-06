@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split_pipes.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 11:35:17 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/06 09:15:07 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/06 16:19:21 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ int	is_quote(char c)
 
 int	count_pipes(const char *line)
 {
-	int	i;
-	int	count;
+	int		i;
+	int		count;
 	char	quote;
 
 	i = 0;
@@ -43,9 +43,9 @@ int	count_pipes(const char *line)
 
 void	fill_result(const char *line, char **result)
 {
-	int	i;
-	int	start;
-	int	j;
+	int		i;
+	int		start;
+	int		j;
 	char	quote;
 
 	i = -1;
