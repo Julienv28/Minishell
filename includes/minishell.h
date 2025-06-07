@@ -6,7 +6,7 @@
 /*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/06 18:08:55 by pique            ###   ########.fr       */
+/*   Updated: 2025/06/07 10:42:42 by pique            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -298,5 +298,6 @@ char 				*free_all(char *before, char *var_key, char *spaced, char *value);
 int					syntax_error(void);
 char				*expand_clean_word(char *word, char **envcp);
 char				*prepare_export_string(char *arg, char **envp, char **key, char **value);
+int	skip_spaces(char *str, int *i);
 
 #endif
