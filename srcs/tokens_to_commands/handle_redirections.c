@@ -6,7 +6,7 @@
 /*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 13:46:30 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/06 16:20:00 by pique            ###   ########.fr       */
+/*   Updated: 2025/06/07 13:00:36 by pique            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,22 @@ static int	handle_heredoc_redir(t_parser_context *ctx, char *filename)
 static int	handle_heredoc_redir(t_parser_context *ctx, char *filename)
 {
 	char	*heredoc_name;
-	int		expand;
+	char 	*cleaned_limiter;
+	int		expand_var = 0;
 
-	expand = !ctx->current_token->is_quoted; // <-- ici on utilise le champ ajouté
+	expand_var = !limiter_quoted(filename);
+	cleaned_limiter = remove_quotes_or_slash(filename);
+    if (!cleaned_limiter)
+    {
+        free(filename);
+        return -1;
+    }
+	printf("[handle_heredoc_redir] limiter brut: '%s', cleaned: '%s', expand_var=%d\n",
+		filename, cleaned_limiter, expand_var);
 
-	heredoc_name = handle_heredoc(filename, ctx->envcp, &expand);
-	free(filename);
+	heredoc_name = handle_heredoc(cleaned_limiter, ctx->envcp, expand_var);
+	free(cleaned_limiter);
+    free(filename); // liberer le limiter brut reçu en paramètre
 	if (!heredoc_name)
 		return (-1);
 	if (!ctx->current_cmd)

@@ -6,7 +6,7 @@
 /*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 09:31:19 by opique            #+#    #+#             */
-/*   Updated: 2025/06/06 18:08:17 by pique            ###   ########.fr       */
+/*   Updated: 2025/06/07 12:49:04 by pique            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,22 @@ int	process_redirection_value(int type, char *word, t_token **tokens, char **env
 	if (type == HEREDOC && is_quoted)
 	{
 		add_token(tokens, word, ARG, 1);
-		free(word);
+		//free(word);
 		return (1);
 	}
+	else if (type == HEREDOC)
+    {
+        // Limiter non quoted → on enlève quotes et on stocke (après expansion)
+        char *cleaned_limiter = remove_quotes_or_slash(word);
+        if (!cleaned_limiter)
+        {
+            free(word);
+            return (-1);
+        }
+        add_token(tokens, cleaned_limiter, ARG, 0);
+        free(word);
+        return (1);
+    }
 	final = expand_clean_word(word, envcp);
 	if (!final)
 	{
