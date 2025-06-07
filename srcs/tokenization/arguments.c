@@ -6,7 +6,7 @@
 /*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:06:51 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/06 15:05:24 by pique            ###   ########.fr       */
+/*   Updated: 2025/06/07 14:37:36 by pique            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,33 +86,61 @@ int	handle_quotes(char **str)
 	return (0);
 }
 
+// ✅ Patch : si on vient d’ajouter un ARG avec un '=', concatène les ARG suivants
+int	concat_arg_following(char **str, int *i, t_token *token)
+{
+	int extra_start;
+	char *extra_word;
+	char *joined;
+
+	extra_word = NULL;
+	while ((*str)[*i] && !ft_isspace((*str)[*i]) &&
+			(*str)[*i] != '|' && (*str)[*i] != '<' && (*str)[*i] != '>')
+	{
+		extra_start = *i;
+		if (extract_word(str, i, &extra_word, &extra_start) == -1)
+			return (-1);
+		if (!extra_word)
+			return (-1);
+		joined = ft_strjoin(token->value, extra_word);
+		free(token->value);
+		free(extra_word);
+		token->value = joined;
+		if (!token->value)
+			return (-1);
+	}
+	return (0);
+}
+
 int	handle_word(char **str, int *i, t_token **tokens, int *expect_cmd)
 {
 	int		start;
 	int		type;
 	char	*word;
 	int		is_quoted;
+	t_token *new;
 
 	start = *i;
-
 	if (handle_quotes(str) == -1)
 		return (-1);
-
-	is_quoted = extract_word(str, i, &word, &start); // ← récupéré ici
+	is_quoted = extract_word(str, i, &word, &start);
 	if (!word)
 		return (-1);
 	if (*expect_cmd)
 		type = CMD;
 	else
 		type = ARG;
-	t_token *new = add_token(tokens, word, type, is_quoted);
-	if (!new)
-		return (free(word), -1);
-
-	free(word);
 	*expect_cmd = 0;
+	new = add_token(tokens, word, type, is_quoted);
+	free(word);
+	if (!new)
+		return (-1);
+	if (type == ARG && ft_strchr(new->value, '='))
+		if (concat_arg_following(str, i, new) == -1)
+			return (-1);
 	return (0);
 }
+
 
 /*
 int	handle_word(char **str, int *i, t_token **tokens, int *expect_cmd)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 12:00:38 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/05 12:34:13 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/07 13:07:53 by pique            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,15 @@
 
 int	limiter_is_quoted(const char *str)
 {
-	int	len;
-
 	if (!str)
-		return (0);
-	len = ft_strlen(str);
-	if (len < 2)
-		return (0);
-	if ((str[0] == '"' && str[len - 1] == '"')
-		|| (str[0] == '\'' && str[len - 1] == '\''))
-		return (1);
-	return (0);
+        return 0;
+    while (*str)
+    {
+        if (*str == '\'' || *str == '"')
+            return 1;
+        str++;
+    }
+    return 0;
 }
 
 char	*generate_tmp_filename(void)

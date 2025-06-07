@@ -6,7 +6,7 @@
 /*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:57:10 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/06 16:39:52 by pique            ###   ########.fr       */
+/*   Updated: 2025/06/07 14:21:24 by pique            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,13 +87,9 @@ static int	wr_heredoc_line(int fd, char *line, char **envcp, int expand_var)
 	char	*processed;
 
 	processed = line;
-	printf("expand_vqr = %d\n", expand_var);
 	if (expand_var)
 	{
-		printf("expension %s\n", processed);
 		processed = replace_all_variables(line, envcp, 1, expand_var);
-		printf("[DEBUG] wr_heredoc_line: line='%s', expand_var=%d\n", line, expand_var);
-
 		if (!processed)
 			return (-1);
 	}
@@ -167,34 +163,19 @@ static int	heredoc_loop(int fd, char *cleaned_limiter, char **envcp, int expand_
 	return (0);
 }
 
-char	*handle_heredoc(char *limiter, char **envcp, int *expand_var)
+char	*handle_heredoc(char *limiter, char **envcp, int expand_var)
 {
 	char	*filename;
 	int		heredoc_fd;
-	char	*cleaned_limiter;
-
-	printf("[handle_heredoc] limiter reçu : '%s'\n", limiter);
-	*expand_var = !limiter_is_quoted(limiter);
-	printf("[handle_heredoc] limiter_is_quoted = %d, expand_var = %d\n", limiter_is_quoted(limiter), *expand_var);
-
-	cleaned_limiter = remove_quotes_or_slash(limiter);  // on enlève les quotes ici
-	printf("[handle_heredoc] cleaned_limiter (sans quotes) = '%s'\n", cleaned_limiter);
-	if (!cleaned_limiter)
-		return (NULL);
 
 	filename = generate_tmp_filename();
 	if (!filename)
-		return (free(cleaned_limiter), NULL);
-	printf("[handle_heredoc] Nom fichier tmp heredoc = '%s'\n", filename);
-
+		return (free(limiter), NULL);
 	heredoc_fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (heredoc_fd == -1)
-		return (free(filename), free(cleaned_limiter), NULL);
-
-	if (heredoc_loop(heredoc_fd, cleaned_limiter, envcp, *expand_var) < 0)
-		return (free(filename), free(cleaned_limiter), NULL);
-
-	free(cleaned_limiter);
+		return (free(filename), free(limiter), NULL);
+	if (heredoc_loop(heredoc_fd, limiter, envcp, expand_var) < 0)
+		return (free(filename), free(limiter), NULL);
 	if (close(heredoc_fd) == -1)
 		perror("close heredoc_fd");
 

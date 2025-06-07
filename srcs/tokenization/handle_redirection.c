@@ -6,7 +6,7 @@
 /*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 09:31:19 by opique            #+#    #+#             */
-/*   Updated: 2025/06/06 18:08:17 by pique            ###   ########.fr       */
+/*   Updated: 2025/06/07 13:58:48 by pique            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,22 +17,23 @@ int	process_redirection_value(int type, char *word, t_token **tokens, char **env
 {
 	char	*final;
 	int		is_quoted;
+	char 	*cleaned_limiter;
 
 	final = NULL;
 	is_quoted = limiter_is_quoted(word);
 	if (type == HEREDOC && is_quoted)
-	{
-		add_token(tokens, word, ARG, 1);
-		free(word);
-		return (1);
-	}
+		return(add_token(tokens, word, ARG, 1), 1);
+	else if (type == HEREDOC)
+    {
+        cleaned_limiter = remove_quotes_or_slash(word);
+        if (!cleaned_limiter)
+			return (free(word), -1);
+        add_token(tokens, cleaned_limiter, ARG, 0);
+        return(free(word), 1);
+    }
 	final = expand_clean_word(word, envcp);
 	if (!final)
-	{
-		free(word);
-		return (-1);
-	}
-	printf("[DEBUG] Expanding '%s' to '%s'\n", word, final);
+		return (free(word), -1);
 	add_token(tokens, final, ARG, 0);
 	free(final);
 	free(word);

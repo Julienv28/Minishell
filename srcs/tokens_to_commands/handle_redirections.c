@@ -6,7 +6,7 @@
 /*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 13:46:30 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/06 16:20:00 by pique            ###   ########.fr       */
+/*   Updated: 2025/06/07 13:26:00 by pique            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,16 @@ static int	handle_heredoc_redir(t_parser_context *ctx, char *filename)
 static int	handle_heredoc_redir(t_parser_context *ctx, char *filename)
 {
 	char	*heredoc_name;
-	int		expand;
+	char 	*cleaned_limiter;
+	int		expand_var = 0;
 
-	expand = !ctx->current_token->is_quoted; // <-- ici on utilise le champ ajouté
-
-	heredoc_name = handle_heredoc(filename, ctx->envcp, &expand);
-	free(filename);
+	expand_var = !limiter_is_quoted(filename);
+	cleaned_limiter = remove_quotes_or_slash(filename);
+    if (!cleaned_limiter)
+		return (free(filename), -1);
+	heredoc_name = handle_heredoc(cleaned_limiter, ctx->envcp, expand_var);
+	free(cleaned_limiter);
+    free(filename); // liberer le limiter brut reçu en paramètre
 	if (!heredoc_name)
 		return (-1);
 	if (!ctx->current_cmd)
@@ -121,7 +125,6 @@ int	handle_redir_token(t_parser_context *ctx)
 	ctx->current_token = ctx->current_token->next;
 	if (!ctx->current_token || ctx->current_token->type != ARG)
 		return (syntax_error(), -1);
-	printf("handle_heredoc_redir: token->value = '%s'\n", ctx->current_token->value);
 	filename = ft_strdup(ctx->current_token->value);
 	if (!filename)
 		return (-1);

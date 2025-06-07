@@ -57,9 +57,6 @@ int	skip_spaces(char *str, int *i)
     return (0);
 }
 
-// int		ret;
-// int		expect_cmd;
-//expect_cmd = 1;
 t_token	*process_token_loop(char *str, char **envcp)
 {
 	int		i;

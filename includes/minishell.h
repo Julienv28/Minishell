@@ -6,7 +6,7 @@
 /*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/06 18:08:55 by pique            ###   ########.fr       */
+/*   Updated: 2025/06/07 13:01:13 by pique            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -242,7 +242,7 @@ int					ft_unset(char **args, char ***envcp);
 char				*generate_tmp_filename(void);
 void				heredoc_sigint_handler(int sig);
 char				*handle_heredoc(char *limiter, char **envcp,
-						int *expand_var);
+						int expand_var);
 int					limiter_is_quoted(const char *str);
 
 // Exec
@@ -298,5 +298,7 @@ char 				*free_all(char *before, char *var_key, char *spaced, char *value);
 int					syntax_error(void);
 char				*expand_clean_word(char *word, char **envcp);
 char				*prepare_export_string(char *arg, char **envp, char **key, char **value);
+int	skip_spaces(char *str, int *i);
+int	limiter_quoted(const char *str);
 
 #endif
