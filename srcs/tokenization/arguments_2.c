@@ -6,7 +6,7 @@
 /*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 16:13:44 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/07 11:21:45 by pique            ###   ########.fr       */
+/*   Updated: 2025/06/07 14:37:14 by pique            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,18 +46,20 @@ int	extract_word(char **str, int *i, char **word, int *start)
 int	extract_word(char **str, int *i, char **word, int *start)
 {
 	int		j;
-	int		has_quotes = 0;
-	int		in_single = 0;
-	int		in_double = 0;
+	int		has_quotes;
+	int		tab[2];
 
+	has_quotes = 0;
+	tab[0] = 0;
+	tab[1] = 0;
 	j = *i;
 	while ((*str)[j])
 	{
-		if ((*str)[j] == '\'' && !in_double)
-			in_single = !in_single;
-		else if ((*str)[j] == '"' && !in_single)
-			in_double = !in_double;
-		else if (!in_single && !in_double &&
+		if ((*str)[j] == '\'' && !tab[1])
+			tab[0] = !tab[0];
+		else if ((*str)[j] == '"' && !tab[0])
+			tab[1] = !tab[1];
+		else if (!tab[0] && !tab[1] &&
 			(ft_isspace((*str)[j]) || (*str)[j] == '|' ||
 			(*str)[j] == '<' || (*str)[j] == '>'))
 			break;
@@ -67,10 +69,8 @@ int	extract_word(char **str, int *i, char **word, int *start)
 	if (!*word)
 		return (-1);
 	*i = j;
-	return (has_quotes || in_single || in_double);
+	return (has_quotes || tab[0] || tab[1]);
 }
-
-
 
 int	update_str_with_input(char **str, char *input)
 {

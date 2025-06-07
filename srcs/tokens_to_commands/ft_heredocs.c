@@ -6,7 +6,7 @@
 /*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:57:10 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/07 12:57:27 by pique            ###   ########.fr       */
+/*   Updated: 2025/06/07 14:21:24 by pique            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,13 +87,9 @@ static int	wr_heredoc_line(int fd, char *line, char **envcp, int expand_var)
 	char	*processed;
 
 	processed = line;
-	printf("expand_vqr = %d\n", expand_var);
 	if (expand_var)
 	{
-		printf("expension %s\n", processed);
 		processed = replace_all_variables(line, envcp, 1, expand_var);
-		printf("[DEBUG] wr_heredoc_line: line='%s', expand_var=%d\n", line, expand_var);
-
 		if (!processed)
 			return (-1);
 	}
@@ -175,8 +171,6 @@ char	*handle_heredoc(char *limiter, char **envcp, int expand_var)
 	filename = generate_tmp_filename();
 	if (!filename)
 		return (free(limiter), NULL);
-	printf("[handle_heredoc] Nom fichier tmp heredoc = '%s'\n", filename);
-
 	heredoc_fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (heredoc_fd == -1)
 		return (free(filename), free(limiter), NULL);

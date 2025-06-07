@@ -7,34 +7,14 @@ char	*expand_env_variable(char *str, char *res, t_expand *var)
 	char	*env_value;
 	int		need_free;
 
-    printf("ENTER expand_env_variable\n");
-    if (!str || !res || !var)
-	{
-		printf("[ERROR] NULL pointer: str=%p, res=%p, var=%p\n", (void*)str, (void*)res, (void*)var);
-		return (NULL);
-	}
 	need_free = 0;
     if (!var || !var->envcp)
-    {
-        printf("[ERROR] var or var->envcp is NULL\n");
         return NULL;
-    }
-    printf("Calling get_variable_name\n");
 	get_variable_name(str, var, var_name);
-    printf("[DEBUG] expand_env_variable: detected var '$%s'\n", var_name);
 	if (var->quoted)
 		env_value = get_env_value(var_name, var->envcp);
 	else
 		env_value = get_value_cleaned(var_name, var->envcp);
-        printf("env_value = %p (%s)\n", (void*)env_value, env_value ? env_value : "NULL");
-
-    // DEBUG: Valeur de la variable
-	if (env_value)
-        printf("[DEBUG] expand_env_variable: value = '%s'\n", env_value);
-    else
-        printf("[DEBUG] expand_env_variable: variable '%s' not found\n", var_name);
-
-
     if (!env_value)
         env_value = "";
     else if (!var->quoted)
@@ -53,28 +33,20 @@ char	*expand_env_variable(char *str, char *res, t_expand *var)
 
 char *replace_variable_or_special(char *str, char *res, t_expand *var)
 {
+    char next;
+
 	(*var->i)++;
 	if (!str[*var->i])
 		return append_char(res, '$');
-
-	char next = str[*var->i];
-
-	// Cas particulier : $"..." ou $'' → $ est ignoré (localisation bash, pas une variable)
+	next = str[*var->i];
 	if (next == '"' || next == '\'')
-	{
-		// Ignorer le $ : ne pas l’ajouter, continuer avec le quote
 		return (res);
-	}
-
-	// Expansion normale
 	if (next == '{')
 		return (handle_brace_variable(str, res, var));
 	if (ft_isalpha(next) || next == '_')
 		return (expand_env_variable(str, res, var));
 	if (ft_isdigit(next) || next == '?')
 		return (handle_special_cases(str, res, var));
-
-	// Pas une variable valide → on garde juste le $
 	return append_char(res, '$');
 }
 
@@ -105,27 +77,18 @@ char	*handle_quotes_and_dollar(char *str, char *res, t_expand *var, int *quotes)
 	if (str[*var->i] == '\'' && !quotes[1])
 	{
 		quotes[0] = !quotes[0];
-        printf("[DEBUG] Toggled single quote mode to %d at index %d\n", quotes[0], *var->i);
 		(*var->i)++;
 		return (res);
 	}
 	if (str[*var->i] == '"' && !quotes[0])
 	{
 		quotes[1] = !quotes[1];
-        printf("[DEBUG] Toggled double quote mode to %d at index %d\n", quotes[1], *var->i);
 		(*var->i)++;
 		return (res);
 	}
-    //if (str[*var->i] == '$' && !quotes[0] && !var->is_heredoc)s
-
-    printf("[DEBUG] Dollar test: char='%c', quoted=%d, is_heredoc=%d, quotes[0]=%d, quotes[1]=%d, index=%d\n",
-        str[*var->i], var->quoted, var->is_heredoc, quotes[0], quotes[1], *var->i);
-
     if (str[*var->i] == '$' && !quotes[0] && var->expand_vars)
 	{
 		var->quoted = quotes[1];
-        printf("[DEBUG] Expanding variable at index %d (heredoc: %d, quoted: %d)\n",
-			*var->i, var->is_heredoc, var->quoted);
 		return (replace_variable_or_special(str, res, var));
 	}
 	res = append_char(res, str[*var->i]);
@@ -145,7 +108,6 @@ char	*expand_loop(char *str, char *res, t_expand *var)
 	{
 		if (str[*var->i] == '\\' && str[*var->i + 1] == '$')
 		{
-            printf("[DEBUG] Found escaped dollar sign at index %d\n", *var->i);
 			res = append_char(res, '$');
 			if (!res)
 				return (NULL);
@@ -156,7 +118,6 @@ char	*expand_loop(char *str, char *res, t_expand *var)
 		if (!res)
 			return (NULL);
 	}
-    printf("[DEBUG] Final expanded result = '%s'\n", res);
 	return (res);
 }
 
@@ -174,8 +135,6 @@ char	*replace_all_variables(char *str, char **envcp, int is_heredoc, int expand_
     var.expand_vars = expand_vars;
 	if (!str)
 		return (NULL);
-    printf("[DEBUG] replace_all_variables: input = '%s', is_heredoc = %d, expand_vars = %d\n",
-            str, is_heredoc, expand_vars);
     res = ft_strdup("");
 	if (!res)
 		return (NULL);
@@ -363,64 +322,3 @@ char *replace_all_variables(char *str, char **envcp, int is_heredoc)
     }
     return res;
 }*/
-
-// N EST PAS UTILISER
-/*
-// Fonction pour remplacer toutes les variables d'environnement dans un 
-tableau d'arguments
-void expand_variables(char **args, char **envcp, int is_heredoc)
-{
-    int     i;
-    int     j;
-    char    *tmp;
-    char    *res;
-    char    *new_args[1024];
-    t_expand    var;
-    
-    var.envcp = envcp;
-    var.is_heredoc = is_heredoc;
-    var.i = &i;
-    i = 0;
-    j = 0;
-    while (args[i])
-    {
-        tmp = replace_all_variables(args[i], &var);
-        if (!tmp)
-        {
-            i++;
-            continue ;
-        }
-        res = remove_quotes_or_slash(tmp);
-        free(tmp);
-        if (!res)
-        {
-            i++;
-            continue ;
-        }
-        if (res[0] == '\0' &&
-            !strchr(args[i], '"') &&
-            !strchr(args[i], '\''))
-        {
-            free(res);
-            i++;
-            continue ;
-        }
-        new_args[j++] = res;
-        i++;
-	}
-	new_args[j] = NULL;
-	i = 0;
-	while (args[i])
-		free(args[i++]);
-	args[i] = NULL;
-	i = 0;
-	while (new_args[i])
-	{
-		args[i] = ft_strdup(new_args[i]);
-		if (!args[i])
-			break ; // nouvelle copie pour éviter ownership multiple
-        free(new_args[i]);
-        i++;
-	}
-	args[i] = NULL;
-} */
