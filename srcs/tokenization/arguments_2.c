@@ -79,16 +79,17 @@ int	update_str_with_input(char **str, char *input)
 
 	tmp = ft_strjoin(*str, input);
 	if (!tmp)
-		return (free(input), -1);
+		return (-1);
 	if (check_mismatched_quotes(tmp) == 1)
 	{
 		join = ft_strjoin(tmp, "\n");
 		free(tmp);
+		if (!join)
+			return (-1);
 	}
 	else
 		join = tmp;
 	free(*str);
 	*str = join;
-	free(input);
 	return (0);
 }

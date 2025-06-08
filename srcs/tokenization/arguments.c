@@ -12,45 +12,48 @@
 
 #include "../includes/minishell.h"
 
-int	ensure_newline_at_end(char **str)
+char	*ensure_newline_at_end(char *str)
 {
 	char	*tmp;
 
-	if ((*str)[ft_strlen(*str) - 1] != '\n')
-	{
-		tmp = ft_strjoin(*str, "\n");
-		free(*str);
-		*str = tmp;
-	}
-	return (0);
+	if (!str || str[ft_strlen(str) - 1] == '\n')
+		return (str);
+	tmp = ft_strjoin(str, "\n");
+	return (tmp);
 }
 
-int	prompt_for_quotes(char **str)
+char	*prompt_for_quotes(char *str)
 {
-	char	*input;
+	char	*input2;
+	char	*tmp;
 	int		status;
 
-	ensure_newline_at_end(str);
-	while (check_mismatched_quotes(*str) == 1)
+	tmp = ensure_newline_at_end(str);
+	if (!tmp)
+		return (NULL);
+	if (tmp != str)
+		str = tmp;
+	while (check_mismatched_quotes(str) == 1)
 	{
 		signal(SIGINT, heredoc_sigint_handler);
-		input = readline("> ");
+		input2 = readline("> ");
 		signal(SIGINT, handler_sigint);
 		if (g_exit_status == 130)
-			return (free(input), -1);
-		if (!input)
+			return (free(input2), free(str), NULL);
+		if (!input2)
 		{
 			ft_putstr_fd("minishell: unexpected EOF while looking for \
 				matching `''\n", STDERR_FILENO);
 			ft_putstr_fd("syntax error: unexpected end of \
 				file\n", STDERR_FILENO);
-			return (-1);
+			return (free(str), NULL);
 		}
-		status = update_str_with_input(str, input);
+		status = update_str_with_input(&str, input2);
+		free(input2);
 		if (status == -1)
-			return (-1);
+			return (free(str), NULL);
 	}
-	return (g_exit_status);
+	return (str);
 }
 
 // Vérification des guillemets
@@ -78,10 +81,18 @@ int	check_mismatched_quotes(char *str)
 
 int	handle_quotes(char **str)
 {
+	char	*new_str;
+
 	if (check_mismatched_quotes(*str) == 1)
 	{
-		if (prompt_for_quotes(str) == -1)
+		new_str = prompt_for_quotes(*str);
+		if (!new_str)
 			return (-1);
+		if (new_str != *str)
+		{
+			free(*str);
+			*str = new_str;
+		}
 	}
 	return (0);
 }

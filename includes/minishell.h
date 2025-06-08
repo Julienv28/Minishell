@@ -206,7 +206,7 @@ void				add_bottom(t_com_list **list, t_com_list *new);
 t_com_list			*list_new(char *command);
 int					handle_redirection(char *str, int *i, t_token **tokens,
 						char **envcp);
-int					prompt_for_quotes(char **str);
+char				*prompt_for_quotes(char *str);
 int					is_directory(char *path);
 void				handler_sigint(int sig);
 

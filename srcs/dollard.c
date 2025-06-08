@@ -9,7 +9,7 @@ char	*expand_env_variable(char *str, char *res, t_expand *var)
 
 	need_free = 0;
     if (!var || !var->envcp)
-        return NULL;
+		return NULL;
 	get_variable_name(str, var, var_name);
 	if (var->quoted)
 		env_value = get_env_value(var_name, var->envcp);
@@ -18,7 +18,7 @@ char	*expand_env_variable(char *str, char *res, t_expand *var)
     if (!env_value)
         env_value = "";
     else if (!var->quoted)
-        need_free = 1;
+		need_free = 1;
 	tmp = ft_strjoin(res, env_value);
 	if (!tmp)
 	{
