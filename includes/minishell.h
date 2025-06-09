@@ -6,7 +6,7 @@
 /*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/09 16:36:58 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/09 17:46:06 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ typedef struct s_expand {
 	int		is_heredoc;
 	int		quoted;
 	int		expand_vars;
-	int		*i; // pointeur vers l'index de la chaîne
+	int		*i;
 }	t_expand;
 
 
@@ -143,7 +143,7 @@ typedef struct s_redirs
 
 
 // Message prompt + history
-int	check_isatty(void);
+int					check_isatty(void);
 
 int	                is_blank_line(const char *str);
 void	            init_redirs(t_redirs *fds);
@@ -161,9 +161,16 @@ char				*append_char(char *res, char c);
 void				heredoc_sigint_handler(int sig);
 char				*handle_special_cases(char *str, char *res, t_expand *var);
 char				*handle_quote(char *str, char *res, t_expand *var);
-char				*get_variable_name(char *str, t_expand *var, char *var_name);
+char				*get_variable_name(char *str, t_expand *var,
+						char *var_name);
 char				*handle_brace_variable(char *str, char *res, t_expand *var);
-char				*replace_all_variables(char *str, char **envcp, int is_heredoc, int expand_vars);
+char				*handle_quotes_and_dollar(char *str, char *res,
+						t_expand *var, int *quotes);
+//char				*replace_all_variables(char *str, char **envcp,
+//						int avoid_expand);
+char				*replace_all_variables(char *str, char **envcp,
+						int is_heredoc, int expand_vars);
+char				*expand_env_variable(char *str, char *res, t_expand *var);
 
 // Tokens
 t_token				*add_token(t_token **head, char *str, int type, int is_quoted);
@@ -222,8 +229,8 @@ int					ft_pwd(char **args, char ***envcp);
 int					ft_exit(char **args, int in_child, t_com_list *cmd);
 void				cleanup_and_exit(int code, t_com_list *cmd);
 int					ft_export(char **arg, char ***envcp);
-void 				free_export_vars(char *key, char *value, char *replaced);
-int 				handle_export_error(char *replaced);
+void				free_export_vars(char *key, char *value, char *replaced);
+int					handle_export_error(char *replaced);
 char				*build_env_entry(char *key, char *value);
 char				*get_env_value(char *name, char **envp);
 char				*get_value_cleaned(char *name, char **envp);
@@ -298,5 +305,6 @@ char				*expand_clean_word(char *word, char **envcp);
 char				*prepare_export_string(char *arg, char **envp, char **key, char **value);
 int	skip_spaces(char *str, int *i);
 int	limiter_quoted(const char *str);
+char	*handle_quotes_and_dollar(char *str, char *res, t_expand *var, int *quotes);
 
 #endif

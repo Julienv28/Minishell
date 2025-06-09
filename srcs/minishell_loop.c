@@ -6,7 +6,7 @@
 /*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:42:18 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/09 15:55:04 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/09 17:53:09 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,12 +118,13 @@ void	minishell_loop(char ***envcp)
 		ret = handle_line(input, envcp);
 		if (ret == 1 && g_exit_status == 130)
 		{
-            free(input);
+			// printf("[LOOP] heredoc interrompu, retour au prompt\n");
 			g_exit_status = 0;
 			continue ;
 		}
 		if (!ret)
 		{
+			// printf("[LOOP 5] handle_line a retourné false\n");
 			free(input);
 			continue ;
 		}

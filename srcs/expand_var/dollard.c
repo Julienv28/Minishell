@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   dollard.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/09 15:25:11 by juvitry           #+#    #+#             */
+/*   Updated: 2025/06/09 17:46:46 by oceanepique      ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 char	*expand_env_variable(char *str, char *res, t_expand *var)
@@ -118,7 +130,8 @@ char	*expand_loop(char *str, char *res, t_expand *var)
 	return (res);
 }
 
-char	*replace_all_variables(char *str, char **envcp, int is_heredoc, int expand_vars)
+char	*replace_all_variables(char *str, char **envcp,
+		int is_heredoc, int expand_vars)
 {
 	t_expand	var;
 	int			i;
@@ -137,6 +150,28 @@ char	*replace_all_variables(char *str, char **envcp, int is_heredoc, int expand_
 		return (NULL);
 	return (expand_loop(str, res, &var));
 }
+
+/*
+char	*replace_variable_or_special(char *str, char *res, t_expand *var)
+{
+	(*var->i)++;
+	if (!str[*var->i])
+		return (append_char(res, '$'));
+	if (var->is_heredoc)
+	{
+		if (str[*var->i] != '"')
+			return (expand_env_variable(str, res, var));
+		else
+			return (append_char(res, '$'));
+	}
+	if (str[*var->i] == '"' || str[*var->i] == '\'')
+        return (handle_quote(str, res, var));
+	if (str[*var->i] == '{')
+		return (handle_brace_variable(str, res, var));
+	if (ft_isalpha(str[*var->i]) || str [*var->i] == '_')
+		return (expand_env_variable(str, res, var));
+	return (handle_special_cases(str, res, var));
+}*/
 
 /*
 char	*expand_env_variable(char *str, char *res, t_expand *var)
