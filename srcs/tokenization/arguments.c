@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-int	ensure_newline_at_end(char **str)
+char	*ensure_newline_at_end(char *str)
 {
 	char	*tmp;
 
@@ -25,9 +25,10 @@ int	ensure_newline_at_end(char **str)
 	return (0);
 }
 
-int	prompt_for_quotes(char **str)
+char	*prompt_for_quotes(char *str)
 {
-	char	*input;
+	char	*input2;
+	char	*tmp;
 	int		status;
 	int		stdin_copy;
 
@@ -59,7 +60,8 @@ int	prompt_for_quotes(char **str)
 			close(stdin_copy);
 			return (1);
 		}
-		status = update_str_with_input(str, input);
+		status = update_str_with_input(&str, input2);
+		free(input2);
 		if (status == -1)
 			return (close(stdin_copy), -1);
 	}
