@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell_loop.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:42:18 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/06 15:48:50 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/09 10:54:56 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,12 +48,24 @@ void	minishell_loop(char ***envcp)
 	while (1)
 	{
 		set_signal_action();
+		printf("[LOOP 1] Attente input...\n");
 		input = readline(GREEN "minishell$ " RESET);
 		if (!input)
+		{
+			if (g_exit_status == 130) // ← interrompu par SIGINT
+			{
+				free(input);
+				g_exit_status = 0;
+				continue;
+			}
+			printf("[LOOP 2] readline a retourné NULL -> exit_shell\n");
 			exit_shell(*envcp);
+		}
+		printf("[LOOP 3] Input reçu : '%s'\n", input);
 		add_history(input);
 		if (!handle_line(input, envcp))
 		{
+			printf("[LOOP 5] handle_line a retourné false\n");
 			free(input);
 			continue ;
 		}

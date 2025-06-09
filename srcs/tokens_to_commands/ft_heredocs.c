@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_heredocs.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:57:10 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/07 14:21:24 by pique            ###   ########.fr       */
+/*   Updated: 2025/06/09 11:06:26 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,11 +146,25 @@ static int	heredoc_loop(int fd, char *cleaned_limiter, char **envcp, int expand_
 {
 	char	*line;
 
+	signal(SIGINT, heredoc_sigint_handler);
+	signal(SIGQUIT, SIG_IGN);
 	while (1)
 	{
 		line = readline("heredoc> ");
 		if (!line)
-			break ;
+		{
+			ft_putstr_fd("minishell: unexpected EOF while looking for \
+				matching `''\n", STDERR_FILENO);
+			ft_putstr_fd("syntax error: unexpected end of \
+				file\n", STDERR_FILENO);
+			return (-1);
+		}
+		if (g_exit_status == 130)
+		{
+			free(line);
+			return (-1);
+			//break;
+		}
 		if (ft_strcmp(line, cleaned_limiter) == 0)
 		{
 			free(line);
@@ -160,6 +174,8 @@ static int	heredoc_loop(int fd, char *cleaned_limiter, char **envcp, int expand_
 			return (free(line), -1);
 		free(line);
 	}
+	signal(SIGINT, handler_sigint);
+    signal(SIGQUIT, SIG_IGN);
 	return (0);
 }
 
@@ -175,10 +191,13 @@ char	*handle_heredoc(char *limiter, char **envcp, int expand_var)
 	if (heredoc_fd == -1)
 		return (free(filename), free(limiter), NULL);
 	if (heredoc_loop(heredoc_fd, limiter, envcp, expand_var) < 0)
+	{
+        close(heredoc_fd);
+        unlink(filename); // supprime le fichier temporaire si interruption
 		return (free(filename), free(limiter), NULL);
+    }
 	if (close(heredoc_fd) == -1)
 		perror("close heredoc_fd");
-
 	return (filename);
 }
 
