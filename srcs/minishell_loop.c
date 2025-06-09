@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell_loop.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:42:18 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/09 12:14:29 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/09 13:39:54 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,22 +62,22 @@ void	minishell_loop(char ***envcp)
 				g_exit_status = 0;
 				continue;
 			}
-			printf("[LOOP 2] readline a retourné NULL -> exit_shell\n");
+			// printf("[LOOP 2] readline a retourné NULL -> exit_shell\n");
 			exit_shell(*envcp);
 		}
-		printf("[LOOP 3] Input reçu : '%s'\n", input);
+		// printf("[LOOP 3] Input reçu : '%s'\n", input);
 		add_history(input);
 		int ret = handle_line(input, envcp);
 		if (ret == 1 && g_exit_status == 130)
 		{
-			printf("[LOOP] heredoc interrompu, retour au prompt\n");
+			// printf("[LOOP] heredoc interrompu, retour au prompt\n");
 			g_exit_status = 0;
 			free(input);
 			continue ;
 		}
 		if (!ret)
 		{
-			printf("[LOOP 5] handle_line a retourné false\n");
+			// printf("[LOOP 5] handle_line a retourné false\n");
 			free(input);
 			continue ;
 		}

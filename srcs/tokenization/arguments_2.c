@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   arguments_2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 16:13:44 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/07 14:37:14 by pique            ###   ########.fr       */
+/*   Updated: 2025/06/09 15:25:23 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int	extract_word(char **str, int *i, char **word, int *start)
 		else if (!tab[0] && !tab[1] &&
 			(ft_isspace((*str)[j]) || (*str)[j] == '|' ||
 			(*str)[j] == '<' || (*str)[j] == '>'))
-			break;
+			break ;
 		j++;
 	}
 	*word = ft_strndup(*str + *start, j - *start);

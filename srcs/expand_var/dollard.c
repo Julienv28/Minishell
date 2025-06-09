@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   dollard.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/09 15:25:11 by juvitry           #+#    #+#             */
+/*   Updated: 2025/06/09 15:26:13 by juvitry          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 char	*expand_env_variable(char *str, char *res, t_expand *var)
@@ -30,46 +42,68 @@ char	*expand_env_variable(char *str, char *res, t_expand *var)
 	return tmp;
 }
 
-char *replace_variable_or_special(char *str, char *res, t_expand *var)
-{
-    char next;
-
-	(*var->i)++;
-	if (!str[*var->i])
-		return append_char(res, '$');
-	next = str[*var->i];
-	if (next == '"' || next == '\'')
-		return (res);
-	if (next == '{')
-		return (handle_brace_variable(str, res, var));
-	if (ft_isalpha(next) || next == '_')
-		return (expand_env_variable(str, res, var));
-	if (ft_isdigit(next) || next == '?')
-		return (handle_special_cases(str, res, var));
-	return append_char(res, '$');
-}
-
-/*
 char	*replace_variable_or_special(char *str, char *res, t_expand *var)
 {
-	(*var->i)++;
-	if (!str[*var->i])
-		return (append_char(res, '$'));
-	if (var->is_heredoc)
-	{
-		if (str[*var->i] != '"')
-			return (expand_env_variable(str, res, var));
-		else
-			return (append_char(res, '$'));
-	}
-	if (str[*var->i] == '"' || str[*var->i] == '\'')
-        return (handle_quote(str, res, var));
-	if (str[*var->i] == '{')
-		return (handle_brace_variable(str, res, var));
-	if (ft_isalpha(str[*var->i]) || str [*var->i] == '_')
-		return (expand_env_variable(str, res, var));
-	return (handle_special_cases(str, res, var));
-}*/
+	char	next;
+
+	if (str[*var->i] == '$' && str[*var->i + 1] == '\'')
+    {
+        (*var->i)++; // saute le '$'
+        (*var->i)++; // saute la quote simple ouvrante
+
+        if (str[*var->i] == '\'') // cas $'' chaîne vide
+        {
+            (*var->i)++; // saute quote fermante
+            return res;  // rien à ajouter
+        }
+
+        while (str[*var->i] && str[*var->i] != '\'')
+            res = append_char(res, str[(*var->i)++]);
+
+        if (str[*var->i] == '\'')
+            (*var->i)++;
+
+        return res;
+    }
+	   // Cas spécial $"..." ou $""
+    if (str[*var->i] == '$' && str[*var->i + 1] == '"')
+    {
+        // Cas $""
+        if (str[*var->i + 2] == '"')
+        {
+            (*var->i) += 3; // on saute $ " "
+            return res;     // ne rien ajouter
+        }
+        else
+        {
+            // Cas $"TEXT"
+            (*var->i) += 2; // on saute $ et "
+            while (str[*var->i] && str[*var->i] != '"')
+                res = append_char(res, str[(*var->i)++]);
+            if (str[*var->i] == '"')
+                (*var->i)++;
+            return res;
+        }
+    }
+    // On avance sur le '$' pour analyser ce qui suit
+    (*var->i)++;
+    if (!str[*var->i])
+        return append_char(res, '$');
+    next = str[*var->i];
+    // Si caractère suivant n'est pas valide pour variable, on retourne '$' littéral
+    if (!(ft_isalpha(next) || ft_isdigit(next) || next == '_' || next == '{' || next == '?'))
+        return append_char(res, '$');
+    if (next == '"' || next == '\'')
+        return res;
+    if (next == '{')
+        return handle_brace_variable(str, res, var);
+    if (ft_isalpha(next) || next == '_')
+        return expand_env_variable(str, res, var);
+    if (ft_isdigit(next) || next == '?')
+        return handle_special_cases(str, res, var);
+    return append_char(res, '$');
+}
+
 
 char	*handle_quotes_and_dollar(char *str, char *res, t_expand *var, int *quotes)
 {
@@ -85,10 +119,15 @@ char	*handle_quotes_and_dollar(char *str, char *res, t_expand *var, int *quotes)
 		(*var->i)++;
 		return (res);
 	}
-    if (str[*var->i] == '$' && !quotes[0] && var->expand_vars)
+   if (str[*var->i] == '$' && quotes[1] && str[*var->i + 1] == '"')
+	{
+		(*var->i)++; // avance sur $
+		return append_char(res, '$');
+	}
+	if (str[*var->i] == '$' && !quotes[0] && var->expand_vars)
 	{
 		var->quoted = quotes[1];
-		return (replace_variable_or_special(str, res, var));
+		return replace_variable_or_special(str, res, var);
 	}
 	res = append_char(res, str[*var->i]);
 	if (!res)
@@ -139,6 +178,28 @@ char	*replace_all_variables(char *str, char **envcp, int is_heredoc, int expand_
 		return (NULL);
 	return (expand_loop(str, res, &var));
 }
+
+/*
+char	*replace_variable_or_special(char *str, char *res, t_expand *var)
+{
+	(*var->i)++;
+	if (!str[*var->i])
+		return (append_char(res, '$'));
+	if (var->is_heredoc)
+	{
+		if (str[*var->i] != '"')
+			return (expand_env_variable(str, res, var));
+		else
+			return (append_char(res, '$'));
+	}
+	if (str[*var->i] == '"' || str[*var->i] == '\'')
+        return (handle_quote(str, res, var));
+	if (str[*var->i] == '{')
+		return (handle_brace_variable(str, res, var));
+	if (ft_isalpha(str[*var->i]) || str [*var->i] == '_')
+		return (expand_env_variable(str, res, var));
+	return (handle_special_cases(str, res, var));
+}*/
 
 /*
 char	*expand_env_variable(char *str, char *res, t_expand *var)

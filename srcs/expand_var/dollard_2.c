@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   dollard_2.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/09 15:25:47 by juvitry           #+#    #+#             */
+/*   Updated: 2025/06/09 15:26:35 by juvitry          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 char	*expand_exit_status(char *res)
@@ -31,12 +43,6 @@ char	*handle_special_cases(char *str, char *res, t_expand *var)
 		return ((*var->i)++, expand_exit_status(res));
 	if (ft_isdigit(str[*var->i]))
 		return ((*var->i)++, res);
-	if (str[*var->i] == '"'
-		&& (ft_isalpha(str[*var->i + 1]) || str[*var->i + 1] == '_'))
-	{
-		res = append_char(res, '$');
-		res = append_char(res, str[(*var->i)++]);
-	}
 	return (res);
 }
 
@@ -67,7 +73,7 @@ char	*handle_quote(char *str, char *res, t_expand *var)
 	if (str[*var->i] == '"' && str[*var->i + 1] == '"')
 	{
 		(*var->i) += 2;
-		return (append_char(res, '\0'));
+		return (res);
 	}
 	if (str[*var->i] == '"' && !str[*var->i + 1])
 		return ((*var->i)++, append_char(res, '$'));

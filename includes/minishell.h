@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/09 12:56:46 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/09 13:47:11 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -302,5 +302,6 @@ char				*expand_clean_word(char *word, char **envcp);
 char				*prepare_export_string(char *arg, char **envp, char **key, char **value);
 int	skip_spaces(char *str, int *i);
 int	limiter_quoted(const char *str);
+char	*handle_quotes_and_dollar(char *str, char *res, t_expand *var, int *quotes);
 
 #endif
