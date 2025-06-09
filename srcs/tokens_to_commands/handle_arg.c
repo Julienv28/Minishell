@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_arg.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 13:45:22 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/06 16:19:46 by pique            ###   ########.fr       */
+/*   Updated: 2025/06/09 14:44:18 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ int	handle_arg_token(t_parser_context *ctx)
 
 	if (!ctx->current_token || !ctx->current_cmd || !ctx->current_cmd->args)
 		return (-1);
-	expanded = replace_all_variables(ctx->current_token->value, ctx->envcp, 0, 1);
+	expanded = replace_all_variables(ctx->current_token->value,
+			ctx->envcp, 0, 1);
 	if (!expanded)
 		return (-1);
 	i = 0;

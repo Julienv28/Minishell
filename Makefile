@@ -46,8 +46,10 @@ SRCS        = 	$(SRC_DIR)/main.c \
 				$(SRC_DIR)/tokenization/check_cmd.c \
 				$(SRC_DIR)/tokenization/arguments.c \
 				$(SRC_DIR)/tokenization/arguments_2.c \
-				$(SRC_DIR)/dollard.c \
-				$(SRC_DIR)/dollard_2.c \
+				$(SRC_DIR)/expand_var/dollard_2.c \
+				$(SRC_DIR)/expand_var/dollard.c \
+				$(SRC_DIR)/expand_var/replacement.c \
+				$(SRC_DIR)/expand_var/handle_quote_dollard.c \
 				$(SRC_DIR)/commandes/echo.c \
 				$(SRC_DIR)/commandes/echo_2.c \
 				$(SRC_DIR)/commandes/cd.c \

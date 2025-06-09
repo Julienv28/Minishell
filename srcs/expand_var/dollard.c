@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   dollard.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/09 15:25:11 by juvitry           #+#    #+#             */
+/*   Updated: 2025/06/09 16:05:56 by juvitry          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 char	*expand_env_variable(char *str, char *res, t_expand *var)
@@ -9,7 +21,7 @@ char	*expand_env_variable(char *str, char *res, t_expand *var)
 
 	need_free = 0;
 	if (!var || !var->envcp)
-		return NULL;
+		return (NULL);
 	get_variable_name(str, var, var_name);
 	if (var->quoted)
 		env_value = get_env_value(var_name, var->envcp);
@@ -17,84 +29,15 @@ char	*expand_env_variable(char *str, char *res, t_expand *var)
 		env_value = get_value_cleaned(var_name, var->envcp);
 	if (!env_value)
 		env_value = "";
-    else if (!var->quoted)
+	else if (!var->quoted)
 		need_free = 1;
 	tmp = ft_strjoin(res, env_value);
-	if (!tmp) {
-		printf("[ERROR] ft_strjoin failed\n");
-		return NULL;
-	}
+	if (!tmp)
+		return (printf("[ERROR] ft_strjoin failed\n"), NULL);
 	free(res);
 	if (need_free)
 		free(env_value);
-	return tmp;
-}
-
-char *replace_variable_or_special(char *str, char *res, t_expand *var)
-{
-    char next;
-
-	(*var->i)++;
-	if (!str[*var->i])
-		return append_char(res, '$');
-	next = str[*var->i];
-	if (next == '"' || next == '\'')
-		return (res);
-	if (next == '{')
-		return (handle_brace_variable(str, res, var));
-	if (ft_isalpha(next) || next == '_')
-		return (expand_env_variable(str, res, var));
-	if (ft_isdigit(next) || next == '?')
-		return (handle_special_cases(str, res, var));
-	return append_char(res, '$');
-}
-
-/*
-char	*replace_variable_or_special(char *str, char *res, t_expand *var)
-{
-	(*var->i)++;
-	if (!str[*var->i])
-		return (append_char(res, '$'));
-	if (var->is_heredoc)
-	{
-		if (str[*var->i] != '"')
-			return (expand_env_variable(str, res, var));
-		else
-			return (append_char(res, '$'));
-	}
-	if (str[*var->i] == '"' || str[*var->i] == '\'')
-        return (handle_quote(str, res, var));
-	if (str[*var->i] == '{')
-		return (handle_brace_variable(str, res, var));
-	if (ft_isalpha(str[*var->i]) || str [*var->i] == '_')
-		return (expand_env_variable(str, res, var));
-	return (handle_special_cases(str, res, var));
-}*/
-
-char	*handle_quotes_and_dollar(char *str, char *res, t_expand *var, int *quotes)
-{
-	if (str[*var->i] == '\'' && !quotes[1])
-	{
-		quotes[0] = !quotes[0];
-		(*var->i)++;
-		return (res);
-	}
-	if (str[*var->i] == '"' && !quotes[0])
-	{
-		quotes[1] = !quotes[1];
-		(*var->i)++;
-		return (res);
-	}
-    if (str[*var->i] == '$' && !quotes[0] && var->expand_vars)
-	{
-		var->quoted = quotes[1];
-		return (replace_variable_or_special(str, res, var));
-	}
-	res = append_char(res, str[*var->i]);
-	if (!res)
-		return (NULL);
-	(*var->i)++;
-	return (res);
+	return (tmp);
 }
 
 char	*expand_loop(char *str, char *res, t_expand *var)
@@ -120,7 +63,8 @@ char	*expand_loop(char *str, char *res, t_expand *var)
 	return (res);
 }
 
-char	*replace_all_variables(char *str, char **envcp, int is_heredoc, int expand_vars)
+char	*replace_all_variables(char *str, char **envcp,
+		int is_heredoc, int expand_vars)
 {
 	t_expand	var;
 	int			i;
@@ -131,14 +75,36 @@ char	*replace_all_variables(char *str, char **envcp, int is_heredoc, int expand_
 	var.i = &i;
 	var.is_heredoc = is_heredoc;
 	var.quoted = 0;
-    var.expand_vars = expand_vars;
+	var.expand_vars = expand_vars;
 	if (!str)
 		return (NULL);
-    res = ft_strdup("");
+	res = ft_strdup("");
 	if (!res)
 		return (NULL);
 	return (expand_loop(str, res, &var));
 }
+
+/*
+char	*replace_variable_or_special(char *str, char *res, t_expand *var)
+{
+	(*var->i)++;
+	if (!str[*var->i])
+		return (append_char(res, '$'));
+	if (var->is_heredoc)
+	{
+		if (str[*var->i] != '"')
+			return (expand_env_variable(str, res, var));
+		else
+			return (append_char(res, '$'));
+	}
+	if (str[*var->i] == '"' || str[*var->i] == '\'')
+        return (handle_quote(str, res, var));
+	if (str[*var->i] == '{')
+		return (handle_brace_variable(str, res, var));
+	if (ft_isalpha(str[*var->i]) || str [*var->i] == '_')
+		return (expand_env_variable(str, res, var));
+	return (handle_special_cases(str, res, var));
+}*/
 
 /*
 char	*expand_env_variable(char *str, char *res, t_expand *var)
