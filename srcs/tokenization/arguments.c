@@ -6,31 +6,29 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:06:51 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/09 11:12:11 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/09 12:58:46 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-char	*ensure_newline_at_end(char *str)
+int	ensure_newline_at_end(char **str)
 {
 	char	*tmp;
 
 	if ((*str)[ft_strlen(*str) - 1] != '\n')
 	{
 		tmp = ft_strjoin(*str, "\n");
-		//free(*str);
 		*str = tmp;
 	}
 	return (0);
 }
 
-char	*prompt_for_quotes(char *str)
+int	prompt_for_quotes(char **str)
 {
-	char	*input2;
-	char	*tmp;
 	int		status;
 	int		stdin_copy;
+	char	*input;
 
 	stdin_copy = dup(STDIN_FILENO);
 	if (stdin_copy == -1)
@@ -60,8 +58,8 @@ char	*prompt_for_quotes(char *str)
 			close(stdin_copy);
 			return (1);
 		}
-		status = update_str_with_input(&str, input2);
-		free(input2);
+		status = update_str_with_input(str, input);
+		free(input);
 		if (status == -1)
 			return (close(stdin_copy), -1);
 	}
