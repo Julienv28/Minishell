@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   arguments.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:06:51 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/07 14:37:36 by pique            ###   ########.fr       */
+/*   Updated: 2025/06/09 11:12:11 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,13 @@ char	*ensure_newline_at_end(char *str)
 {
 	char	*tmp;
 
-	if (!str || str[ft_strlen(str) - 1] == '\n')
-		return (str);
-	tmp = ft_strjoin(str, "\n");
-	return (tmp);
+	if ((*str)[ft_strlen(*str) - 1] != '\n')
+	{
+		tmp = ft_strjoin(*str, "\n");
+		//free(*str);
+		*str = tmp;
+	}
+	return (0);
 }
 
 char	*prompt_for_quotes(char *str)
@@ -27,33 +30,43 @@ char	*prompt_for_quotes(char *str)
 	char	*input2;
 	char	*tmp;
 	int		status;
+	int		stdin_copy;
 
-	tmp = ensure_newline_at_end(str);
-	if (!tmp)
-		return (NULL);
-	if (tmp != str)
-		str = tmp;
-	while (check_mismatched_quotes(str) == 1)
+	stdin_copy = dup(STDIN_FILENO);
+	if (stdin_copy == -1)
 	{
-		signal(SIGINT, heredoc_sigint_handler);
-		input2 = readline("> ");
+		perror("dup");
+		return (-1);
+	}
+	ensure_newline_at_end(str);
+	while (check_mismatched_quotes(*str) == 1)
+	{
+		g_exit_status = 0;
+		signal(SIGINT, handler_sigint_prompt);
+		input = readline("> ");
+		dup2(stdin_copy, STDIN_FILENO);
 		signal(SIGINT, handler_sigint);
 		if (g_exit_status == 130)
-			return (free(input2), free(str), NULL);
-		if (!input2)
+		{
+			close(stdin_copy);
+			return (free(input), 1);
+		}
+		if (!input)
 		{
 			ft_putstr_fd("minishell: unexpected EOF while looking for \
 				matching `''\n", STDERR_FILENO);
 			ft_putstr_fd("syntax error: unexpected end of \
 				file\n", STDERR_FILENO);
-			return (free(str), NULL);
+			close(stdin_copy);
+			return (1);
 		}
 		status = update_str_with_input(&str, input2);
 		free(input2);
 		if (status == -1)
-			return (free(str), NULL);
+			return (close(stdin_copy), -1);
 	}
-	return (str);
+	close(stdin_copy);
+	return (g_exit_status);
 }
 
 // Vérification des guillemets
@@ -81,18 +94,18 @@ int	check_mismatched_quotes(char *str)
 
 int	handle_quotes(char **str)
 {
-	char	*new_str;
+	int	status;
 
 	if (check_mismatched_quotes(*str) == 1)
 	{
-		new_str = prompt_for_quotes(*str);
-		if (!new_str)
-			return (-1);
-		if (new_str != *str)
+		status = prompt_for_quotes(str);
+		if (status == -1)
 		{
-			free(*str);
-			*str = new_str;
+			g_exit_status = 1;
+			return (-1);
 		}
+		else if (status == 1)
+			return (1);
 	}
 	return (0);
 }
@@ -130,10 +143,14 @@ int	handle_word(char **str, int *i, t_token **tokens, int *expect_cmd)
 	char	*word;
 	int		is_quoted;
 	t_token *new;
+	int		quote_status;
 
 	start = *i;
-	if (handle_quotes(str) == -1)
+	quote_status = handle_quotes(str);
+	if (quote_status == -1)
 		return (-1);
+	if (quote_status == 1)
+		return (1);
 	is_quoted = extract_word(str, i, &word, &start);
 	if (!word)
 		return (-1);

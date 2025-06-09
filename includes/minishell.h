@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/07 13:01:13 by pique            ###   ########.fr       */
+/*   Updated: 2025/06/09 10:40:57 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,6 +155,7 @@ int					has_pipe(t_com_list *command);
 
 // Signaux
 void				set_signal_action(void);
+void				handler_sigint_prompt(int sig);
 //char	*replace_all_variables(char *str, t_expand *var);
 //void				expand_variables(char **args, char **envcp, int is_heredoc);
 //char				*replace_variable_or_special(char *str, int *i, char *res, char **envcp, int quoted);

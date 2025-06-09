@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_redirections.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 13:46:30 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/07 13:26:00 by pique            ###   ########.fr       */
+/*   Updated: 2025/06/09 12:15:00 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,23 +44,43 @@ static int	handle_heredoc_redir(t_parser_context *ctx, char *filename)
 	char 	*cleaned_limiter;
 	int		expand_var = 0;
 
+	printf("[HEREDOC_REDIR 1] Début handle_heredoc_redir, filename='%s'\n", filename);
 	expand_var = !limiter_is_quoted(filename);
+	printf("[HEREDOC_REDIR 2] expand_var=%d\n", expand_var);
 	cleaned_limiter = remove_quotes_or_slash(filename);
     if (!cleaned_limiter)
+	{
+		//printf("[HEREDOC_REDIR 3] cleaned_limiter NULL, free filename et return -1\n");
 		return (free(filename), -1);
+	}
+	free(filename);
+	printf("[HEREDOC_REDIR 4] cleaned_limiter='%s'\n", cleaned_limiter);
 	heredoc_name = handle_heredoc(cleaned_limiter, ctx->envcp, expand_var);
-	free(cleaned_limiter);
-    free(filename); // liberer le limiter brut reçu en paramètre
 	if (!heredoc_name)
+	{
+		if (g_exit_status == 130)
+		{
+			// interruption heredoc, pas une erreur fatale : juste retour spécial
+			printf("[HEREDOC_REDIR] heredoc interrompu par Ctrl+C\n");
+			return (1);  // retour spécial pour interruption Ctrl+C
+		}
+		printf("[HEREDOC_REDIR 5] handle_heredoc a échoué (NULL), return -1\n");
 		return (-1);
+	}
+	//printf("[HEREDOC_REDIR 6] heredoc_name='%s'\n", heredoc_name);
 	if (!ctx->current_cmd)
+	{
 		ctx->pending_infile = ft_strdup(heredoc_name);
+		printf("[HEREDOC_REDIR 7] pending_infile set to '%s'\n", ctx->pending_infile);
+	}
 	else
 	{
 		free(ctx->current_cmd->infile);
 		ctx->current_cmd->infile = ft_strdup(heredoc_name);
+		printf("[HEREDOC_REDIR 8] current_cmd->infile set to '%s'\n", ctx->current_cmd->infile);
 	}
 	free(heredoc_name);
+	printf("[HEREDOC_REDIR 9] Fin handle_heredoc_redir\n");
 	return (0);
 }
 
@@ -130,6 +150,10 @@ int	handle_redir_token(t_parser_context *ctx)
 		return (-1);
 	if (redir_type == HEREDOC)
 		ret = handle_heredoc_redir(ctx, filename);
+	if (ret == 1)  // interruption heredoc
+		return (1);
+	if (ret < 0)
+		return (-1);
 	else if (redir_type == INPUT)
 		ret = handle_input_redir(ctx, filename);
 	else

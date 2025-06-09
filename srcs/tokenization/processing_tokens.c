@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   processing_tokens.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:56:26 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/07 10:42:59 by pique            ###   ########.fr       */
+/*   Updated: 2025/06/09 10:08:05 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,12 @@ int	process_redirection(char *str, int *i, t_token **tokens, char **envcp)
 
 int	process_word(char **str, int *i, t_token **tokens, int *expect_cmd)
 {
-	if (handle_word(str, i, tokens, expect_cmd) == -1)
+	int	ret;
+
+	ret = handle_word(str, i, tokens, expect_cmd);
+	if (ret == -1)
 		return (-1);
+	if (ret == 1)
+		return (1);
 	return (0);
 }

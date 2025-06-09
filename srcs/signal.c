@@ -10,6 +10,9 @@ void	heredoc_sigint_handler(int sig)
 {
 	(void)sig;
 	write(1, "\n", 1);
+	rl_replace_line("", 0);
+	rl_done = 1;
+	close(STDIN_FILENO);  // ← force readline à quitter immédiatement
 	g_exit_status = 130;
 }
 
@@ -21,5 +24,14 @@ void	handler_sigint(int sig)
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
+	g_exit_status = 130;
+}
+
+// handler pour SIGINT (Ctrl+C) dans readline uniquement
+void	handler_sigint_prompt(int sig)
+{
+	(void)sig;
+	write(1, "\n", 1);
+	close(0);
 	g_exit_status = 130;
 }

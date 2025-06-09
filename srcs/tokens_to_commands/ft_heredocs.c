@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_heredocs.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:57:10 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/07 14:21:24 by pique            ###   ########.fr       */
+/*   Updated: 2025/06/09 12:31:26 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,12 +86,14 @@ static int	wr_heredoc_line(int fd, char *line, char **envcp, int expand_var)
 {
 	char	*processed;
 
+	printf("[WR_HEREDOC_LINE] line='%s', expand_var=%d\n", line, expand_var);
 	processed = line;
 	if (expand_var)
 	{
 		processed = replace_all_variables(line, envcp, 1, expand_var);
 		if (!processed)
 			return (-1);
+		printf("[WR_HEREDOC_LINE] processed='%s'\n", processed);
 	}
 	write(fd, processed, ft_strlen(processed));
 	write(fd, "\n", 1);
@@ -146,11 +148,27 @@ static int	heredoc_loop(int fd, char *cleaned_limiter, char **envcp, int expand_
 {
 	char	*line;
 
+	signal(SIGINT, heredoc_sigint_handler);
+	signal(SIGQUIT, SIG_IGN);
 	while (1)
 	{
 		line = readline("heredoc> ");
 		if (!line)
-			break ;
+		{
+			if (g_exit_status == 130)
+                return (1);
+			ft_putstr_fd("minishell: unexpected EOF while looking for \
+				matching `''\n", STDERR_FILENO);
+			ft_putstr_fd("syntax error: unexpected end of \
+				file\n", STDERR_FILENO);
+			return (-1);
+		}
+		if (g_exit_status == 130)
+		{
+			free(line);
+			return (1);
+			//break;
+		}
 		if (ft_strcmp(line, cleaned_limiter) == 0)
 		{
 			free(line);
@@ -160,6 +178,8 @@ static int	heredoc_loop(int fd, char *cleaned_limiter, char **envcp, int expand_
 			return (free(line), -1);
 		free(line);
 	}
+	signal(SIGINT, handler_sigint);
+    signal(SIGQUIT, SIG_IGN);
 	return (0);
 }
 
@@ -167,18 +187,41 @@ char	*handle_heredoc(char *limiter, char **envcp, int expand_var)
 {
 	char	*filename;
 	int		heredoc_fd;
+	int 	loop_ret;
+	int		saved_stdin;
 
+
+	printf("[HANDLE_HEREDOC] Début avec limiter='%s', expand_var=%d\n", limiter, expand_var);
 	filename = generate_tmp_filename();
 	if (!filename)
 		return (free(limiter), NULL);
+	printf("[HANDLE_HEREDOC] Fichier temporaire généré : '%s'\n", filename);
 	heredoc_fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (heredoc_fd == -1)
 		return (free(filename), free(limiter), NULL);
-	if (heredoc_loop(heredoc_fd, limiter, envcp, expand_var) < 0)
+	saved_stdin = dup(STDIN_FILENO);
+	loop_ret = heredoc_loop(heredoc_fd, limiter, envcp, expand_var);
+	dup2(saved_stdin, STDIN_FILENO);
+	close(saved_stdin);
+	if(loop_ret == 1)
+	{
+		printf("[HANDLE_HEREDOC] heredoc_loop a échoué, suppression fichier temporaire\n");
+        close(heredoc_fd);
+        unlink(filename); // supprime le fichier temporaire si interruption
+		g_exit_status = 130;
 		return (free(filename), free(limiter), NULL);
+    }
+	else if (loop_ret < 0)
+	{
+		printf("[HANDLE_HEREDOC] heredoc_loop a échoué, suppression fichier temporaire\n");
+        close(heredoc_fd);
+        unlink(filename);
+		return (free(filename), free(limiter), NULL);
+	}
+	
 	if (close(heredoc_fd) == -1)
 		perror("close heredoc_fd");
-
+	printf("[HANDLE_HEREDOC] Fin, return filename '%s'\n", filename);
 	return (filename);
 }
 

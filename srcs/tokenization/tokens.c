@@ -80,8 +80,13 @@ t_token	*process_token_loop(char *str, char **envcp)
 			return (free_tokens(tokens), NULL);
 		if (tab[1] == 1)
 			continue ;
-		if (process_word(&str, &i, &tokens, &tab[0]) == -1)
-			break ;
+		//if (process_word(&str, &i, &tokens, &tab[0]) == -1)
+		//	break ;
+		tab[1] = process_word(&str, &i, &tokens, &tab[0]);
+		if (tab[1] == -1)
+			return (free_tokens(tokens), NULL);
+		if (tab[1] == 1) // Ctrl+C dans quotes
+			return (free_tokens(tokens), NULL);
 	}
 	return (tokens);
 }
