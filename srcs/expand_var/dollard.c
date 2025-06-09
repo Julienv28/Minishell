@@ -40,25 +40,6 @@ char	*expand_env_variable(char *str, char *res, t_expand *var)
 	return (tmp);
 }
 
-char	*replace_variable_or_special(char *str, char *res, t_expand *var)
-{
-	char	next;
-
-	(*var->i)++;
-	if (!str[*var->i])
-		return append_char(res, '$');
-	next = str[*var->i];
-	if (next == '"' || next == '\'')
-		return (res);
-	if (next == '{')
-		return (handle_brace_variable(str, res, var));
-	if (ft_isalpha(next) || next == '_')
-		return (expand_env_variable(str, res, var));
-	if (ft_isdigit(next) || next == '?')
-		return (handle_special_cases(str, res, var));
-	return (append_char(res, '$'));
-}
-
 /*
 char	*replace_variable_or_special(char *str, char *res, t_expand *var)
 {
@@ -80,32 +61,6 @@ char	*replace_variable_or_special(char *str, char *res, t_expand *var)
 		return (expand_env_variable(str, res, var));
 	return (handle_special_cases(str, res, var));
 }*/
-
-char	*handle_quotes_and_dollar(char *str, char *res, t_expand *var, int *quotes)
-{
-	if (str[*var->i] == '\'' && !quotes[1])
-	{
-		quotes[0] = !quotes[0];
-		(*var->i)++;
-		return (res);
-	}
-	if (str[*var->i] == '"' && !quotes[0])
-	{
-		quotes[1] = !quotes[1];
-		(*var->i)++;
-		return (res);
-	}
-	if (str[*var->i] == '$' && !quotes[0] && var->expand_vars)
-	{
-		var->quoted = quotes[1];
-		return (replace_variable_or_special(str, res, var));
-	}
-	res = append_char(res, str[*var->i]);
-	if (!res)
-		return (NULL);
-	(*var->i)++;
-	return (res);
-}
 
 char	*expand_loop(char *str, char *res, t_expand *var)
 {
