@@ -10,6 +10,7 @@ void	heredoc_sigint_handler(int sig)
 {
 	(void)sig;
 	write(1, "\n", 1);
+	close(0);
 	g_exit_status = 130;
 }
 
