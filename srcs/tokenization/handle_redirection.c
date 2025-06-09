@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_redirection.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 09:31:19 by opique            #+#    #+#             */
-/*   Updated: 2025/06/09 09:50:14 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/09 17:07:18 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,20 @@ int	process_redirection_value(int type, char *word, t_token **tokens, char **env
 	final = NULL;
 	is_quoted = limiter_is_quoted(word);
 	if (type == HEREDOC && is_quoted)
-		return(add_token(tokens, word, ARG, 1), 1);
+	{
+		if (!add_token(tokens, word, ARG, 1))
+			return (free(word), -1);
+		return (free(word), 1);
+	}
 	else if (type == HEREDOC)
     {
         cleaned_limiter = remove_quotes_or_slash(word);
         if (!cleaned_limiter)
 			return (free(word), -1);
-        if (!add_token(tokens, ft_strdup(cleaned_limiter), ARG, 0)) // strdup ici !
-        	return (free(cleaned_limiter), free(word), -1);
-        free(cleaned_limiter);
+        if (!add_token(tokens, cleaned_limiter, ARG, 0)) // strdup ici !
+			return (free(cleaned_limiter), free(word), -1);
+		free(cleaned_limiter);
+		free(word);
     	return (1);
     }
 	final = expand_clean_word(word, envcp);

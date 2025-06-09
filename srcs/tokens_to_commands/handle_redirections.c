@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 13:46:30 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/09 16:35:53 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/09 16:48:06 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ static int	handle_heredoc_redir(t_parser_context *ctx, char *filename)
 	free(filename);
 	printf("[HEREDOC_REDIR 4] cleaned_limiter='%s'\n", cleaned_limiter);
 	heredoc_name = handle_heredoc(cleaned_limiter, ctx->envcp, expand_var);
+	free(cleaned_limiter);
 	if (!heredoc_name)
 	{
 		if (g_exit_status == 130)
