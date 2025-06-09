@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_redirections.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 13:46:30 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/09 12:15:00 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/09 16:35:53 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ static int	handle_heredoc_redir(t_parser_context *ctx, char *filename)
 	return (0);
 }*/
 
+// A Deplacer dans un autre fichier (voire en creer un juste pour son decoupage)
 static int	handle_heredoc_redir(t_parser_context *ctx, char *filename)
 {
 	char	*heredoc_name;
@@ -135,6 +136,38 @@ static int	handle_outdir(t_parser_context *ctx, char *filename, int redir_type)
 	return (free(filename), 0);
 }
 
+static int	get_redir_filename(t_parser_context *ctx, char **filename)
+{
+	if (!ctx->current_token || ctx->current_token->type != ARG)
+	{
+		syntax_error();
+		return (-1);
+	}
+	*filename = ft_strdup(ctx->current_token->value);
+	if (!*filename)
+		return (-1);
+	return (0);
+}
+
+static int	exec_redir(t_parser_context *ctx, int type, char *filename)
+{
+	int	ret;
+
+	if (type == HEREDOC)
+	{
+		ret = handle_heredoc_redir(ctx, filename);
+		if (ret == 1 || ret < 0)
+			return (ret);
+	}
+	else if (type == INPUT)
+		ret = handle_input_redir(ctx, filename);
+	else
+		ret = handle_outdir(ctx, filename, type);
+	if (ret < 0)
+		return (-1);
+	return (0);
+}
+
 int	handle_redir_token(t_parser_context *ctx)
 {
 	int		redir_type;
@@ -143,23 +176,11 @@ int	handle_redir_token(t_parser_context *ctx)
 
 	redir_type = ctx->current_token->type;
 	ctx->current_token = ctx->current_token->next;
-	if (!ctx->current_token || ctx->current_token->type != ARG)
-		return (syntax_error(), -1);
-	filename = ft_strdup(ctx->current_token->value);
-	if (!filename)
+	if (get_redir_filename(ctx, &filename) < 0)
 		return (-1);
-	if (redir_type == HEREDOC)
-		ret = handle_heredoc_redir(ctx, filename);
-	if (ret == 1)  // interruption heredoc
-		return (1);
-	if (ret < 0)
-		return (-1);
-	else if (redir_type == INPUT)
-		ret = handle_input_redir(ctx, filename);
-	else
-		ret = handle_outdir(ctx, filename, redir_type);
-	if (ret < 0)
-		return (-1);
+	ret = exec_redir(ctx, redir_type, filename);
+	if (ret != 0)
+		return (ret);
 	ctx->current_token = ctx->current_token->next;
 	return (0);
 }
