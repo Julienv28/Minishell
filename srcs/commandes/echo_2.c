@@ -65,8 +65,8 @@ char	*get_value_cleaned(char *name, char **envp)
 	raw = get_env_value(name, envp);
 	if (!raw)
 		return (ft_strdup(""));
-    value = clean_spaces(raw);
-    if (!value)
+	value = clean_spaces(raw);
+	if (!value)
 		return (ft_strdup(""));
 	return (value);
 }

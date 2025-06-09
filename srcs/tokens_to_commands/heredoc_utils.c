@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 12:00:38 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/07 13:07:53 by pique            ###   ########.fr       */
+/*   Updated: 2025/06/09 17:36:38 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,14 @@
 int	limiter_is_quoted(const char *str)
 {
 	if (!str)
-        return 0;
-    while (*str)
-    {
-        if (*str == '\'' || *str == '"')
-            return 1;
-        str++;
-    }
-    return 0;
+		return (0);
+	while (*str)
+	{
+		if (*str == '\'' || *str == '"')
+			return (1);
+		str++;
+	}
+	return (0);
 }
 
 char	*generate_tmp_filename(void)
@@ -47,4 +47,34 @@ char	*generate_tmp_filename(void)
 	free(filename.count_str);
 	free (filename.tmp);
 	return (filename.final);
+}
+
+char	*heredoc_cleanup(char *filename, char *limiter, int fd, int status)
+{
+	close(fd);
+	free(limiter);
+    free(filename);
+	if (status == 130)
+		g_exit_status = 130;
+	return (NULL);
+}
+
+int	print_heredoc_eof_error(void)
+{
+	ft_putstr_fd("minishell: unexpected EOF while looking for \
+		matching ''\n", STDERR_FILENO);
+	ft_putstr_fd("syntax error: unexpected end of \
+		file\n", STDERR_FILENO);
+	return (-1);
+}
+
+int	handle_heredoc_interrupt(char *line, int eof)
+{
+	if (line)
+		free(line);
+	if (g_exit_status == 130)
+		return (1);
+	if (eof)
+		return (print_heredoc_eof_error());
+	return (0);
 }

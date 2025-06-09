@@ -3,36 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   handle_redirection.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 09:31:19 by opique            #+#    #+#             */
-/*   Updated: 2025/06/09 09:50:14 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/09 16:39:49 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-
 int	process_redirection_value(int type, char *word, t_token **tokens, char **envcp)
 {
 	char	*final;
 	int		is_quoted;
-	char 	*cleaned_limiter;
+	char	*cleaned_limiter;
 
 	final = NULL;
 	is_quoted = limiter_is_quoted(word);
 	if (type == HEREDOC && is_quoted)
-		return(add_token(tokens, word, ARG, 1), 1);
+		return (add_token(tokens, word, ARG, 1), 1);
 	else if (type == HEREDOC)
-    {
-        cleaned_limiter = remove_quotes_or_slash(word);
-        if (!cleaned_limiter)
+	{
+		cleaned_limiter = remove_quotes_or_slash(word);
+		if (!cleaned_limiter)
 			return (free(word), -1);
-        if (!add_token(tokens, ft_strdup(cleaned_limiter), ARG, 0)) // strdup ici !
-        	return (free(cleaned_limiter), free(word), -1);
-        free(cleaned_limiter);
-    	return (1);
-    }
+		if (!add_token(tokens, ft_strdup(cleaned_limiter), ARG, 0))
+			return (free(cleaned_limiter), free(word), -1);
+		free(cleaned_limiter);
+		return (1);
+	}
 	final = expand_clean_word(word, envcp);
 	if (!final)
 		return (free(word), -1);
