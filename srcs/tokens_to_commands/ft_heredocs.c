@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:57:10 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/09 12:15:11 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/09 12:31:26 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,6 +188,8 @@ char	*handle_heredoc(char *limiter, char **envcp, int expand_var)
 	char	*filename;
 	int		heredoc_fd;
 	int 	loop_ret;
+	int		saved_stdin;
+
 
 	printf("[HANDLE_HEREDOC] Début avec limiter='%s', expand_var=%d\n", limiter, expand_var);
 	filename = generate_tmp_filename();
@@ -197,7 +199,10 @@ char	*handle_heredoc(char *limiter, char **envcp, int expand_var)
 	heredoc_fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (heredoc_fd == -1)
 		return (free(filename), free(limiter), NULL);
+	saved_stdin = dup(STDIN_FILENO);
 	loop_ret = heredoc_loop(heredoc_fd, limiter, envcp, expand_var);
+	dup2(saved_stdin, STDIN_FILENO);
+	close(saved_stdin);
 	if(loop_ret == 1)
 	{
 		printf("[HANDLE_HEREDOC] heredoc_loop a échoué, suppression fichier temporaire\n");
