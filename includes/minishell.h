@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/09 15:58:42 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/09 17:46:06 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,9 +145,9 @@ typedef struct s_redirs
 // Message prompt + history
 int					check_isatty(void);
 
-int					is_blank_line(const char *str);
-void				init_redirs(t_redirs *fds);
-void				init_signals(void);
+int	                is_blank_line(const char *str);
+void	            init_redirs(t_redirs *fds);
+void	            init_signals(void);
 void				fake_exit_builtin(char **args, t_com_list *cmds);
 int					is_valid_numeric_argument(char *str);
 unsigned long long	ft_atoull(const char *str);
@@ -156,12 +156,7 @@ int					has_pipe(t_com_list *command);
 // Signaux
 void				set_signal_action(void);
 void				handler_sigint_prompt(int sig);
-//char	*replace_all_variables(char *str, t_expand *var);
-//void				expand_variables(char **args, char **envcp, int is_heredoc);
-//char				*replace_variable_or_special(char *str, int *i, 
-//char *res, char **envcp, int quoted);
-char				*replace_variable_or_special(char *str, char *res,
-						t_expand *var);
+char 				*replace_variable_or_special(char *str, char *res, t_expand *var);
 char				*append_char(char *res, char c);
 void				heredoc_sigint_handler(int sig);
 char				*handle_special_cases(char *str, char *res, t_expand *var);
@@ -178,7 +173,6 @@ char				*replace_all_variables(char *str, char **envcp,
 char				*expand_env_variable(char *str, char *res, t_expand *var);
 
 // Tokens
-//t_token				*add_token(t_token **head, char *str, int type);
 t_token				*add_token(t_token **head, char *str, int type, int is_quoted);
 t_token				*create_tokens(char **str, char **envcp);
 void				free_tokens(t_token *tokens);
@@ -214,7 +208,6 @@ void				add_bottom(t_com_list **list, t_com_list *new);
 t_com_list			*list_new(char *command);
 int					handle_redirection(char *str, int *i, t_token **tokens,
 						char **envcp);
-//char				*prompt_for_quotes(char *str);
 int	prompt_for_quotes(char **str);
 int					is_directory(char *path);
 void				handler_sigint(int sig);
@@ -243,6 +236,7 @@ char				*get_env_value(char *name, char **envp);
 char				*get_value_cleaned(char *name, char **envp);
 void				ft_set_env(char *key, char *value, char ***envp);
 void				ft_env(char **envp);
+int	                export_no_args(char **envp);
 int					is_valid_name(char *name);
 int					is_valid_n_flag(const char *str);
 int					ft_unset(char **args, char ***envcp);
@@ -253,6 +247,9 @@ void				heredoc_sigint_handler(int sig);
 char				*handle_heredoc(char *limiter, char **envcp,
 						int expand_var);
 int					limiter_is_quoted(const char *str);
+char	            *heredoc_cleanup(char *filename, char *limiter, int fd, int status);
+int	                print_heredoc_eof_error(void);
+int	                handle_heredoc_interrupt(char *line, int eof);
 
 // Exec
 void				exec_cmd(char **args, char ***envcp);
@@ -291,7 +288,6 @@ int					parse_pipes(char **args);
 // Utils
 void				free_tab(char **tab);
 void				free_file_list(t_file_list *list);
-//char				**split_args(const char *s, char sep);
 char				*remove_quotes_or_slash(char *str);
 void				free_cmd(t_com_list *command);
 char				**ft_env_dup(char **envp);

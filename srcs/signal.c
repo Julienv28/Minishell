@@ -11,8 +11,7 @@ void	heredoc_sigint_handler(int sig)
 	(void)sig;
 	write(1, "\n", 1);
 	rl_replace_line("", 0);
-	rl_done = 1;
-	close(STDIN_FILENO);  // ← force readline à quitter immédiatement
+	close(STDIN_FILENO);
 	g_exit_status = 130;
 }
 

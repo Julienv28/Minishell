@@ -14,7 +14,6 @@ static int	find_char_index(const char *s, char c)
 	return (-1);
 }
 
-// EXPORT 
 int	check_events(char *arg)
 {
 	char	*res;
@@ -38,7 +37,6 @@ void	cleanup_and_exit(int code, t_com_list *cmd)
 	exit(code);
 }
 
-// Duplication environnement
 char	**ft_env_dup(char **envp)
 {
 	int		i;
