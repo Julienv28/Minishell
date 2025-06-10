@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
 /*   Updated: 2025/06/10 12:30:20 by opique           ###   ########.fr       */
@@ -238,10 +238,11 @@ char				*get_env_value(char *name, char **envp);
 char				*get_value_cleaned(char *name, char **envp);
 void				ft_set_env(char *key, char *value, char ***envp);
 void				ft_env(char **envp);
-int	                export_no_args(char **envp);
+int					export_no_args(char **envp);
 int					is_valid_name(char *name);
 int					is_valid_n_flag(const char *str);
 int					ft_unset(char **args, char ***envcp);
+char				*unescape_backslashes(const char *str);
 
 //Heredoc
 char				*generate_tmp_filename(void);
