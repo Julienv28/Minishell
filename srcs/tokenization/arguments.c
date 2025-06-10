@@ -84,7 +84,8 @@ int	extract_word(char **str, int *i, char **word, int *start)
 	return (has_quotes || tab[0] || tab[1]);
 }
 
-static int	init_and_extract_word(char **str, int *i, char **word, int *is_quoted)
+static int	init_and_extract_word(char **str, int *i, char **word,
+		int *is_quoted)
 {
 	int	start;
 	int	quote_status;

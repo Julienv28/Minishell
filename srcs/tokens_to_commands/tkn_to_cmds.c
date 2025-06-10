@@ -28,7 +28,7 @@ static t_parser_context	*init_parset_ctx(t_token *tokens, char **envcp)
 	return (ctx);
 }
 
-static int process_token(t_parser_context *ctx)
+static int	process_token(t_parser_context *ctx)
 {
 	int	type;
 	int	ret;
