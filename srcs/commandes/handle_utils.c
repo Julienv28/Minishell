@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   handle_utils.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/10 16:33:16 by opique            #+#    #+#             */
+/*   Updated: 2025/06/10 16:33:29 by opique           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 char	*expand_arg(char *arg, char **envp)
@@ -82,7 +94,7 @@ void	process_valid_exports(char **args, char ***envcp, int *status)
 		{
 			free(expanded);
 			if (*status == 0)
-				*status = export_no_args(*envcp); // à toi d’implémenter
+				*status = export_no_args(*envcp);
 			i++;
 			continue ;
 		}

@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:29:59 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 15:38:21 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/10 16:02:06 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,7 @@ int	handle_export(char **args, char ***envcp)
 	int	exit_status;
 
 	if (!args[1])
-	{
-		printf("pas d'argument\n");
 		return (export_no_args(*envcp));
-	}
 	if (check_events(args[1]) == 1)
 		return (1);
 	exit_status = handle_initial_errors(args);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_cmd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 13:45:38 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 14:20:28 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/10 16:47:08 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,15 +60,15 @@ int	handle_cmd_token(t_parser_context *ctx)
 	expanded = replace_all_variables(ctx->current_token->value,
 			ctx->envcp, 0, 1);
 	if (!expanded)
-        return -1;
+		return (-1);
 	if (expanded[0] == '\0')
-    {
-        if (is_empty_quoted(ctx->current_token->value))
+	{
+		if (is_empty_quoted(ctx->current_token->value))
 			g_exit_status = 127;
 		free(expanded);
 		ctx->current_token = ctx->current_token->next;
 		return (0);
-    }
+	}
 	new_cmd = list_new(expanded);
 	if (!new_cmd)
 		return (free(expanded), -1);

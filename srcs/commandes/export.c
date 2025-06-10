@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:36 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 15:39:48 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/10 16:36:49 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ void	ft_set_env(char *key, char *value, char ***envcp)
 	char	**new_env;
 
 	new_entry = build_env_entry(key, value);
-    printf("new = %s\n", new_entry);
 	if (!new_entry)
 		return ;
 	i = 0;
@@ -45,7 +44,6 @@ int	check_and_export(char *arg, char *key, char *value, char ***envcp)
 {
 	if (!is_valid_name(key))
 	{
-        printf("invalid name %s\n", key);
 		if (ft_strchr(arg, '=') || !ft_isalpha(arg[0]))
 			printf("bash: export: `%s': not a valid identifier\n", arg);
 		return (1);
@@ -65,9 +63,7 @@ int	process_export_entry(char *arg, char ***envcp, int *exit_status)
 	key = NULL;
 	value = NULL;
 	replaced = prepare_export_string(arg, *envcp, &key, &value);
-    printf("replaced = %s\n", replaced);
 	err = handle_export_error(replaced, arg);
-    printf("erreur = %d\n", err);
 	if (err)
 	{
 		if (err == 2)
@@ -77,7 +73,6 @@ int	process_export_entry(char *arg, char ***envcp, int *exit_status)
 		return (1);
 	}
 	err = check_and_export(arg, key, value, envcp);
-    printf("err check = %d\n", err);
 	if (err)
 		*exit_status = 1;
 	free_export_vars(key, value, replaced);

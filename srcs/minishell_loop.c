@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:42:18 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 15:43:52 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/10 16:50:39 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,16 +81,16 @@ void	minishell_loop(char ***envcp)
 		input = readline(GREEN "minishell$ " RESET);
 		if (!input)
 		{
-		if (g_exit_status == 130)
-		{
-			handle_input_error(input);
-			continue ;
+			if (g_exit_status == 130)
+			{
+				handle_input_error(input);
+				continue ;
+			}
+			exit_shell(*envcp);
 		}
-		exit_shell(*envcp);
-	}
-	add_history(input);
-	ret = process_input(input, envcp);
-	if (ret == 1)
-		continue ;
+		add_history(input);
+		ret = process_input(input, envcp);
+		if (ret == 1)
+			continue ;
 	}
 }

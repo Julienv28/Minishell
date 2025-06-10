@@ -6,13 +6,13 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 09:31:19 by opique            #+#    #+#             */
-/*   Updated: 2025/06/10 15:42:15 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/10 16:56:33 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	process_redirection_value(int type, char *word, t_token **tokens, char **envcp)
+int	process_redir_value(int type, char *word, t_token **tokens, char **envcp)
 {
 	char	*final;
 	int		is_quoted;
@@ -22,11 +22,7 @@ int	process_redirection_value(int type, char *word, t_token **tokens, char **env
 	final = NULL;
 	is_quoted = limiter_is_quoted(word);
 	if (type == HEREDOC && is_quoted)
-	{
-		add_token(tokens, word, ARG, 1);
-		free(word);
-		return (1);
-	}
+		return (add_token(tokens, word, ARG, 1), free(word), 1);
 	else if (type == HEREDOC)
 	{
 		cleaned_limiter = remove_quotes_or_slash(word);
@@ -35,18 +31,14 @@ int	process_redirection_value(int type, char *word, t_token **tokens, char **env
 		instru = ft_strdup(cleaned_limiter);
 		if (!add_token(tokens, instru, ARG, 0))
 			return (free(cleaned_limiter), free(word), -1);
-		free(word);
-		free(instru);
-		free(cleaned_limiter);
-		return (1);
+		return (free(word), free(instru), free(cleaned_limiter), 1);
 	}
 	final = expand_clean_word(word, envcp);
 	if (!final)
 		return (free(word), -1);
 	free(word);
 	add_token(tokens, final, ARG, 0);
-	free(final);
-	return (1);
+	return (free(final), 1);
 }
 
 char	*add_symbol(int type)
@@ -122,5 +114,5 @@ int	handle_redirection(char *str, int *i, t_token **tokens, char **envcp)
 		return (free(word), -1);
 	add_token(tokens, symbol, type, 0);
 	free(symbol);
-	return (process_redirection_value(type, word, tokens, envcp));
+	return (process_redir_value(type, word, tokens, envcp));
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   replacement.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 15:35:55 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/09 15:49:39 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/10 16:38:13 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ static char	*handle_single_quotes(char *str, char *res, t_expand *var)
 {
 	(*var->i)++;
 	(*var->i)++;
-
 	if (str[*var->i] == '\'')
 	{
 		(*var->i)++;
