@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/09 17:46:06 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/10 09:28:35 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -250,6 +250,7 @@ int					limiter_is_quoted(const char *str);
 char	            *heredoc_cleanup(char *filename, char *limiter, int fd, int status);
 int	                print_heredoc_eof_error(void);
 int	                handle_heredoc_interrupt(char *line, int eof);
+int					assign_heredoc_to_ctx(t_parser_context *ctx, char *heredoc_name);
 
 // Exec
 void				exec_cmd(char **args, char ***envcp);
