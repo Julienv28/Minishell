@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 12:00:38 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 09:03:41 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/10 16:06:45 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ char	*heredoc_cleanup(char *filename, char *limiter, int fd, int status)
 {
 	close(fd);
 	free(limiter);
-    free(filename);
+	free(filename);
 	if (status == 130)
 		g_exit_status = 130;
 	return (NULL);

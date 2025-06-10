@@ -82,7 +82,7 @@ void	process_valid_exports(char **args, char ***envcp, int *status)
 		{
 			free(expanded);
 			if (*status == 0)
-				*status = export_no_args(*envcp); // à toi d’implémenter
+				*status = export_no_args(*envcp);
 			i++;
 			continue ;
 		}
