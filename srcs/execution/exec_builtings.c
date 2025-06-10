@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:29:59 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 12:30:06 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/10 15:14:44 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,34 +22,26 @@ static int	handle_exit_builtin(char **args, char ***envcp, t_com_list *cmd)
 int	handle_export(char **args, char ***envcp)
 {
 	int	exit_status;
-	int	all_expanded_empty;
+	//int	all_expanded_empty;
 
 	if (!args[1])
-		return (export_no_args(*envcp));
-	exit_status = handle_initial_errors(args);
-	all_expanded_empty = expand_and_check(args, envcp);
-	if (all_expanded_empty)
 	{
-		if (exit_status)
-			return (1);
+		printf("pas d'argument\n");
 		return (export_no_args(*envcp));
 	}
+	if (check_events(args[1]) == 1)
+		return (1);
+	exit_status = handle_initial_errors(args);
+	//all_expanded_empty = expand_and_check(args, envcp);
+	// if (all_expanded_empty)
+	// {
+	// 	if (exit_status)
+	// 		return (1);
+	// 	return (export_no_args(*envcp));
+	// }
 	process_valid_exports(args, envcp, &exit_status);
 	return (exit_status);
 }
-
-
-
-
-/*
-static int	handle_export(char **args, char ***envcp)
-{
-	if (!args[1])
-		return (ft_env(*envcp), 0);
-	if (check_events(args[1]) == 0)
-		return (ft_export(args, envcp));
-	return (1);
-}*/
 
 static int	handle_env(char **args, char ***envcp)
 {

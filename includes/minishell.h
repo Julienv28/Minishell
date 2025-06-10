@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 12:30:20 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/10 14:47:48 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -272,7 +272,7 @@ int					handle_null_tokens(t_token *tokens, char *input);
 void				exit_shell(char **envcp);
 void				init_redirs(t_redirs *fds);
 int					handle_initial_errors(char **args);
-int					expand_and_check(char **args, char ***envcp);
+//int					expand_and_check(char **args, char ***envcp);
 void				process_valid_exports(char **args, char ***envcp, int *status);
 
 //Pipes
