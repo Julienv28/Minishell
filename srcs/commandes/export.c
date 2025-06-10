@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:36 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/09 15:30:00 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/10 11:31:09 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ int	process_export_entry(char *arg, char ***envcp, int *exit_status)
 	key = NULL;
 	value = NULL;
 	replaced = prepare_export_string(arg, *envcp, &key, &value);
-	err = handle_export_error(replaced);
+	err = handle_export_error(replaced, arg);
 	if (err)
 	{
 		if (err == 2)

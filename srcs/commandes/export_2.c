@@ -61,18 +61,21 @@ char	*build_env_entry(char *key, char *value)
 	return (new_entry);
 }
 
-int	handle_export_error(char *replaced)
+int	handle_export_error(char *replaced, char *arg)
 {
 	if (!replaced || replaced[0] == '\0')
 	{
-		ft_putstr_fd("export: `': not a valid identifier\n", STDERR_FILENO);
-		free(replaced);
+		ft_putstr_fd("bash: export: `", STDERR_FILENO);
+		ft_putstr_fd(arg, STDERR_FILENO);
+		ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
 		return (1);
 	}
 	if (replaced[0] == '-')
 	{
-		printf("bash: export: -%c: invalid option\n", replaced[1]);
-		free(replaced);
+		ft_putstr_fd("bash: export: `", STDERR_FILENO);
+		ft_putchar_fd('-', STDERR_FILENO);
+		ft_putchar_fd(replaced[1], STDERR_FILENO);
+		ft_putstr_fd("': invalid option\n", STDERR_FILENO);
 		return (2);
 	}
 	return (0);
