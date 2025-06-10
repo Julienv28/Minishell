@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:06:51 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 15:41:39 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/10 16:34:57 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,8 @@ int	extract_word(char **str, int *i, char **word, int *start)
 			tab[0] = !tab[0];
 		else if ((*str)[j] == '"' && !tab[0])
 			tab[1] = !tab[1];
-		else if (!tab[0] && !tab[1] &&
-			(ft_isspace((*str)[j]) || (*str)[j] == '|' ||
+		else if (!tab[0] && !tab[1]
+			&& (ft_isspace((*str)[j]) || (*str)[j] == '|' ||
 			(*str)[j] == '<' || (*str)[j] == '>'))
 			break ;
 		j++;
@@ -123,7 +123,6 @@ int	handle_word(char **str, int *i, t_token **tokens, int *expect_cmd)
 	if (type == ARG && ft_strchr(new->value, '='))
 		if (concat_arg_following(str, i, new) == -1)
 			return (-1);
-
 	return (0);
 }
 

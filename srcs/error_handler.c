@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error_handler.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 10:45:29 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/07 14:17:50 by pique            ###   ########.fr       */
+/*   Updated: 2025/06/10 16:26:28 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	syntax_error(void)
 {
-	ft_putstr_fd("minishell: syntax error near unexpected token\n", STDERR_FILENO);
+	ft_putstr_fd("shell: syntax error near unexpected token\n", STDERR_FILENO);
 	g_exit_status = 258;
 	return (1);
 }

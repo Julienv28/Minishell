@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokens.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/10 16:46:03 by opique            #+#    #+#             */
+/*   Updated: 2025/06/10 16:57:07 by opique           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 t_token	*add_token(t_token **head, char *str, int type, int is_quoted)
@@ -41,7 +53,7 @@ t_token	*process_token_loop(char *str, char **envcp)
 
 	i = 0;
 	tab[0] = 1;
-    tokens = NULL;
+	tokens = NULL;
 	while (str[i])
 	{
 		if (skip_spaces(str, &i) == -1)
