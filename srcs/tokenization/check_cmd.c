@@ -3,17 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   check_cmd.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 15:19:26 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/07 14:29:21 by pique            ###   ########.fr       */
+/*   Updated: 2025/06/10 15:42:04 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-// Si on a une redirection qui est suivie d'un autre token spécial
-// cas <>
 int	check_redirection(char *str, int *i)
 {
 	if (!str)
@@ -42,7 +40,6 @@ int	check_redirection(char *str, int *i)
 	return (0);
 }
 
-//Verifie la conformite de pipes (debut/fin de commande, ||...)
 int	check_pipe(char *str, int i)
 {
 	int	j;
@@ -63,7 +60,6 @@ int	check_pipe(char *str, int i)
 	return (0);
 }
 
-// Vérifier si le caractère précédent est aussi un pipe
 int	check_input(char *str, int i)
 {
 	if (!str)

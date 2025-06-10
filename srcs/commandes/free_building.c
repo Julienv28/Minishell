@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 12:01:30 by opique            #+#    #+#             */
-/*   Updated: 2025/06/10 12:28:47 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/10 15:39:53 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ void	free_export_vars(char *key, char *value, char *replaced)
 		free(replaced);
 }
 
-// Free environnement
 void	ft_freeenvp(char **envcp)
 {
 	int	i;

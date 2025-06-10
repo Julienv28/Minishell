@@ -15,7 +15,6 @@ void	heredoc_sigint_handler(int sig)
 	g_exit_status = 130;
 }
 
-// handler pour SIGINT (Ctrl+C) dans readline uniquement
 void	handler_sigint(int sig)
 {
 	(void)sig;
@@ -26,7 +25,6 @@ void	handler_sigint(int sig)
 	g_exit_status = 130;
 }
 
-// handler pour SIGINT (Ctrl+C) dans readline uniquement
 void	handler_sigint_prompt(int sig)
 {
 	(void)sig;

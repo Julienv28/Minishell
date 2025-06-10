@@ -34,7 +34,6 @@ int	nbr_of_sign(char *args)
 	return (count);
 }
 
-// Convertit une string en unsigned long long (sans gérer les signes)
 unsigned long long	ft_atoull(const char *str)
 {
 	unsigned long long	result;
@@ -50,7 +49,6 @@ unsigned long long	ft_atoull(const char *str)
 	return (result);
 }
 
-// Valide que str est un entier valide et dans la plage de long long
 int	is_valid_numeric_argument(char *str)
 {
 	int					sign;

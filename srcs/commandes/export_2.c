@@ -81,8 +81,6 @@ int	handle_export_error(char *replaced, char *arg)
 	return (0);
 }
 
-// Le nom doit commencer par une lettre ou un underscore
-// Le reste doit être alphanumérique ou underscore
 int	is_valid_name(char *name)
 {
 	int	i;

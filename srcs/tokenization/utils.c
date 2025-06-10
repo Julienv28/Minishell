@@ -3,16 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 10:39:23 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/06 10:41:14 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/10 15:42:40 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-// Liberer les tokens
 void	free_tokens(t_token *tokens)
 {
 	t_token	*tmp;
@@ -81,7 +80,6 @@ void	free_cmd(t_com_list *command)
 	}
 }
 
-// Ajoute un caractère simple à la chaîne résultante
 char	*append_char(char *res, char c)
 {
 	char	current[2];

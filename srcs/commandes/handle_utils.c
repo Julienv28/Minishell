@@ -35,7 +35,7 @@ int	handle_initial_errors(char **args)
 	}
 	return (status);
 }
-
+/*
 int	expand_and_check(char **args, char ***envcp)
 {
 	int		i;
@@ -47,6 +47,7 @@ int	expand_and_check(char **args, char ***envcp)
 	while (args[i])
 	{
 		expanded = expand_arg(args[i], *envcp);
+		printf("expand = %s\n", expanded);
 		free(args[i]);
 		args[i] = expanded;
 		if (expanded && expanded[0] != '\0')
@@ -54,9 +55,8 @@ int	expand_and_check(char **args, char ***envcp)
 		i++;
 	}
 	return (all_empty);
-}
-
-void	process_valid_exports(char **args, char ***envcp, int *status)
+}*/
+/*void	process_valid_exports(char **args, char ***envcp, int *status)
 {
 	int	i;
 
@@ -65,6 +65,29 @@ void	process_valid_exports(char **args, char ***envcp, int *status)
 	{
 		if (args[i][0] != '\0')
 			process_export_entry(args[i], envcp, status);
+		i++;
+	}
+}*/
+
+void	process_valid_exports(char **args, char ***envcp, int *status)
+{
+	int		i;
+	char	*expanded;
+
+	i = 1;
+	while (args[i])
+	{
+		expanded = replace_all_variables(args[i], *envcp, 0, 1);
+		if (!expanded || expanded[0] == '\0')
+		{
+			free(expanded);
+			if (*status == 0)
+				*status = export_no_args(*envcp); // à toi d’implémenter
+			i++;
+			continue ;
+		}
+		process_export_entry(expanded, envcp, status);
+		free(expanded);
 		i++;
 	}
 }

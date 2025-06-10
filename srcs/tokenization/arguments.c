@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   arguments.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:06:51 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 13:20:34 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/10 15:41:39 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ static int	handle_quotes(char **str)
 	return (0);
 }
 
-// VERSION QUI MACHE AVEC HEREDOC
 int	extract_word(char **str, int *i, char **word, int *start)
 {
 	int		j;
