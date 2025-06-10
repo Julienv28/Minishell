@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   dollard.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 15:25:11 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/09 17:46:46 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/10 15:11:03 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,28 +39,6 @@ char	*expand_env_variable(char *str, char *res, t_expand *var)
 		free(env_value);
 	return (tmp);
 }
-
-/*
-char	*replace_variable_or_special(char *str, char *res, t_expand *var)
-{
-	(*var->i)++;
-	if (!str[*var->i])
-		return (append_char(res, '$'));
-	if (var->is_heredoc)
-	{
-		if (str[*var->i] != '"')
-			return (expand_env_variable(str, res, var));
-		else
-			return (append_char(res, '$'));
-	}
-	if (str[*var->i] == '"' || str[*var->i] == '\'')
-        return (handle_quote(str, res, var));
-	if (str[*var->i] == '{')
-		return (handle_brace_variable(str, res, var));
-	if (ft_isalpha(str[*var->i]) || str [*var->i] == '_')
-		return (expand_env_variable(str, res, var));
-	return (handle_special_cases(str, res, var));
-}*/
 
 char	*expand_loop(char *str, char *res, t_expand *var)
 {

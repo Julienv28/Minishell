@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tkn_to_cmds.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 13:09:09 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/09 17:06:37 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/10 13:14:45 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static t_parser_context	*init_parset_ctx(t_token *tokens, char **envcp)
 	return (ctx);
 }
 
-static int process_token(t_parser_context *ctx)
+static int	process_token(t_parser_context *ctx)
 {
 	int	type;
 	int	ret;

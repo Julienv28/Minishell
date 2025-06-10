@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   arguments.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:06:51 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/09 16:14:36 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/10 13:20:34 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,8 @@ int	extract_word(char **str, int *i, char **word, int *start)
 	return (has_quotes || tab[0] || tab[1]);
 }
 
-static int	init_and_extract_word(char **str, int *i, char **word, int *is_quoted)
+static int	init_and_extract_word(char **str, int *i, char **word,
+		int *is_quoted)
 {
 	int	start;
 	int	quote_status;
