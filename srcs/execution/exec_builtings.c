@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:29:59 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 15:14:44 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/10 15:38:21 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ static int	handle_exit_builtin(char **args, char ***envcp, t_com_list *cmd)
 int	handle_export(char **args, char ***envcp)
 {
 	int	exit_status;
-	//int	all_expanded_empty;
 
 	if (!args[1])
 	{
@@ -32,13 +31,6 @@ int	handle_export(char **args, char ***envcp)
 	if (check_events(args[1]) == 1)
 		return (1);
 	exit_status = handle_initial_errors(args);
-	//all_expanded_empty = expand_and_check(args, envcp);
-	// if (all_expanded_empty)
-	// {
-	// 	if (exit_status)
-	// 		return (1);
-	// 	return (export_no_args(*envcp));
-	// }
 	process_valid_exports(args, envcp, &exit_status);
 	return (exit_status);
 }
@@ -81,51 +73,3 @@ int	exec_builting(char **args, char ***envcp, t_com_list *cmd)
 		return (handle_unset(args, envcp));
 	return (g_exit_status);
 }
-
-// int	exec_builting(char **args, char ***envcp, t_com_list *cmd)
-// {
-// 	if (ft_strcmp(args[0], "exit") == 0)
-// 	{
-// 		ft_freeenvp(*envcp);
-// 		return (ft_exit(args, 1, cmd), 0);
-// 	}
-// 	else if (ft_strcmp(args[0], "cd") == 0)
-// 		return (ft_cd(args, envcp));
-// 	else if (ft_strcmp(args[0], "pwd") == 0)
-// 		return (ft_pwd(args, envcp));
-// 	else if (ft_strcmp(args[0], "echo") == 0)
-// 		return (ft_echo(args, envcp), 0);
-// 	else if (ft_strcmp(args[0], "export") == 0)
-// 	{
-// 		if (!args[1])
-// 			return (ft_env(*envcp), 0);
-// 		else
-// 		{
-// 			if (check_events(args[1]) == 0)
-// 				return (ft_export(args, envcp));
-// 			else
-// 				return (1);
-// 		}
-// 	}
-// 	else if (ft_strcmp(args[0], "env") == 0)
-// 	{
-// 		if (args[1] && args[1][0] == '-')
-// 		{
-// 			printf("bash: env: -%c: invalid option\n", args[1][1]);
-// 			g_exit_status = 2;
-// 			return (g_exit_status);
-// 		}
-// 		else
-// 			return (ft_env(*envcp), 0);
-// 	}
-// 	else if (ft_strcmp(args[0], "unset") == 0)
-// 	{
-// 		if (!args[1])
-// 			return (0);
-// 		if (check_events(args[1]) == 0)
-// 			return (ft_unset(args, envcp));
-// 		else
-// 			return (1);
-// 	}
-// 	return (g_exit_status);
-// }

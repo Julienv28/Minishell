@@ -1,6 +1,5 @@
 #include "../includes/minishell.h"
 
-// Ouvrir le fichiers d'entrée d'une commande
 int	open_file_cmd(char *infile)
 {
 	int	fd;
@@ -13,7 +12,6 @@ int	open_file_cmd(char *infile)
 	return (fd);
 }
 
-// Ouvrir le fichiers de sortie d'une commande
 int	open_outfile(char *outfile, int append)
 {
 	int	fd;
@@ -29,7 +27,6 @@ int	open_outfile(char *outfile, int append)
 	return (fd);
 }
 
-// Ouvrir le fichiers d'erreur d'une commande
 int	open_errfile(char *errfile)
 {
 	int	fd;

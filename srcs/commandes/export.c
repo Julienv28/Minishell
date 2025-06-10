@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:36 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 15:20:25 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/10 15:39:48 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,6 @@ int	process_export_entry(char *arg, char ***envcp, int *exit_status)
 	return (0);
 }
 
-// affiche les variables d’environnement sans arguments
 int	export_no_args(char **envp)
 {
 	int	i;
@@ -105,6 +104,7 @@ int	export_no_args(char **envp)
 	}
 	return (0);
 }
+
 /*
 // Fonction principale
 int	ft_export(char **args, char ***envcp)

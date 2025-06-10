@@ -1,18 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   initialisation_args.c                              :+:      :+:    :+:   */
+/*   create_cmd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 10:25:54 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/05 16:27:59 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/10 15:43:07 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-// Crée une nouvelle commande dans la liste de commande
 t_com_list	*list_new(char *command)
 {
 	t_com_list	*new;
@@ -33,7 +32,6 @@ t_com_list	*list_new(char *command)
 	return (new);
 }
 
-// Trouve le dernier élément de la liste de commandes
 t_com_list	*get_last(t_com_list *list)
 {
 	while (list && list->next != NULL)
@@ -41,7 +39,6 @@ t_com_list	*get_last(t_com_list *list)
 	return (list);
 }
 
-// Ajoute une nouvelle commande à la fin de la liste des commandes
 void	add_bottom(t_com_list **list, t_com_list *new)
 {
 	t_com_list	*end_new;
@@ -76,7 +73,6 @@ t_com_list	*fill_values(char **commands)
 	return (list);
 }
 
-// ajouter un fichier à la liste
 void	add_outfile(t_file_list **list, char *filename, int flag)
 {
 	t_file_list	*new;

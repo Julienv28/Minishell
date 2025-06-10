@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   arguments_2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 16:13:44 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/09 17:54:34 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/10 15:41:34 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,51 +71,7 @@ int	prompt_for_quotes(char **str)
 	close(stdin_copy);
 	return (g_exit_status);
 }
-/*
-int	prompt_for_quotes(char **str)
-{
-	int		status;
-	int		stdin_copy;
-	char	*input;
 
-	stdin_copy = dup(STDIN_FILENO);
-	if (stdin_copy == -1)
-	{
-		perror("dup");
-		return (-1);
-	}
-	ensure_newline_at_end(str);
-	while (check_mismatched_quotes(*str) == 1)
-	{
-		g_exit_status = 0;
-		signal(SIGINT, handler_sigint_prompt);
-		input = readline("> ");
-		dup2(stdin_copy, STDIN_FILENO);
-		signal(SIGINT, handler_sigint);
-		if (g_exit_status == 130)
-		{
-			close(stdin_copy);
-			return (free(input), 1);
-		}
-		if (!input)
-		{
-			ft_putstr_fd("minishell: unexpected EOF while looking for \
-				matching `''\n", STDERR_FILENO);
-			ft_putstr_fd("syntax error: unexpected end of \
-				file\n", STDERR_FILENO);
-			close(stdin_copy);
-			return (1);
-		}
-		status = update_str_with_input(str, input);
-		free(input);
-		if (status == -1)
-			return (close(stdin_copy), -1);
-	}
-	close(stdin_copy);
-	return (g_exit_status);
-}*/
-
-// Vérification des guillemets
 int	check_mismatched_quotes(char *str)
 {
 	int	single_quote;

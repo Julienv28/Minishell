@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 14:23:42 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 14:59:18 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/10 15:38:37 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ char	*prepare_export_string(char *arg, char **envp, char **key, char **value)
 {
 	char	*equal;
 	char	*replaced;
-	//char	*tmp;
 
 	*key = NULL;
 	*value = NULL;

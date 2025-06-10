@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 14:47:48 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/10 15:38:53 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -228,7 +228,7 @@ int					ft_cd(char **args, char ***envcp);
 int					ft_pwd(char **args, char ***envcp);
 int					ft_exit(char **args, int in_child, t_com_list *cmd);
 void				cleanup_and_exit(int code, t_com_list *cmd);
-int					ft_export(char **arg, char ***envcp);
+//int					ft_export(char **arg, char ***envcp);
 int					handle_export(char **args, char ***envcp);
 void				free_export_vars(char *key, char *value, char *replaced);
 int					process_export_entry(char *arg, char ***envcp, int *exit_status);

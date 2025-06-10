@@ -68,6 +68,7 @@ int	expand_and_check(char **args, char ***envcp)
 		i++;
 	}
 }*/
+
 void	process_valid_exports(char **args, char ***envcp, int *status)
 {
 	int		i;
@@ -76,16 +77,14 @@ void	process_valid_exports(char **args, char ***envcp, int *status)
 	i = 1;
 	while (args[i])
 	{
-		// Expansion de l'argument brut
 		expanded = replace_all_variables(args[i], *envcp, 0, 1);
 		if (!expanded || expanded[0] == '\0')
 		{
-			// Si l'expansion donne une chaîne vide : export sans argument
 			free(expanded);
 			if (*status == 0)
 				*status = export_no_args(*envcp); // à toi d’implémenter
 			i++;
-			continue;
+			continue ;
 		}
 		process_export_entry(expanded, envcp, status);
 		free(expanded);

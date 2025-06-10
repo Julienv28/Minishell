@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:42:18 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 12:31:07 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/10 15:43:52 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,40 +94,3 @@ void	minishell_loop(char ***envcp)
 		continue ;
 	}
 }
-/*
-void	minishell_loop(char ***envcp)
-{
-	char		*input;
-    int         ret;
-
-	while (1)
-	{
-		set_signal_action();
-		input = readline(GREEN "minishell$ " RESET);
-		if (!input)
-		{
-			if (g_exit_status == 130)
-			{
-				free(input);
-				g_exit_status = 0;
-				continue;
-			}
-			exit_shell(*envcp);
-		}
-		add_history(input);
-		ret = handle_line(input, envcp);
-		if (ret == 1 && g_exit_status == 130)
-		{
-			// printf("[LOOP] heredoc interrompu, retour au prompt\n");
-			g_exit_status = 0;
-			continue ;
-		}
-		if (!ret)
-		{
-			// printf("[LOOP 5] handle_line a retourné false\n");
-			free(input);
-			continue ;
-		}
-		free(input);
-	}
-}*/

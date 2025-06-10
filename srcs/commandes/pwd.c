@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pique <pique@student.42.fr>                +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 16:04:31 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/07 14:14:24 by pique            ###   ########.fr       */
+/*   Updated: 2025/06/10 15:40:03 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,6 @@ char	*get_env_value(char *name, char **envp)
 	return (NULL);
 }
 
-// PWD
-// Affiche le chemin absolu du répertoire courant.
 int	ft_pwd(char **args, char ***envcp)
 {
 	char	path[1024];
