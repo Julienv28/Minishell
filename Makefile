@@ -51,6 +51,7 @@ SRCS        = 	$(SRC_DIR)/main.c \
 				$(SRC_DIR)/expand_var/handle_quote_dollard.c \
 				$(SRC_DIR)/commandes/echo.c \
 				$(SRC_DIR)/commandes/echo_2.c \
+				$(SRC_DIR)/commandes/echo_3.c \
 				$(SRC_DIR)/commandes/cd.c \
 				$(SRC_DIR)/commandes/pwd.c \
 				$(SRC_DIR)/commandes/exit.c \
