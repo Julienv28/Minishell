@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_redirections.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 13:46:30 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 09:28:13 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/10 15:50:04 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ static int	handle_heredoc_redir(t_parser_context *ctx, char *filename)
 			return (1);
 		return (-1);
 	}
+	free (cleaned_limiter);
 	ret = assign_heredoc_to_ctx(ctx, heredoc_name);
 	free(heredoc_name);
 	return (ret);
@@ -41,7 +42,6 @@ static int	handle_input_redir(t_parser_context *ctx, char *filename)
 	char	*expanded;
 
 	expanded = replace_all_variables(filename, ctx->envcp, 0, 1);
-	free(filename);
 	if (!expanded)
 		return (-1);
 	if (ctx->current_cmd)
@@ -68,7 +68,6 @@ static int	handle_outdir(t_parser_context *ctx, char *filename, int redir_type)
 	if (fd < 0)
 	{
 		perror(filename);
-		free(filename);
 		return (-1);
 	}
 	close(fd);
@@ -84,7 +83,7 @@ static int	handle_outdir(t_parser_context *ctx, char *filename, int redir_type)
 		ctx->pending_outfile = ft_strdup(filename);
 		ctx->pending_flag_out = flag;
 	}
-	return (free(filename), 0);
+	return (0);
 }
 
 static int	exec_redir(t_parser_context *ctx, int type, char *filename)

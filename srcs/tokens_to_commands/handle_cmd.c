@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 13:45:38 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/09 14:44:34 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/10 14:20:28 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,11 @@ static void	init_cmd(t_com_list *new_cmd, char *expanded)
 	new_cmd->args[0] = ft_strdup(expanded);
 	new_cmd->args[1] = NULL;
 	new_cmd->heredoc_fd = -1;
+}
+
+int	is_empty_quoted(char *str)
+{
+	return (str && ((strcmp(str, "\"\"") == 0) || (strcmp(str, "''") == 0)));
 }
 
 static void	assign_redirs(t_parser_context *ctx, t_com_list *new_cmd)
@@ -49,12 +54,21 @@ int	handle_cmd_token(t_parser_context *ctx)
 
 	if (!ctx->current_token->value)
 	{
-		return (fprintf(stderr, "Erreur : token CMD avec valeur NULL\n"), 0);
 		ctx->current_token = ctx->current_token->next;
 		return (0);
 	}
 	expanded = replace_all_variables(ctx->current_token->value,
 			ctx->envcp, 0, 1);
+	if (!expanded)
+        return -1;
+	if (expanded[0] == '\0')
+    {
+        if (is_empty_quoted(ctx->current_token->value))
+			g_exit_status = 127;
+		free(expanded);
+		ctx->current_token = ctx->current_token->next;
+		return (0);
+    }
 	new_cmd = list_new(expanded);
 	if (!new_cmd)
 		return (free(expanded), -1);
