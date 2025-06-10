@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   echo_2.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/10 10:49:04 by juvitry           #+#    #+#             */
+/*   Updated: 2025/06/10 11:08:25 by juvitry          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 void	copy_cleaned(const char *str, char *res)
@@ -54,6 +66,8 @@ char	*clean_spaces(char *str)
 		return (NULL);
 	result = remove_extra_spaces(trimmed);
 	free(trimmed);
+	if (!result)
+		return (NULL);
 	return (result);
 }
 

@@ -6,11 +6,49 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:42:01 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/06 16:12:15 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/10 11:09:29 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+static char	*unescape_backslashes(const char *str)
+{
+	int		i;
+	int		j;
+	int		count;
+	char	*res;
+
+	i = 0;
+	j = 0;
+	res = malloc(ft_strlen(str) + 1);
+	if (!res)
+		return (NULL);
+	while (str[i])
+	{
+		if (str[i] == '\\')
+		{
+			count = 0;
+			while (str[i + count] == '\\')
+				count++;
+			int pairs = count / 2;
+			while (pairs--)
+				res[j++] = '\\';
+			if (count % 2 == 1)
+			{
+				i += count;
+				if (str[i])
+					res[j++] = str[i++];
+			}
+			else
+				i += count;
+		}
+		else
+			res[j++] = str[i++];
+	}
+	res[j] = '\0';
+	return (res);
+}
 
 char	*build_spaced_result(char *arg, int i, int len, char **envcp)
 {
@@ -74,6 +112,7 @@ void	ft_echo(char **args, char ***envcp)
 	int		i;
 	int		newline;
 	char	*patched;
+	char	*unescaped;
 
 	i = 1;
 	newline = 1;
@@ -84,7 +123,11 @@ void	ft_echo(char **args, char ***envcp)
 	}
 	while (args[i])
 	{
-		patched = add_space_if_needed(args[i], *envcp);
+		unescaped = unescape_backslashes(args[i]);
+		if (!unescaped)
+			return ;
+		patched = add_space_if_needed(unescaped, *envcp);
+		free(unescaped);
 		if (patched)
 		{
 			ft_putstr_fd(patched, STDOUT_FILENO);
