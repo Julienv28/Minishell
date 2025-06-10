@@ -1,10 +1,25 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   free_building.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/10 12:01:30 by opique            #+#    #+#             */
+/*   Updated: 2025/06/10 12:28:47 by opique           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 void	free_export_vars(char *key, char *value, char *replaced)
 {
-	free(key);
-	free(value);
-	free(replaced);
+	if (key && key != replaced)
+		free(key);
+	if (value && value != replaced && value != key)
+		free(value);
+	if (replaced)
+		free(replaced);
 }
 
 // Free environnement

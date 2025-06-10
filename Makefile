@@ -60,6 +60,7 @@ SRCS        = 	$(SRC_DIR)/main.c \
 				$(SRC_DIR)/commandes/env.c \
 				$(SRC_DIR)/commandes/free_building.c \
 				$(SRC_DIR)/commandes/utils.c \
+				$(SRC_DIR)/commandes/handle_utils.c \
 				$(SRC_DIR)/execution/exec.c \
 				$(SRC_DIR)/signal.c \
 				$(SRC_DIR)/commandes/unset.c \

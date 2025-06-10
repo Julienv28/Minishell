@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell_loop.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:42:18 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/09 17:53:09 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/10 12:31:07 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void	handle_input_error(char *input)
 int	process_input(char *input, char ***envcp)
 {
 	int	ret;
-    
+
 	ret = handle_line(input, envcp);
 	if (ret == 1 && g_exit_status == 130)
 	{
@@ -91,7 +91,7 @@ void	minishell_loop(char ***envcp)
 	add_history(input);
 	ret = process_input(input, envcp);
 	if (ret == 1)
-		continue;
+		continue ;
 	}
 }
 /*

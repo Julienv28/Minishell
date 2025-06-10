@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 09:28:35 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/10 12:30:20 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -229,8 +229,10 @@ int					ft_pwd(char **args, char ***envcp);
 int					ft_exit(char **args, int in_child, t_com_list *cmd);
 void				cleanup_and_exit(int code, t_com_list *cmd);
 int					ft_export(char **arg, char ***envcp);
+int					handle_export(char **args, char ***envcp);
 void				free_export_vars(char *key, char *value, char *replaced);
-int					handle_export_error(char *replaced);
+int					process_export_entry(char *arg, char ***envcp, int *exit_status);
+int					handle_export_error(char *replaced, char *arg);
 char				*build_env_entry(char *key, char *value);
 char				*get_env_value(char *name, char **envp);
 char				*get_value_cleaned(char *name, char **envp);
@@ -268,6 +270,9 @@ void				minishell_loop(char ***envcp);
 int					handle_null_tokens(t_token *tokens, char *input);
 void				exit_shell(char **envcp);
 void				init_redirs(t_redirs *fds);
+int					handle_initial_errors(char **args);
+int					expand_and_check(char **args, char ***envcp);
+void				process_valid_exports(char **args, char ***envcp, int *status);
 
 //Pipes
 void				wait_children(pid_t last_pid);
