@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:36 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 16:36:49 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/11 12:46:49 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,22 +99,3 @@ int	export_no_args(char **envp)
 	}
 	return (0);
 }
-
-/*
-// Fonction principale
-int	ft_export(char **args, char ***envcp)
-{
-	int	i;
-	int	exit_status;
-
-	i = 1;
-	exit_status = 0;
-	if (!args[1])
-		return (export_no_args(*envcp));
-	while (args[i])
-	{
-		process_export_entry(args[i], envcp, &exit_status);
-		i++;
-	}
-	return (exit_status);
-}*/

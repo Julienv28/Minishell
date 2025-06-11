@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 15:38:53 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/11 09:43:28 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@
 # define ARG 7
 # define ERR_REDIR 8
 
-// Variable globale pour suivre l'état des erreurs
 extern int	g_exit_status;
 
 // Structures
@@ -91,7 +90,8 @@ typedef struct s_token
 }				t_token;
 
 
-typedef struct s_expand {
+typedef struct s_expand
+{
 	char	**envcp;
 	int		is_heredoc;
 	int		quoted;
@@ -166,8 +166,6 @@ char				*get_variable_name(char *str, t_expand *var,
 char				*handle_brace_variable(char *str, char *res, t_expand *var);
 char				*handle_quotes_and_dollar(char *str, char *res,
 						t_expand *var, int *quotes);
-//char				*replace_all_variables(char *str, char **envcp,
-//						int avoid_expand);
 char				*replace_all_variables(char *str, char **envcp,
 						int is_heredoc, int expand_vars);
 char				*expand_env_variable(char *str, char *res, t_expand *var);
@@ -228,7 +226,6 @@ int					ft_cd(char **args, char ***envcp);
 int					ft_pwd(char **args, char ***envcp);
 int					ft_exit(char **args, int in_child, t_com_list *cmd);
 void				cleanup_and_exit(int code, t_com_list *cmd);
-//int					ft_export(char **arg, char ***envcp);
 int					handle_export(char **args, char ***envcp);
 void				free_export_vars(char *key, char *value, char *replaced);
 int					process_export_entry(char *arg, char ***envcp, int *exit_status);
@@ -272,7 +269,6 @@ int					handle_null_tokens(t_token *tokens, char *input);
 void				exit_shell(char **envcp);
 void				init_redirs(t_redirs *fds);
 int					handle_initial_errors(char **args);
-//int					expand_and_check(char **args, char ***envcp);
 void				process_valid_exports(char **args, char ***envcp, int *status);
 
 //Pipes
@@ -309,9 +305,8 @@ char				*ft_strjoin_free(char *s1, char *s2);
 char 				*free_all(char *before, char *var_key, char *spaced, char *value);
 int					syntax_error(void);
 char				*expand_clean_word(char *word, char **envcp);
-char				*prepare_export_string(char *arg, char **envp, char **key, char **value);
-int	skip_spaces(char *str, int *i);
-int	limiter_quoted(const char *str);
-char	*handle_quotes_and_dollar(char *str, char *res, t_expand *var, int *quotes);
+char    *prepare_export_string(char *arg, char **envp, char **key, char **value);
+int                 skip_spaces(char *str, int *i);
+char	            *handle_quotes_and_dollar(char *str, char *res, t_expand *var, int *quotes);
 
 #endif
