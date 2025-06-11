@@ -19,6 +19,5 @@ char	*expand_clean_word(char *word, char **envcp)
 
 	expanded = replace_var(word, envcp, 0, 1);
 	cleaned = remove_quotes_or_slash(expanded);
-	free(expanded);
 	return (cleaned);
 }

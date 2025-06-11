@@ -42,6 +42,7 @@ int	handle_initial_errors(char **args)
 	while (args[i])
 	{
 		clean_arg = remove_quotes_or_slash(args[i]);
+		args[i] = ft_strdup(clean_arg);
 		free(clean_arg);
 		i++;
 	}

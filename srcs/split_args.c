@@ -75,5 +75,6 @@ char	*remove_quotes_or_slash(char *str)
 	if (!new_str)
 		return (NULL);
 	copy_without_quotes(str, new_str);
+	free (str);
 	return (new_str);
 }
