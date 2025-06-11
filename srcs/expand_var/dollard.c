@@ -3,14 +3,36 @@
 /*                                                        :::      ::::::::   */
 /*   dollard.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 15:25:11 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 15:41:14 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/11 14:41:17 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+static char	*get_expanded_value(char *var_name, t_expand *var, int *need_free)
+{
+	char	*env_value;
+
+	if (var->quoted)
+	{
+		env_value = get_env_value(var_name, var->envcp);
+		if (env_value == NULL)
+			return (NULL);
+		*need_free = 0;
+	}
+	else
+	{
+		env_value = get_value_cleaned(var_name, var->envcp);
+		if (!env_value)
+			env_value = "";
+		else
+			*need_free = 1;
+	}
+	return (env_value);
+}
 
 char	*expand_env_variable(char *str, char *res, t_expand *var)
 {
@@ -19,18 +41,13 @@ char	*expand_env_variable(char *str, char *res, t_expand *var)
 	char	*env_value;
 	int		need_free;
 
-	need_free = 0;
 	if (!var || !var->envcp)
 		return (NULL);
+	need_free = 0;
 	get_variable_name(str, var, var_name);
-	if (var->quoted)
-		env_value = get_env_value(var_name, var->envcp);
-	else
-		env_value = get_value_cleaned(var_name, var->envcp);
+	env_value = get_expanded_value(var_name, var, &need_free);
 	if (!env_value)
-		env_value = "";
-	else if (!var->quoted)
-		need_free = 1;
+		return (NULL);
 	tmp = ft_strjoin(res, env_value);
 	if (!tmp)
 		return (printf("[ERROR] ft_strjoin failed\n"), NULL);

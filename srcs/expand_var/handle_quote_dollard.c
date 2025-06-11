@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_quote_dollard.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 15:59:22 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/09 16:05:46 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/11 10:48:38 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

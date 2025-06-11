@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_cmd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 13:45:38 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 16:47:08 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/11 10:49:04 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,52 @@ static void	assign_redirs(t_parser_context *ctx, t_com_list *new_cmd)
 	}
 }
 
+static int	create_and_assign_cmd(t_parser_context *ctx, char *expanded)
+{
+	t_com_list	*new_cmd;
+
+	new_cmd = list_new(expanded);
+	if (!new_cmd)
+		return (free(expanded), -1);
+	init_cmd(new_cmd, expanded);
+	free(expanded);
+	assign_redirs(ctx, new_cmd);
+	if (!ctx->cmd_list)
+		ctx->cmd_list = new_cmd;
+	else
+		add_bottom(&ctx->cmd_list, new_cmd);
+	ctx->current_cmd = new_cmd;
+	return (0);
+}
+
+int	handle_cmd_token(t_parser_context *ctx)
+{
+	char	*expanded;
+
+	if (!ctx->current_token->value)
+	{
+		ctx->current_token = ctx->current_token->next;
+		return (0);
+	}
+	expanded = replace_all_variables(ctx->current_token->value,
+			ctx->envcp, 0, 1);
+	if (!expanded)
+		return (-1);
+	if (expanded[0] == '\0')
+	{
+		if (is_empty_quoted(ctx->current_token->value))
+			g_exit_status = 127;
+		free(expanded);
+		ctx->current_token = ctx->current_token->next;
+		return (0);
+	}
+	if (create_and_assign_cmd(ctx, expanded) == -1)
+		return (-1);
+	ctx->current_token = ctx->current_token->next;
+	return (0);
+}
+
+/*
 int	handle_cmd_token(t_parser_context *ctx)
 {
 	char		*expanded;
@@ -82,4 +128,4 @@ int	handle_cmd_token(t_parser_context *ctx)
 	ctx->current_cmd = new_cmd;
 	ctx->current_token = ctx->current_token->next;
 	return (0);
-}
+}*/

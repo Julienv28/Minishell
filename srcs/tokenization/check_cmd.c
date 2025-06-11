@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_cmd.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 15:19:26 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 16:55:18 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/11 10:02:57 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,7 @@ int	check_pipe(char *str, int i)
 		return (-1);
 	if (str[i] == '|' && str[i + 1] == '|' && str[i + 1])
 	{
-		printf("Erreur : syntax error near unexpected token `||'\n");
-		return (-1);
+		return (printf("Erreur : unexpected syntax near token `||'\n"), -1);
 	}
 	if (i == 0)
 	{

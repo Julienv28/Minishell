@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 16:33:16 by opique            #+#    #+#             */
-/*   Updated: 2025/06/10 16:33:29 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/11 13:39:14 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,58 +47,29 @@ int	handle_initial_errors(char **args)
 	}
 	return (status);
 }
-/*
-int	expand_and_check(char **args, char ***envcp)
-{
-	int		i;
-	int		all_empty;
-	char	*expanded;
-
-	i = 1;
-	all_empty = 1;
-	while (args[i])
-	{
-		expanded = expand_arg(args[i], *envcp);
-		printf("expand = %s\n", expanded);
-		free(args[i]);
-		args[i] = expanded;
-		if (expanded && expanded[0] != '\0')
-			all_empty = 0;
-		i++;
-	}
-	return (all_empty);
-}*/
-/*void	process_valid_exports(char **args, char ***envcp, int *status)
-{
-	int	i;
-
-	i = 1;
-	while (args[i])
-	{
-		if (args[i][0] != '\0')
-			process_export_entry(args[i], envcp, status);
-		i++;
-	}
-}*/
 
 void	process_valid_exports(char **args, char ***envcp, int *status)
 {
 	int		i;
 	char	*expanded;
+	int		is_empty_literal;
 
 	i = 1;
 	while (args[i])
 	{
+		is_empty_literal = (args[i][0] == '"'
+				&& args[i][1] == '"' && args[i][2] == '\0');
 		expanded = replace_all_variables(args[i], *envcp, 0, 1);
-		if (!expanded || expanded[0] == '\0')
+		if (is_empty_literal || (expanded && expanded[0] == '\0'
+				&& args[i][0] != '$'))
 		{
-			free(expanded);
-			if (*status == 0)
-				*status = export_no_args(*envcp);
-			i++;
-			continue ;
+			printf("bash: export: `': not a valid identifier\n");
+			*status = 1;
 		}
-		process_export_entry(expanded, envcp, status);
+		else if (args[i][0] == '$' && (!expanded || expanded[0] == '\0'))
+			export_no_args(*envcp);
+		else
+			process_export_entry(expanded, envcp, status);
 		free(expanded);
 		i++;
 	}
