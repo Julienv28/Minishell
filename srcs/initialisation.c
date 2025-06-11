@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initialisation.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 16:27:35 by opique            #+#    #+#             */
-/*   Updated: 2025/06/10 16:27:37 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/11 16:56:25 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	check_isatty(void)
 	return (1);
 }
 
-void	init_cmds(t_com_list *command)
+void	init_cmds(t_com *command)
 {
 	command->outfile = NULL;
 	command->infile = NULL;

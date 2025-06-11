@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   minishell_loop.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:42:18 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 16:50:39 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/11 17:27:56 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static int	parse_input(char *input, char **envp, t_token **tokens)
+static int	parse_input(char *input, char **envp, t_tkn **tokens)
 {
 	*tokens = create_tokens(&input, envp);
 	if (!*tokens)
@@ -27,8 +27,8 @@ static int	parse_input(char *input, char **envp, t_token **tokens)
 
 static int	handle_line(char *input, char ***envcp)
 {
-	t_token		*tokens;
-	t_com_list	*commands;
+	t_tkn		*tokens;
+	t_com		*commands;
 
 	if (!parse_input(input, *envcp, &tokens))
 		return (0);

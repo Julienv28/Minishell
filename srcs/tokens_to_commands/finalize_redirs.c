@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   finalize_redirs.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 15:32:18 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 15:43:13 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/11 16:58:29 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static void	reinit_pending(t_parser_context *ctx)
 	ctx->pending_all_outfiles = NULL;
 }
 
-static void	assign_pending_redirs(t_com_list *cmd, t_parser_context *ctx)
+static void	assign_pending_redirs(t_com *cmd, t_parser_context *ctx)
 {
 	cmd->heredoc_fd = -1;
 	if (ctx->pending_outfile)
@@ -40,9 +40,9 @@ static void	assign_pending_redirs(t_com_list *cmd, t_parser_context *ctx)
 		cmd->errfile = ctx->pending_errfile;
 }
 
-t_com_list	*finalize_pending_redirs(t_parser_context *ctx)
+t_com	*finalize_pending_redirs(t_parser_context *ctx)
 {
-	t_com_list	*new_cmd;
+	t_com	*new_cmd;
 
 	if ((ctx->pending_outfile || ctx->pending_infile) && !ctx->current_cmd)
 	{

@@ -3,24 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   processing_tokens.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:56:26 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/09 10:08:05 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/11 17:12:26 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	process_pipe(char *str, int *i, t_token **tokens, int *expect_cmd)
+int	process_pipe(char *str, int *i, t_tkn **tkn, int *is_cmd)
 {
 	if (str[*i] == '|')
 	{
 		if (check_pipe(str, *i) == -1)
 			return (-1);
-		add_token(tokens, "|", PIPE, 0);
+		add_token(tkn, "|", PIPE, 0);
 		(*i)++;
-		*expect_cmd = 1;
+		*is_cmd = 1;
 		return (1);
 	}
 	return (0);
@@ -37,21 +37,21 @@ int	process_special_chars(char *str, int i)
 	return (0);
 }
 
-int	process_redirection(char *str, int *i, t_token **tokens, char **envcp)
+int	process_redir(char *str, int *i, t_tkn **tkn, char **envcp)
 {
 	int	redirection_status;
 
-	redirection_status = handle_redirection(str, i, tokens, envcp);
+	redirection_status = handle_redir(str, i, tkn, envcp);
 	if (redirection_status == -1)
 		return (-1);
 	return (redirection_status);
 }
 
-int	process_word(char **str, int *i, t_token **tokens, int *expect_cmd)
+int	process_word(char **str, int *i, t_tkn **tkn, int *is_cmd)
 {
 	int	ret;
 
-	ret = handle_word(str, i, tokens, expect_cmd);
+	ret = handle_word(str, i, tkn, is_cmd);
 	if (ret == -1)
 		return (-1);
 	if (ret == 1)

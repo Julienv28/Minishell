@@ -6,7 +6,7 @@
 /*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/11 09:43:28 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/11 17:20:39 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@
 # include <fcntl.h>
 # include <limits.h>
 # include <errno.h>
-# include <signal.h> // gerer les signaux
+# include <signal.h>
 
 # define MAX_ARGS 1024
 
@@ -58,9 +58,9 @@ typedef struct s_file_list
 	int					flag;
 }			t_file_list;
 
-typedef struct s_com_list
+typedef struct s_com
 {
-	char				*command;
+	char				*cmd;
 	char				**args;
 	char				**envcp;
 	char				*path;
@@ -72,8 +72,8 @@ typedef struct s_com_list
 	int					flag_in;
 	int					flag_out;
 	t_file_list			*all_outfilles;
-	struct s_com_list	*next;
-}						t_com_list;
+	struct s_com		*next;
+}						t_com;
 
 typedef struct s_minishell
 {
@@ -81,14 +81,13 @@ typedef struct s_minishell
 	int			have_pipes;
 }			t_minishell;
 
-typedef struct s_token
+typedef struct s_tkn
 {
 	char			*value;
 	int				type;
 	int				is_quoted;
-	struct s_token	*next;
-}				t_token;
-
+	struct s_tkn	*next;
+}				t_tkn;
 
 typedef struct s_expand
 {
@@ -99,14 +98,13 @@ typedef struct s_expand
 	int		*i;
 }	t_expand;
 
-
 typedef struct s_execinfo
 {
-	t_com_list	*curr;
-	int			*prev_fd;
-	int			pipefd[2];
-	pid_t		pid;
-	pid_t		*last_pid;
+	t_com	*curr;
+	int		*prev_fd;
+	int		pipefd[2];
+	pid_t	pid;
+	pid_t	*last_pid;
 }	t_execinfo;
 
 typedef struct s_filename
@@ -120,9 +118,9 @@ typedef struct s_filename
 
 typedef struct s_parser_context
 {
-	t_com_list	*cmd_list;
-	t_com_list	*current_cmd;
-	t_com_list	*new_cmd;
+	t_com		*cmd_list;
+	t_com		*current_cmd;
+	t_com		*new_cmd;
 	char		*filename;
 	char		*pending_infile;
 	int			pending_flag_in;
@@ -130,7 +128,7 @@ typedef struct s_parser_context
 	int			pending_flag_out;
 	char		*pending_errfile;
 	t_file_list	*pending_all_outfiles;
-	t_token		*current_token;
+	t_tkn		*current_token;
 	char		**envcp;
 }	t_parser_context;
 
@@ -141,80 +139,70 @@ typedef struct s_redirs
 	int	err;
 }	t_redirs;
 
-
-// Message prompt + history
-int					check_isatty(void);
-
-int	                is_blank_line(const char *str);
-void	            init_redirs(t_redirs *fds);
-void	            init_signals(void);
-void				fake_exit_builtin(char **args, t_com_list *cmds);
-int					is_valid_numeric_argument(char *str);
-unsigned long long	ft_atoull(const char *str);
-int					has_pipe(t_com_list *command);
+// INITIALISATION
+void				init_redirs(t_redirs *fds);
+void				init_redirs(t_redirs *fds);
+void				init_signals(void);
 
 // Signaux
 void				set_signal_action(void);
 void				handler_sigint_prompt(int sig);
-char 				*replace_variable_or_special(char *str, char *res, t_expand *var);
+void				handler_sigint(int sig);
 char				*append_char(char *res, char c);
 void				heredoc_sigint_handler(int sig);
-char				*handle_special_cases(char *str, char *res, t_expand *var);
-char				*handle_quote(char *str, char *res, t_expand *var);
-char				*get_variable_name(char *str, t_expand *var,
-						char *var_name);
-char				*handle_brace_variable(char *str, char *res, t_expand *var);
-char				*handle_quotes_and_dollar(char *str, char *res,
-						t_expand *var, int *quotes);
-char				*replace_all_variables(char *str, char **envcp,
-						int is_heredoc, int expand_vars);
-char				*expand_env_variable(char *str, char *res, t_expand *var);
+void				set_signals_child(void);
+void				set_signals_parent(void);
+void				reset_signals(void);
 
 // Tokens
-t_token				*add_token(t_token **head, char *str, int type, int is_quoted);
-t_token				*create_tokens(char **str, char **envcp);
-void				free_tokens(t_token *tokens);
+t_tkn				*add_token(t_tkn **head, char *s, int type, int is_quote);
+t_tkn				*create_tokens(char **str, char **envcp);
 char				*concat_command(char *current_command, char *new_part);
 int					parse_redirection(char *str, int *i);
 char				*add_symbol(int type);
-int					handle_word(char **str, int *i, t_token **tokens,
-						int *expect_cmd);
-void				restore_redirections(int mem_fd_in, int mem_fd_out, int mem_fd_err);
-int					ft_redirection(t_com_list *command, int *mem_fd_in, int *mem_fd_out, int *mem_fd_err);
+int					handle_word(char **str, int *i, t_tkn **tkn, int *is_cmd);
+void				restor_redir(int mem_fd_in, int mem_fd_out, int mem_fd_err);
+int					ft_redir(t_com *cmd, int *fd_in, int *fd_out, int *fd_err);
 int					open_file_cmd(char *infile);
 int					open_outfile(char *outfile, int append);
 int					open_errfile(char *errfile);
 int					extract_word(char **str, int *i, char **word, int *start);
 int					update_str_with_input(char **str, char *input);
-int					process_pipe(char *str, int *i, t_token **tokens, int *expect_cmd);
+int					process_pipe(char *str, int *i, t_tkn **tkn, int *is_cmd);
 int					process_special_chars(char *str, int i);
-int					process_redirection(char *str, int *i, t_token **tokens, char **envcp);
-int 				process_word(char **str, int *i, t_token **tokens, int *expect_cmd);
+int					process_redir(char *str, int *i, t_tkn **tkn, char **envcp);
+int					process_word(char **str, int *i, t_tkn **tkn, int *is_cmd);
+t_com				*fill_values(char **commands);
+void				add_bottom(t_com **list, t_com *new);
+t_com				*list_new(char *command);
+int					handle_redir(char *s, int *i, t_tkn **tokens, char **envcp);
+int					prompt_for_quotes(char **str);
+int					is_directory(char *path);
 
 // Tokens To Commands
-t_com_list			*tokens_to_cmds(t_token *tokens, char **envcp);
+t_com				*tokens_to_cmds(t_tkn *tokens, char **envcp);
 void				handle_pipe_token(t_parser_context *ctx);
 int					handle_arg_token(t_parser_context *ctx);
 int					handle_redir_token(t_parser_context *ctx);
 int					handle_cmd_token(t_parser_context *ctx);
-t_com_list			*finalize_pending_redirs(t_parser_context *ctx);
+t_com				*finalize_pending_redirs(t_parser_context *ctx);
 
-
-// Parsing
-t_com_list			*fill_values(char **commands);
-void				add_bottom(t_com_list **list, t_com_list *new);
-t_com_list			*list_new(char *command);
-int					handle_redirection(char *str, int *i, t_token **tokens,
-						char **envcp);
-int	prompt_for_quotes(char **str);
-int					is_directory(char *path);
-void				handler_sigint(int sig);
+// EXPAND VARIABLES
+char				*replace_var_or_spe(char *str, char *res, t_expand *var);
+char				*handle_special_cases(char *str, char *res, t_expand *var);
+char				*replace_var(char *s, char **envcp, int is_hd, int expand);
+char				*expand_env_variable(char *str, char *res, t_expand *var);
+char				*handle_quote(char *str, char *res, t_expand *var);
+char				*variable_name(char *str, t_expand *var, char *var_name);
+char				*handle_brace_variable(char *str, char *res, t_expand *var);
+char				*quote_dol(char *str, char *res, t_expand *var, int *quote);
 
 // check
 int					check_pipe(char *str, int i);
 int					check_redirection(char *str, int *i);
 int					check_mismatched_quotes(char *str);
 int					check_input(char *str, int i);
+int					check_isatty(void);
 
 // Exit
 int					ft_isnumber(char *str);
@@ -224,11 +212,11 @@ void				ft_echo(char **args, char ***envcp);
 char				*add_space_if_needed(char *arg, char **envcp);
 int					ft_cd(char **args, char ***envcp);
 int					ft_pwd(char **args, char ***envcp);
-int					ft_exit(char **args, int in_child, t_com_list *cmd);
-void				cleanup_and_exit(int code, t_com_list *cmd);
+int					ft_exit(char **args, int in_child, t_com *cmd);
+void				cleanup_and_exit(int code, t_com *cmd);
 int					handle_export(char **args, char ***envcp);
 void				free_export_vars(char *key, char *value, char *replaced);
-int					process_export_entry(char *arg, char ***envcp, int *exit_status);
+int					process_export(char *arg, char ***envcp, int *exit_status);
 int					handle_export_error(char *replaced, char *arg);
 char				*build_env_entry(char *key, char *value);
 char				*get_env_value(char *name, char **envp);
@@ -244,69 +232,69 @@ char				*unescape_backslashes(const char *str);
 //Heredoc
 char				*generate_tmp_filename(void);
 void				heredoc_sigint_handler(int sig);
-char				*handle_heredoc(char *limiter, char **envcp,
-						int expand_var);
+char				*handle_hd(char *limiter, char **envcp, int expand_var);
 int					limiter_is_quoted(const char *str);
-char	            *heredoc_cleanup(char *filename, char *limiter, int fd, int status);
-int	                print_heredoc_eof_error(void);
-int	                handle_heredoc_interrupt(char *line, int eof);
-int					assign_heredoc_to_ctx(t_parser_context *ctx, char *heredoc_name);
+char				*hdclean(char *filename, char *limiter, int fd, int status);
+int					print_heredoc_eof_error(void);
+int					handle_heredoc_interrupt(char *line, int eof);
+int					assign_hd_ctx(t_parser_context *ctx, char *heredoc_name);
 
 // Exec
 void				exec_cmd(char **args, char ***envcp);
 int					is_builting(char *cmd);
-int					exec_builting(char **args, char ***envcp, t_com_list *cmd);
+int					exec_builting(char **args, char ***envcp, t_com *cmd);
 char				*get_path(char *cmd, char **envp);
 int					find_line(char **envp, char *path);
 char				*search_path(char **paths, char *cmd);
 int					exec_external(char **args, char ***envcp);
-int					execute(t_com_list *cmds, char ***envcp);
-void				execute_commands(t_com_list *cmd, char ***envcp);
-int					handle_empty_command(t_com_list *cmd, t_redirs *fds);
-int					handle_execution(t_com_list *cmd, char ***envcp, t_redirs *fds);
+int					execute(t_com *cmds, char ***envcp);
+void				execute_commands(t_com *cmd, char ***envcp);
+int					handle_empty_command(t_com *cmd, t_redirs *fds);
+int					handle_execution(t_com *cmd, char ***envcp, t_redirs *fds);
 void				minishell_loop(char ***envcp);
-int					handle_null_tokens(t_token *tokens, char *input);
+int					handle_null_tokens(t_tkn *tokens, char *input);
 void				exit_shell(char **envcp);
-void				init_redirs(t_redirs *fds);
 int					handle_initial_errors(char **args);
-void				process_valid_exports(char **args, char ***envcp, int *status);
+void				fake_exit_builtin(char **args, t_com *cmds);
+void				process_valid(char **args, char ***envcp, int *status);
 
 //Pipes
 void				wait_children(pid_t last_pid);
-void				reset_signals(void);
-void				set_signals_child(void);
-void				set_signals_parent(void);
-void				handle_commands_pipes(char **args, t_com_list *cmds,
-						char ***envcp);
-void				child_proc(t_com_list *curr, int prev_fd,
-						int pipefd[2], char ***envcp);
+void				handle_pipes(char **args, t_com *cmds, char ***envcp);
+void				child(t_com *curr, int prev, int pipefd[2], char ***envcp);
 void				parent_pro(t_execinfo *ex);
-int					exec_pipes(t_com_list *cmds, char **envcp);
-int					fork_exec(t_com_list *curr, int *prev_fd,
-						pid_t *last_pid, char ***envcp);
-int					setup_pipe(t_com_list *curr, int pipefd[2]);
+int					exec_pipes(t_com *cmds, char **envcp);
+int					exec(t_com *curr, int *prev, pid_t *lst_pid, char ***envcp);
+int					setup_pipe(t_com *curr, int pipefd[2]);
 char				**split_pipe_respect_quotes(const char *line);
 int					parse_pipes(char **args);
+int					has_pipe(t_com *command);
 
-// Utils
+// FREE
 void				free_tab(char **tab);
 void				free_file_list(t_file_list *list);
-char				*remove_quotes_or_slash(char *str);
-void				free_cmd(t_com_list *command);
-char				**ft_env_dup(char **envp);
+char				*ft_strjoin_free(char *s1, char *s2);
+char				*free_all(char *first, char *key, char *space, char *value);
 void				ft_freeenvp(char **envcp);
+void				free_cmd(t_com *command);
+void				free_tokens(t_tkn *tokens);
+
+// Utils
+char				*remove_quotes_or_slash(char *str);
+char				**ft_env_dup(char **envp);
 char				**ft_realloc_env(char **envcp, char *new_entry);
-void				init_cmds(t_com_list *command);
+void				init_cmds(t_com *command);
 int					count_ags(char **args);
 int					check_events(char *arg);
 char				*clean_spaces(char *str);
 void				add_outfile(t_file_list **list, char *filename, int flag);
-char				*ft_strjoin_free(char *s1, char *s2);
-char 				*free_all(char *before, char *var_key, char *spaced, char *value);
 int					syntax_error(void);
 char				*expand_clean_word(char *word, char **envcp);
-char    *prepare_export_string(char *arg, char **envp, char **key, char **value);
-int                 skip_spaces(char *str, int *i);
-char	            *handle_quotes_and_dollar(char *str, char *res, t_expand *var, int *quotes);
+char				*export_s(char *arg, char **envp, char **key, char **value);
+int					skip_spaces(char *str, int *i);
+int					is_blank_line(const char *str);
+int					is_valid_numeric_argument(char *str);
 
+// Utils
+unsigned long long	ft_atoull(const char *str);
 #endif

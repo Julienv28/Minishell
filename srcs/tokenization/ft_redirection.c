@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_redirection.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 16:35:46 by opique            #+#    #+#             */
-/*   Updated: 2025/06/10 16:35:48 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/11 17:00:55 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	ft_redirect_out(char *file, int flag, int *fd_out)
 	return (0);
 }
 
-int	ft_redirection_err(t_com_list *cmd, int *fd_err)
+int	ft_redirection_err(t_com *cmd, int *fd_err)
 {
 	int	fd;
 
@@ -56,7 +56,7 @@ int	ft_redirection_err(t_com_list *cmd, int *fd_err)
 	return (0);
 }
 
-int	ft_redirection(t_com_list *cmd, int *fd_in, int *fd_out, int *fd_err)
+int	ft_redir(t_com *cmd, int *fd_in, int *fd_out, int *fd_err)
 {
 	t_file_list	*tmp;
 	int			fd;
@@ -85,7 +85,7 @@ int	ft_redirection(t_com_list *cmd, int *fd_in, int *fd_out, int *fd_err)
 	return (ft_redirection_err(cmd, fd_err));
 }
 
-void	restore_redirections(int mem_fd_in, int mem_fd_out, int mem_fd_err)
+void	restor_redir(int mem_fd_in, int mem_fd_out, int mem_fd_err)
 {
 	if (mem_fd_in != -1)
 	{

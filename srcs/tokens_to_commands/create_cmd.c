@@ -3,26 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   create_cmd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 10:25:54 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 15:43:07 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/11 16:58:16 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-t_com_list	*list_new(char *command)
+t_com	*list_new(char *command)
 {
-	t_com_list	*new;
+	t_com	*new;
 
-	new = malloc(sizeof(t_com_list));
+	new = malloc(sizeof(t_com));
 	if (!new)
 		return (NULL);
 	if (command)
-		new->command = ft_strdup(command);
+		new->cmd = ft_strdup(command);
 	else
-		new->command = NULL;
+		new->cmd = NULL;
 	new->args = NULL;
 	new->is_pipe = 0;
 	new->next = NULL;
@@ -32,16 +32,16 @@ t_com_list	*list_new(char *command)
 	return (new);
 }
 
-t_com_list	*get_last(t_com_list *list)
+t_com	*get_last(t_com *list)
 {
 	while (list && list->next != NULL)
 		list = list->next;
 	return (list);
 }
 
-void	add_bottom(t_com_list **list, t_com_list *new)
+void	add_bottom(t_com **list, t_com *new)
 {
-	t_com_list	*end_new;
+	t_com	*end_new;
 
 	if (!new)
 		return ;
@@ -54,10 +54,10 @@ void	add_bottom(t_com_list **list, t_com_list *new)
 	end_new->next = new;
 }
 
-t_com_list	*fill_values(char **commands)
+t_com	*fill_values(char **commands)
 {
-	t_com_list	*list;
-	int			i;
+	t_com	*list;
+	int		i;
 
 	i = 0;
 	if (commands[i] == NULL)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 16:32:49 by opique            #+#    #+#             */
-/*   Updated: 2025/06/10 16:32:50 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/11 16:56:54 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ int	is_valid_numeric_argument(char *str)
 	return (1);
 }
 
-int	ft_exit(char **args, int in_child, t_com_list *cmd)
+int	ft_exit(char **args, int in_child, t_com *cmd)
 {
 	int	i;
 

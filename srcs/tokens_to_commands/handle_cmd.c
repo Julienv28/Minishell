@@ -6,13 +6,13 @@
 /*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 13:45:38 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/11 10:49:04 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/11 16:58:42 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static void	init_cmd(t_com_list *new_cmd, char *expanded)
+static void	init_cmd(t_com *new_cmd, char *expanded)
 {
 	new_cmd->args = ft_calloc(MAX_ARGS, sizeof(char *));
 	if (!new_cmd->args)
@@ -27,7 +27,7 @@ int	is_empty_quoted(char *str)
 	return (str && ((strcmp(str, "\"\"") == 0) || (strcmp(str, "''") == 0)));
 }
 
-static void	assign_redirs(t_parser_context *ctx, t_com_list *new_cmd)
+static void	assign_redirs(t_parser_context *ctx, t_com *new_cmd)
 {
 	if (ctx->pending_outfile)
 	{
@@ -49,7 +49,7 @@ static void	assign_redirs(t_parser_context *ctx, t_com_list *new_cmd)
 
 static int	create_and_assign_cmd(t_parser_context *ctx, char *expanded)
 {
-	t_com_list	*new_cmd;
+	t_com	*new_cmd;
 
 	new_cmd = list_new(expanded);
 	if (!new_cmd)
@@ -74,7 +74,7 @@ int	handle_cmd_token(t_parser_context *ctx)
 		ctx->current_token = ctx->current_token->next;
 		return (0);
 	}
-	expanded = replace_all_variables(ctx->current_token->value,
+	expanded = replace_var(ctx->current_token->value,
 			ctx->envcp, 0, 1);
 	if (!expanded)
 		return (-1);
@@ -96,14 +96,14 @@ int	handle_cmd_token(t_parser_context *ctx)
 int	handle_cmd_token(t_parser_context *ctx)
 {
 	char		*expanded;
-	t_com_list	*new_cmd;
+	t_com	*new_cmd;
 
 	if (!ctx->current_token->value)
 	{
 		ctx->current_token = ctx->current_token->next;
 		return (0);
 	}
-	expanded = replace_all_variables(ctx->current_token->value,
+	expanded = replace_var(ctx->current_token->value,
 			ctx->envcp, 0, 1);
 	if (!expanded)
 		return (-1);

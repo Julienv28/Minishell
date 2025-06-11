@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 12:00:38 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 16:47:38 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/11 16:43:43 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ char	*generate_tmp_filename(void)
 	return (filename.final);
 }
 
-char	*heredoc_cleanup(char *filename, char *limiter, int fd, int status)
+char	*hdclean(char *filename, char *limiter, int fd, int status)
 {
 	close(fd);
 	free(limiter);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error_handler.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 10:45:29 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 16:26:28 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/11 17:11:50 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int	is_blank_line(const char *str)
 	return (1);
 }
 
-int	handle_null_tokens(t_token *tokens, char *input)
+int	handle_null_tokens(t_tkn *tokens, char *input)
 {
 	if (tokens != NULL)
 		return (1);

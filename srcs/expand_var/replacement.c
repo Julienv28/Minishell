@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   replacement.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 15:35:55 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 16:38:13 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/11 16:48:10 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static char	*handle_double_quotes(char *str, char *res, t_expand *var)
 	}
 }
 
-char	*replace_variable_or_special(char *str, char *res, t_expand *var)
+char	*replace_var_or_spe(char *str, char *res, t_expand *var)
 {
 	char	next;
 

@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   pipes_manager.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 11:33:17 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/05 14:36:36 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/11 16:56:47 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	has_pipe(t_com_list *command)
+int	has_pipe(t_com *command)
 {
 	while (command)
 	{

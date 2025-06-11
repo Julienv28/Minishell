@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free_building.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 12:01:30 by opique            #+#    #+#             */
-/*   Updated: 2025/06/10 15:39:53 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/11 17:20:02 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,14 +52,14 @@ void	free_tab(char **tab)
 	free(tab);
 }
 
-char	*free_all(char *before, char *var_key, char *spaced, char *value)
+char	*free_all(char *first, char *key, char *space, char *value)
 {
-	if (before)
-		free(before);
-	if (var_key)
-		free(var_key);
-	if (spaced)
-		free(spaced);
+	if (first)
+		free(first);
+	if (key)
+		free(key);
+	if (space)
+		free(space);
 	if (value)
 		free(value);
 	return (NULL);

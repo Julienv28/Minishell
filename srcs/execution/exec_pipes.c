@@ -3,28 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   exec_pipes.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 16:03:35 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 15:40:35 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/11 17:17:32 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int	exec_pipes(t_com_list *cmds, char **envcp)
+int	exec_pipes(t_com *cmds, char **envcp)
 {
-	t_com_list	*curr;
-	int			prev_fd;
-	pid_t		last_pid;
-	pid_t		pid;
+	t_com	*curr;
+	int		prev_fd;
+	pid_t	last_pid;
+	pid_t	pid;
 
 	curr = cmds;
 	prev_fd = -1;
 	last_pid = -1;
 	while (curr)
 	{
-		pid = fork_exec(curr, &prev_fd, &last_pid, &envcp);
+		pid = exec(curr, &prev_fd, &last_pid, &envcp);
 		if (pid < 0)
 			return (-1);
 		curr = curr->next;
@@ -34,13 +34,13 @@ int	exec_pipes(t_com_list *cmds, char **envcp)
 	return (g_exit_status);
 }
 
-int	fork_exec(t_com_list *curr, int *prev_fd, pid_t *last_pid, char ***envcp)
+int	exec(t_com *curr, int *prev, pid_t *lst_pid, char ***envcp)
 {
 	t_execinfo	ex;
 
 	ex.curr = curr;
-	ex.prev_fd = prev_fd;
-	ex.last_pid = last_pid;
+	ex.prev_fd = prev;
+	ex.last_pid = lst_pid;
 	if (setup_pipe(curr, ex.pipefd) < 0)
 		return (-1);
 	ex.pid = fork();
@@ -50,12 +50,12 @@ int	fork_exec(t_com_list *curr, int *prev_fd, pid_t *last_pid, char ***envcp)
 		return (-1);
 	}
 	if (ex.pid == 0)
-		child_proc(curr, *prev_fd, ex.pipefd, envcp);
+		child(curr, *prev, ex.pipefd, envcp);
 	parent_pro(&ex);
 	return (ex.pid);
 }
 
-int	setup_pipe(t_com_list *curr, int pipefd[2])
+int	setup_pipe(t_com *curr, int pipefd[2])
 {
 	if (curr->next)
 	{
@@ -92,17 +92,17 @@ void	parent_pro(t_execinfo *ex)
 	}
 }
 
-void	child_proc(t_com_list *curr, int prev_fd, int pipefd[2], char ***envcp)
+void	child(t_com *curr, int prev, int pipefd[2], char ***envcp)
 {
 	char	**args;
 
 	set_signals_child();
-	if (ft_redirection(curr, NULL, NULL, NULL) < 0)
+	if (ft_redir(curr, NULL, NULL, NULL) < 0)
 		exit(1);
-	if (prev_fd != -1)
+	if (prev != -1)
 	{
-		dup2(prev_fd, STDIN_FILENO);
-		close(prev_fd);
+		dup2(prev, STDIN_FILENO);
+		close(prev);
 	}
 	if (curr->next)
 	{
@@ -111,6 +111,6 @@ void	child_proc(t_com_list *curr, int prev_fd, int pipefd[2], char ***envcp)
 		close(pipefd[1]);
 	}
 	args = curr->args;
-	handle_commands_pipes(args, curr, envcp);
+	handle_pipes(args, curr, envcp);
 	exit(g_exit_status);
 }

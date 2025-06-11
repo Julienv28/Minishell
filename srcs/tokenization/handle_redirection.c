@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   handle_redirection.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 09:31:19 by opique            #+#    #+#             */
-/*   Updated: 2025/06/10 16:56:33 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/11 17:15:29 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	process_redir_value(int type, char *word, t_token **tokens, char **envcp)
+int	process_redir_value(int type, char *word, t_tkn **tokens, char **envcp)
 {
 	char	*final;
 	int		is_quoted;
@@ -90,7 +90,7 @@ int	parse_redirection(char *str, int *i)
 	return (0);
 }
 
-int	handle_redirection(char *str, int *i, t_token **tokens, char **envcp)
+int	handle_redir(char *s, int *i, t_tkn **tokens, char **envcp)
 {
 	int		type;
 	char	*symbol;
@@ -98,12 +98,12 @@ int	handle_redirection(char *str, int *i, t_token **tokens, char **envcp)
 
 	symbol = NULL;
 	word = NULL;
-	type = parse_redirection(str, i);
+	type = parse_redirection(s, i);
 	if (!type)
 		return (0);
-	if (check_redirection(str, i) == -1)
+	if (check_redirection(s, i) == -1)
 		return (g_exit_status = 2, -1);
-	word = extract_redir_word(str, i);
+	word = extract_redir_word(s, i);
 	if (!word)
 	{
 		g_exit_status = 1;
