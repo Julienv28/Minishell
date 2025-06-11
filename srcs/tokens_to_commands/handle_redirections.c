@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_redirections.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 13:46:30 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 16:38:59 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/11 16:45:10 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static int	handle_heredoc_redir(t_parser_context *ctx, char *filename)
 	cleaned_limiter = remove_quotes_or_slash(filename);
 	if (!cleaned_limiter)
 		return (-1);
-	heredoc_name = handle_heredoc(cleaned_limiter, ctx->envcp, expand_var);
+	heredoc_name = handle_hd(cleaned_limiter, ctx->envcp, expand_var);
 	if (!heredoc_name)
 	{
 		if (g_exit_status == 130)
@@ -31,7 +31,7 @@ static int	handle_heredoc_redir(t_parser_context *ctx, char *filename)
 		return (-1);
 	}
 	free (cleaned_limiter);
-	ret = assign_heredoc_to_ctx(ctx, heredoc_name);
+	ret = assign_hd_ctx(ctx, heredoc_name);
 	free(heredoc_name);
 	return (ret);
 }
@@ -40,7 +40,7 @@ static int	handle_input_redir(t_parser_context *ctx, char *filename)
 {
 	char	*expanded;
 
-	expanded = replace_all_variables(filename, ctx->envcp, 0, 1);
+	expanded = replace_var(filename, ctx->envcp, 0, 1);
 	if (!expanded)
 		return (-1);
 	if (ctx->current_cmd)

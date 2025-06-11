@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 10:39:23 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 15:42:40 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/11 17:12:59 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	free_tokens(t_token *tokens)
+void	free_tokens(t_tkn *tokens)
 {
-	t_token	*tmp;
+	t_tkn	*tmp;
 
 	while (tokens)
 	{
@@ -54,15 +54,15 @@ static void	free_file_list_2(t_file_list *files)
 	}
 }
 
-void	free_cmd(t_com_list *command)
+void	free_cmd(t_com *command)
 {
-	t_com_list	*tmp;
+	t_com	*tmp;
 
 	while (command)
 	{
 		tmp = command->next;
-		if (command->command)
-			free(command->command);
+		if (command->cmd)
+			free(command->cmd);
 		if (command->infile)
 			free(command->infile);
 		if (command->outfile)

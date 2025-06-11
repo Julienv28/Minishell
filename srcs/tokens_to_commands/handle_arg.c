@@ -6,7 +6,7 @@
 /*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 13:45:22 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/11 11:07:10 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/11 16:15:30 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,12 @@ int	handle_arg_token(t_parser_context *ctx)
 		expanded = ft_strdup(ctx->current_token->value);
 	else
 	{
-		expanded = replace_all_variables(ctx->current_token->value,
+		expanded = replace_var(ctx->current_token->value,
 				ctx->envcp, 0, 1);
 	}
 	if (!expanded)
 		return (-1);
+	expanded = remove_quotes_or_slash(expanded);
 	i = 0;
 	while (ctx->current_cmd->args[i])
 		i++;

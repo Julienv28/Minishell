@@ -6,7 +6,7 @@
 /*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 15:25:47 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/11 10:48:51 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/11 16:48:34 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ char	*handle_quote(char *str, char *res, t_expand *var)
 	return (res);
 }
 
-char	*get_variable_name(char *str, t_expand *var, char *var_name)
+char	*variable_name(char *str, t_expand *var, char *var_name)
 {
 	int	j;
 

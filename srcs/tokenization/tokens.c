@@ -6,23 +6,23 @@
 /*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 16:46:03 by opique            #+#    #+#             */
-/*   Updated: 2025/06/11 13:14:01 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/11 17:12:51 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-t_token	*add_token(t_token **head, char *str, int type, int is_quoted)
+t_tkn	*add_token(t_tkn **head, char *s, int type, int is_quote)
 {
-	t_token	*new;
-	t_token	*tmp;
+	t_tkn	*new;
+	t_tkn	*tmp;
 
-	new = malloc(sizeof(t_token));
+	new = malloc(sizeof(t_tkn));
 	if (!new)
 		return (NULL);
-	new->value = ft_strdup(str);
+	new->value = ft_strdup(s);
 	new->type = type;
-	new->is_quoted = is_quoted;
+	new->is_quoted = is_quote;
 	new->next = NULL;
 	if (!*head)
 		*head = new;
@@ -45,25 +45,23 @@ int	skip_spaces(char *str, int *i)
 	return (0);
 }
 
-t_token	*process_token_loop(char *str, char **envcp)
+t_tkn	*process_token_loop(char *str, char **envcp)
 {
 	int		i;
 	int		tab[2];
-	t_token	*tokens;
+	t_tkn	*tokens;
 
 	i = 0;
 	tab[0] = 1;
 	tokens = NULL;
-	while (str[i])
+	while (str[i] && skip_spaces(str, &i) != -1)
 	{
-		if (skip_spaces(str, &i) == -1)
-			break ;
 		tab[1] = process_pipe(str, &i, &tokens, &tab[0]);
 		if (tab[1] == -1 || process_special_chars(str, i) == -1)
 			return (free_tokens(tokens), NULL);
 		if (tab[1] == 1)
 			continue ;
-		tab[1] = process_redirection(str, &i, &tokens, envcp);
+		tab[1] = process_redir(str, &i, &tokens, envcp);
 		if (tab[1] == -1)
 			return (free_tokens(tokens), NULL);
 		if (tab[1] == 1)
@@ -75,9 +73,9 @@ t_token	*process_token_loop(char *str, char **envcp)
 	return (tokens);
 }
 
-t_token	*create_tokens(char **str, char **envcp)
+t_tkn	*create_tokens(char **str, char **envcp)
 {
-	t_token	*tokens;
+	t_tkn	*tokens;
 
 	tokens = process_token_loop(*str, envcp);
 	return (tokens);

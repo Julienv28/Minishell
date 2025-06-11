@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   building_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 16:32:08 by opique            #+#    #+#             */
-/*   Updated: 2025/06/10 16:32:10 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/11 16:56:50 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	check_events(char *arg)
 	return (0);
 }
 
-void	cleanup_and_exit(int code, t_com_list *cmd)
+void	cleanup_and_exit(int code, t_com *cmd)
 {
 	free_cmd(cmd);
 	rl_clear_history();

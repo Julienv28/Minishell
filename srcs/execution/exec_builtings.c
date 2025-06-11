@@ -6,13 +6,13 @@
 /*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:29:59 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/11 14:39:02 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/11 17:08:52 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static int	handle_exit_builtin(char **args, char ***envcp, t_com_list *cmd)
+static int	handle_exit_builtin(char **args, char ***envcp, t_com *cmd)
 {
 	ft_freeenvp(*envcp);
 	ft_exit(args, 1, cmd);
@@ -28,7 +28,7 @@ int	handle_export(char **args, char ***envcp)
 	if (check_events(args[1]) == 1)
 		return (1);
 	exit_status = handle_initial_errors(args);
-	process_valid_exports(args, envcp, &exit_status);
+	process_valid(args, envcp, &exit_status);
 	return (exit_status);
 }
 
@@ -52,7 +52,7 @@ static int	handle_unset(char **args, char ***envcp)
 	return (1);
 }
 
-int	exec_builting(char **args, char ***envcp, t_com_list *cmd)
+int	exec_builting(char **args, char ***envcp, t_com *cmd)
 {
 	if (ft_strcmp(args[0], "exit") == 0)
 		return (handle_exit_builtin(args, envcp, cmd));

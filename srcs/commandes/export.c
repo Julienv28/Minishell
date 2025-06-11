@@ -6,7 +6,7 @@
 /*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:36 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/11 12:46:49 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/11 17:20:50 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	check_and_export(char *arg, char *key, char *value, char ***envcp)
 	return (0);
 }
 
-int	process_export_entry(char *arg, char ***envcp, int *exit_status)
+int	process_export(char *arg, char ***envcp, int *exit_status)
 {
 	char	*key;
 	char	*value;
@@ -62,7 +62,7 @@ int	process_export_entry(char *arg, char ***envcp, int *exit_status)
 
 	key = NULL;
 	value = NULL;
-	replaced = prepare_export_string(arg, *envcp, &key, &value);
+	replaced = export_s(arg, *envcp, &key, &value);
 	err = handle_export_error(replaced, arg);
 	if (err)
 	{

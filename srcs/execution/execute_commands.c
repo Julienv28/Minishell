@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   execute_commands.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 10:45:02 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 15:40:48 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/11 16:57:34 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	fake_exit_builtin(char **args, t_com_list *cmds)
+void	fake_exit_builtin(char **args, t_com *cmds)
 {
 	long long	exit_value;
 
@@ -29,7 +29,7 @@ void	fake_exit_builtin(char **args, t_com_list *cmds)
 	exit((unsigned char)(exit_value));
 }
 
-static void	handle_exit(char **args, t_com_list *cmds, char ***envcp)
+static void	handle_exit(char **args, t_com *cmds, char ***envcp)
 {
 	ft_freeenvp(*envcp);
 	rl_clear_history();
@@ -42,7 +42,7 @@ static int	handle_empty(void)
 	return (0);
 }
 
-int	execute(t_com_list *cmds, char ***envcp)
+int	execute(t_com *cmds, char ***envcp)
 {
 	char	**args;
 

@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   tkn_to_cmds.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 13:09:09 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 15:43:34 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/11 17:14:30 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static t_parser_context	*init_parset_ctx(t_token *tokens, char **envcp)
+static t_parser_context	*init_parset_ctx(t_tkn *tokens, char **envcp)
 {
 	t_parser_context	*ctx;
 
@@ -55,10 +55,10 @@ static int	process_token(t_parser_context *ctx)
 	}
 }
 
-t_com_list	*tokens_to_cmds(t_token *tokens, char **envcp)
+t_com	*tokens_to_cmds(t_tkn *tokens, char **envcp)
 {
 	t_parser_context	*ctx;
-	t_com_list			*result;
+	t_com				*result;
 	int					ret;
 
 	ctx = init_parset_ctx(tokens, envcp);

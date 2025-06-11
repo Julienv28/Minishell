@@ -6,7 +6,7 @@
 /*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 15:59:22 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/11 10:48:38 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/11 17:07:40 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,24 +40,24 @@ static char	*handle_dollar_in_quotes(char *str, char *res, t_expand *var,
 	if (str[*var->i] == '$' && !quotes[0] && var->expand_vars)
 	{
 		var->quoted = quotes[1];
-		return (replace_variable_or_special(str, res, var));
+		return (replace_var_or_spe(str, res, var));
 	}
 	return (NULL);
 }
 
-char	*handle_quotes_and_dollar(char *str, char *res,
-	t_expand *var, int *quotes)
+char	*quote_dol(char *str, char *res,
+	t_expand *var, int *quote)
 {
 	char	*tmp;
 
-	tmp = handle_opening_quote(str, quotes, var->i);
+	tmp = handle_opening_quote(str, quote, var->i);
 	if (tmp)
 	{
 		if (*tmp == '\0')
 			return (res);
 		return (tmp);
 	}
-	tmp = handle_dollar_in_quotes(str, res, var, quotes);
+	tmp = handle_dollar_in_quotes(str, res, var, quote);
 	if (tmp)
 		return (tmp);
 	res = append_char(res, str[*var->i]);

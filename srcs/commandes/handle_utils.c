@@ -6,7 +6,7 @@
 /*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 16:33:16 by opique            #+#    #+#             */
-/*   Updated: 2025/06/11 13:39:14 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/11 17:08:48 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ int	handle_initial_errors(char **args)
 	return (status);
 }
 
-void	process_valid_exports(char **args, char ***envcp, int *status)
+void	process_valid(char **args, char ***envcp, int *status)
 {
 	int		i;
 	char	*expanded;
@@ -59,7 +59,7 @@ void	process_valid_exports(char **args, char ***envcp, int *status)
 	{
 		is_empty_literal = (args[i][0] == '"'
 				&& args[i][1] == '"' && args[i][2] == '\0');
-		expanded = replace_all_variables(args[i], *envcp, 0, 1);
+		expanded = replace_var(args[i], *envcp, 0, 1);
 		if (is_empty_literal || (expanded && expanded[0] == '\0'
 				&& args[i][0] != '$'))
 		{
@@ -69,7 +69,7 @@ void	process_valid_exports(char **args, char ***envcp, int *status)
 		else if (args[i][0] == '$' && (!expanded || expanded[0] == '\0'))
 			export_no_args(*envcp);
 		else
-			process_export_entry(expanded, envcp, status);
+			process_export(expanded, envcp, status);
 		free(expanded);
 		i++;
 	}

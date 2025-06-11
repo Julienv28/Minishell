@@ -6,7 +6,7 @@
 /*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 15:25:11 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/11 14:41:17 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/11 17:08:08 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ char	*expand_env_variable(char *str, char *res, t_expand *var)
 	if (!var || !var->envcp)
 		return (NULL);
 	need_free = 0;
-	get_variable_name(str, var, var_name);
+	variable_name(str, var, var_name);
 	env_value = get_expanded_value(var_name, var, &need_free);
 	if (!env_value)
 		return (NULL);
@@ -73,15 +73,14 @@ char	*expand_loop(char *str, char *res, t_expand *var)
 			(*var->i) += 2;
 			continue ;
 		}
-		res = handle_quotes_and_dollar(str, res, var, quotes);
+		res = quote_dol(str, res, var, quotes);
 		if (!res)
 			return (NULL);
 	}
 	return (res);
 }
 
-char	*replace_all_variables(char *str, char **envcp,
-		int is_heredoc, int expand_vars)
+char	*replace_var(char *s, char **envcp, int is_hd, int expand)
 {
 	t_expand	var;
 	int			i;
@@ -90,13 +89,13 @@ char	*replace_all_variables(char *str, char **envcp,
 	i = 0;
 	var.envcp = envcp;
 	var.i = &i;
-	var.is_heredoc = is_heredoc;
+	var.is_heredoc = is_hd;
 	var.quoted = 0;
-	var.expand_vars = expand_vars;
-	if (!str)
+	var.expand_vars = expand;
+	if (!s)
 		return (NULL);
 	res = ft_strdup("");
 	if (!res)
 		return (NULL);
-	return (expand_loop(str, res, &var));
+	return (expand_loop(s, res, &var));
 }

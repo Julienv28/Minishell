@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_pipes.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 16:07:39 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/05 11:49:48 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/11 16:57:38 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	set_signals_parent(void)
 	signal(SIGQUIT, SIG_IGN);
 }
 
-void	handle_commands_pipes(char **args, t_com_list *cmds, char ***envcp)
+void	handle_pipes(char **args, t_com *cmds, char ***envcp)
 {
 	if (!args || !args[0] || args[0][0] == '\0')
 	{
