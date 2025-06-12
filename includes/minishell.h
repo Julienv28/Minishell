@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/12 10:26:46 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/12 19:28:58 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -294,6 +294,7 @@ char				*export_s(char *arg, char **envp, char **key, char **value);
 int					skip_spaces(char *str, int *i);
 int					is_blank_line(const char *str);
 int					is_valid_numeric_argument(char *str);
+void				restore_and_close_fd(int *fd, int std_fd);
 
 // Utils
 unsigned long long	ft_atoull(const char *str);
