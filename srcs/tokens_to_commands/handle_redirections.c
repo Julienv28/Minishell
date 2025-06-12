@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_redirections.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 13:46:30 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/11 16:45:10 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/12 09:07:59 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,8 @@ int	handle_redir_token(t_parser_context *ctx)
 	if (!filename)
 		return (-1);
 	ret = exec_redir(ctx, redir_type, filename);
-	free(filename);
+	if (redir_type != HEREDOC)
+		free(filename);
 	if (ret != 0)
 		return (ret);
 	ctx->current_token = ctx->current_token->next;

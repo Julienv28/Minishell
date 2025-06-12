@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_commands.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 10:45:02 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/11 16:57:34 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/12 10:42:38 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,9 @@ void	fake_exit_builtin(char **args, t_com *cmds)
 		cleanup_and_exit(0, cmds);
 	if (!is_valid_numeric_argument(args[1]))
 	{
-		fprintf(stderr, "minishell: exit: %s: numeric argument required\n", \
-				args[1]);
+		ft_putstr_fd("minishell: exit:", STDERR_FILENO);
+		ft_putstr_fd(args[1], STDERR_FILENO);
+		ft_putstr_fd("numeric argument required\n", STDERR_FILENO);
 		cleanup_and_exit(255, cmds);
 	}
 	exit_value = ft_atoull(args[1]);
