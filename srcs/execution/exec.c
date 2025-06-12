@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 09:00:40 by opique            #+#    #+#             */
-/*   Updated: 2025/06/11 15:02:26 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/12 12:06:06 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ char	*get_path(char *cmd, char **envp)
 	path = search_path(paths, cmd);
 	if (path == NULL)
 	{
-		fprintf(stderr, "minishell: %s : command not found\n", cmd);
+		printf("minishell: %s : command not found\n", cmd);
 		g_exit_status = 127;
 	}
 	else if (access(path, X_OK) != 0)

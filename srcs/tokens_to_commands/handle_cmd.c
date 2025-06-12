@@ -3,23 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   handle_cmd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 13:45:38 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/11 16:58:42 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/12 10:46:15 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static void	init_cmd(t_com *new_cmd, char *expanded)
+static int	init_cmd(t_com *new_cmd, char *expanded)
 {
 	new_cmd->args = ft_calloc(MAX_ARGS, sizeof(char *));
 	if (!new_cmd->args)
-		return ;
+		return (-1);
 	new_cmd->args[0] = ft_strdup(expanded);
+	if (!new_cmd->args[0])
+		return (free(new_cmd->args), -1);
 	new_cmd->args[1] = NULL;
 	new_cmd->heredoc_fd = -1;
+	return (0);
 }
 
 int	is_empty_quoted(char *str)
@@ -54,7 +57,8 @@ static int	create_and_assign_cmd(t_parser_context *ctx, char *expanded)
 	new_cmd = list_new(expanded);
 	if (!new_cmd)
 		return (free(expanded), -1);
-	init_cmd(new_cmd, expanded);
+	if (init_cmd(new_cmd, expanded) == -1)
+		return (free_cmd(new_cmd), free(expanded), -1);
 	free(expanded);
 	assign_redirs(ctx, new_cmd);
 	if (!ctx->cmd_list)
@@ -87,7 +91,7 @@ int	handle_cmd_token(t_parser_context *ctx)
 		return (0);
 	}
 	if (create_and_assign_cmd(ctx, expanded) == -1)
-		return (-1);
+		return (free_cmd(ctx->cmd_list), -1);
 	ctx->current_token = ctx->current_token->next;
 	return (0);
 }

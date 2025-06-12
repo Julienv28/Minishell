@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_redirection.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 09:31:19 by opique            #+#    #+#             */
-/*   Updated: 2025/06/11 17:15:29 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/12 09:00:51 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,11 @@ int	process_redir_value(int type, char *word, t_tkn **tokens, char **envcp)
 	{
 		cleaned_limiter = remove_quotes_or_slash(word);
 		if (!cleaned_limiter)
-			return (free(word), -1);
+			return (-1);
 		instru = ft_strdup(cleaned_limiter);
 		if (!add_token(tokens, instru, ARG, 0))
 			return (free(cleaned_limiter), free(word), -1);
-		return (free(word), free(instru), free(cleaned_limiter), 1);
+		return (free(instru), free(cleaned_limiter), 1);
 	}
 	final = expand_clean_word(word, envcp);
 	if (!final)
