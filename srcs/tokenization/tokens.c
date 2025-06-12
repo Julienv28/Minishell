@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokens.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 16:46:03 by opique            #+#    #+#             */
-/*   Updated: 2025/06/11 17:12:51 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/12 19:19:37 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ t_tkn	*add_token(t_tkn **head, char *s, int type, int is_quote)
 
 int	skip_spaces(char *str, int *i)
 {
-	while (str[*i] == ' ')
+	while (str[*i] == ' ' || str[*i] == '\t')
 		(*i)++;
 	if (!str[*i])
 		return (-1);

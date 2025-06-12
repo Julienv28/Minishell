@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 16:27:55 by opique            #+#    #+#             */
-/*   Updated: 2025/06/12 10:26:42 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/12 14:39:08 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,8 @@ int	main(int ac, char **av, char **envp)
 	if (!check_isatty())
 		return (0);
 	envcp = ft_env_dup(envp);
+	if (!envcp)
+		return (1);
 	init_signals();
 	minishell_loop(&envcp);
 	ft_freeenvp(envcp);
