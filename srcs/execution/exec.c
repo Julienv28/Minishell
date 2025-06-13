@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 09:00:40 by opique            #+#    #+#             */
-/*   Updated: 2025/06/12 12:06:06 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/13 09:54:43 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ char	*get_path(char *cmd, char **envp)
 	if (ft_strchr(cmd, '/'))
 		return ((path_error_message(cmd)));
 	line = find_line(envp, "PATH");
-	if (!envp[line] || line == -1)
+	if (line == -1 || !envp[line])
 		return (ft_putstr_fd("minishell: No such file or directory\n", \
 			STDERR_FILENO), NULL);
 	paths = ft_split(envp[line] + 5, ':');
