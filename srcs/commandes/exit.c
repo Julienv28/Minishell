@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 16:32:49 by opique            #+#    #+#             */
-/*   Updated: 2025/06/11 16:56:54 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/16 13:39:45 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,26 +82,23 @@ int	is_valid_numeric_argument(char *str)
 	return (1);
 }
 
-int	ft_exit(char **args, int in_child, t_com *cmd)
+int	ft_exit(char **args, t_com *cmd)
 {
 	int	i;
 
 	i = 0;
 	while (args[i])
 		i++;
-	if (in_child)
-		printf("exit\n");
+	ft_putstr_fd("exit\n", STDOUT_FILENO);
 	if (i == 1)
 		cleanup_and_exit(0, cmd);
 	else if (!is_valid_numeric_argument(args[1]))
 	{
-		printf("exit\n");
-		printf("minishell: exit: %s: numeric argument required\n", args[1]);
+		print_exit_error(args[1], ": numeric argument required", STDERR_FILENO);
 		exit(255);
 	}
 	else if (i > 2)
 	{
-		printf("exit\n");
 		ft_putstr_fd("minishell: exit: too many arguments\n", STDERR_FILENO);
 		g_exit_status = 1;
 		return (g_exit_status);

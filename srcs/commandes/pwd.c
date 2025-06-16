@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 16:04:31 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/16 10:59:34 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/16 11:44:23 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,18 @@ int	ft_pwd(char **args, char ***envcp)
 	(void)envcp;
 	if (args[1] && args[1][0] == '-' && args[1][1] != '\0')
 	{
-		printf("minishell: pwd: -%c: invalid option\n", args[1][1]);
+		ft_putstr_fd("minishell: pwd: -", STDERR_FILENO);
+		ft_putchar_fd(args[1][1], STDERR_FILENO);
+		ft_putstr_fd(": invalid option\n", STDERR_FILENO);
 		g_exit_status = 2;
 		return (g_exit_status);
 	}
 	if (getcwd(path, sizeof(path)) != NULL)
-		return (printf("%s\n", path), 0);
+	{
+		ft_putstr_fd(path, STDOUT_FILENO);
+		ft_putstr_fd("\n", STDOUT_FILENO);
+		return (0);
+	}
 	else
 	{
 		ft_putstr_fd("minishell: pwd: error retrieving current directory: \

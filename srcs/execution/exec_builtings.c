@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_builtings.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:29:59 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/11 17:08:52 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/16 13:38:39 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 static int	handle_exit_builtin(char **args, char ***envcp, t_com *cmd)
 {
 	ft_freeenvp(*envcp);
-	ft_exit(args, 1, cmd);
+	ft_exit(args, cmd);
 	return (0);
 }
 
@@ -36,7 +36,9 @@ static int	handle_env(char **args, char ***envcp)
 {
 	if (args[1] && args[1][0] == '-')
 	{
-		printf("minishell: env: -%c: invalid option\n", args[1][1]);
+		ft_putstr_fd("minishell: env -", STDERR_FILENO);
+		ft_putchar_fd(args[1][1], STDERR_FILENO);
+		ft_putstr_fd(": invalid option\n", STDERR_FILENO);
 		g_exit_status = 2;
 		return (g_exit_status);
 	}

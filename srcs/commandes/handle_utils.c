@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 16:33:16 by opique            #+#    #+#             */
-/*   Updated: 2025/06/11 17:08:48 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/16 13:58:20 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,8 @@ void	process_valid(char **args, char ***envcp, int *status)
 		if (is_empty_literal || (expanded && expanded[0] == '\0'
 				&& args[i][0] != '$'))
 		{
-			printf("bash: export: `': not a valid identifier\n");
+			ft_putstr_fd("bash: export: `': not a valid \
+identifier\n", STDERR_FILENO);
 			*status = 1;
 		}
 		else if (args[i][0] == '$' && (!expanded || expanded[0] == '\0'))

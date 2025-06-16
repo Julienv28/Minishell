@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_redirection.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 16:35:46 by opique            #+#    #+#             */
-/*   Updated: 2025/06/12 19:36:35 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/16 14:18:03 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,11 +60,8 @@ int	ft_redirection_err(t_com *cmd, int *fd_err)
 	return (0);
 }
 
-int	ft_redir(t_com *cmd, int *fd_in, int *fd_out, int *fd_err)
+static int	ft_redir_in(t_com *cmd, int *fd_in)
 {
-	t_file_list	*tmp;
-	int			fd;
-
 	if (cmd->heredoc_fd > 0)
 	{
 		if (fd_in)
@@ -78,8 +75,18 @@ int	ft_redir(t_com *cmd, int *fd_in, int *fd_out, int *fd_err)
 	}
 	if (cmd->infile && ft_redirect_in(cmd->infile, fd_in) < 0)
 		return (-1);
-	if (cmd->outfile && ft_redirect_out(cmd->outfile,
-			cmd->flag_out, fd_out) < 0)
+	return (0);
+}
+
+int	ft_redir(t_com *cmd, int *fd_in, int *fd_out, int *fd_err)
+{
+	t_file_list	*tmp;
+	int			fd;
+
+	if (ft_redir_in(cmd, fd_in) < 0)
+		return (-1);
+	if (cmd->outfile
+		&& ft_redirect_out(cmd->outfile, cmd->flag_out, fd_out) < 0)
 		return (-1);
 	tmp = cmd->all_outfilles;
 	while (tmp)
@@ -92,29 +99,3 @@ int	ft_redir(t_com *cmd, int *fd_in, int *fd_out, int *fd_err)
 	}
 	return (ft_redirection_err(cmd, fd_err));
 }
-
-void	restor_redir(int mem_fd_in, int mem_fd_out, int mem_fd_err)
-{
-	restore_and_close_fd(&mem_fd_in, STDIN_FILENO);
-	restore_and_close_fd(&mem_fd_out, STDOUT_FILENO);
-	restore_and_close_fd(&mem_fd_err, STDERR_FILENO);
-}
-
-// void	restor_redir(int mem_fd_in, int mem_fd_out, int mem_fd_err)
-// {
-// 	if (mem_fd_in != -1)
-// 	{
-// 		dup2(mem_fd_in, STDIN_FILENO);
-// 		close(mem_fd_in);
-// 	}
-// 	if (mem_fd_out != -1)
-// 	{
-// 		dup2(mem_fd_out, STDOUT_FILENO);
-// 		close(mem_fd_out);
-// 	}
-// 	if (mem_fd_err != -1)
-// 	{
-// 		dup2(mem_fd_err, STDERR_FILENO);
-// 		close(mem_fd_err);
-// 	}
-// }
