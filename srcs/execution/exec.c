@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 09:00:40 by opique            #+#    #+#             */
-/*   Updated: 2025/06/16 14:38:16 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/16 16:39:20 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ char	*get_path(char *cmd, t_msh *msh)
 	}
 	else if (access(path, X_OK) != 0)
 	{
-		print_cmd_error(cmd, "Permission denied", STDERR_FILENO);
+		print_cmd_error(cmd, "Minishell : Permission denied", STDERR_FILENO);
 		msh->ex_status = 126;
 		free(path);
 		path = NULL;
