@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   exec_pipes.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 16:03:35 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/11 17:17:32 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/16 14:43:57 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int	exec_pipes(t_com *cmds, char **envcp)
+int	exec_pipes(t_com *cmds, t_msh *msh)
 {
 	t_com	*curr;
 	int		prev_fd;
@@ -24,17 +24,17 @@ int	exec_pipes(t_com *cmds, char **envcp)
 	last_pid = -1;
 	while (curr)
 	{
-		pid = exec(curr, &prev_fd, &last_pid, &envcp);
+		pid = exec(curr, &prev_fd, &last_pid, msh);
 		if (pid < 0)
 			return (-1);
 		curr = curr->next;
 	}
 	wait_children(last_pid);
 	reset_signals();
-	return (g_exit_status);
+	return (msh->ex_status);
 }
 
-int	exec(t_com *curr, int *prev, pid_t *lst_pid, char ***envcp)
+int	exec(t_com *curr, int *prev, pid_t *lst_pid, t_msh *msh)
 {
 	t_execinfo	ex;
 
@@ -50,7 +50,7 @@ int	exec(t_com *curr, int *prev, pid_t *lst_pid, char ***envcp)
 		return (-1);
 	}
 	if (ex.pid == 0)
-		child(curr, *prev, ex.pipefd, envcp);
+		child(curr, *prev, ex.pipefd, msh);
 	parent_pro(&ex);
 	return (ex.pid);
 }
@@ -92,7 +92,7 @@ void	parent_pro(t_execinfo *ex)
 	}
 }
 
-void	child(t_com *curr, int prev, int pipefd[2], char ***envcp)
+void	child(t_com *curr, int prev, int pipefd[2], t_msh *msh)
 {
 	char	**args;
 
@@ -111,6 +111,6 @@ void	child(t_com *curr, int prev, int pipefd[2], char ***envcp)
 		close(pipefd[1]);
 	}
 	args = curr->args;
-	handle_pipes(args, curr, envcp);
-	exit(g_exit_status);
+	handle_pipes(args, curr, msh);
+	exit(msh->ex_status);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 16:32:49 by opique            #+#    #+#             */
-/*   Updated: 2025/06/16 13:39:45 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/16 13:45:31 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ int	is_valid_numeric_argument(char *str)
 	return (1);
 }
 
-int	ft_exit(char **args, t_com *cmd)
+int	ft_exit(char **args, t_com *cmd, t_msh *msh)
 {
 	int	i;
 
@@ -100,9 +100,9 @@ int	ft_exit(char **args, t_com *cmd)
 	else if (i > 2)
 	{
 		ft_putstr_fd("minishell: exit: too many arguments\n", STDERR_FILENO);
-		g_exit_status = 1;
-		return (g_exit_status);
+		msh->ex_status = 1;
+		return (msh->ex_status);
 	}
 	cleanup_and_exit(ft_atoi(args[1]), cmd);
-	return (g_exit_status);
+	return (msh->ex_status);
 }

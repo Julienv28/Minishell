@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tkn_to_cmds.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 13:09:09 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/12 12:56:49 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/16 12:05:09 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,22 +28,22 @@ static t_parser_context	*init_parset_ctx(t_tkn *tokens, char **envcp)
 	return (ctx);
 }
 
-static int	process_token(t_parser_context *ctx)
+static int	process_token(t_parser_context *ctx, t_msh *msh)
 {
 	int	type;
 	int	ret;
 
 	type = ctx->current_token->type;
 	if (type == CMD)
-		return (handle_cmd_token(ctx), 0);
+		return (handle_cmd_token(ctx, msh), 0);
 	else if (type == ARG)
-		return (handle_arg_token(ctx), 0);
+		return (handle_arg_token(ctx, msh), 0);
 	else if (type == PIPE)
 		return (handle_pipe_token(ctx), 0);
 	else if (type == TRUNC || type == APPEND
 		|| type == INPUT || type == HEREDOC)
 	{
-		ret = handle_redir_token(ctx);
+		ret = handle_redir_token(ctx, msh);
 		if (ret != 0)
 			return (ret);
 		return (0);
@@ -55,18 +55,18 @@ static int	process_token(t_parser_context *ctx)
 	}
 }
 
-t_com	*tokens_to_cmds(t_tkn *tokens, char **envcp)
+t_com	*tokens_to_cmds(t_msh *msh)
 {
 	t_parser_context	*ctx;
 	t_com				*result;
 	int					ret;
 
-	ctx = init_parset_ctx(tokens, envcp);
+	ctx = init_parset_ctx(msh->tkn, msh->envcp);
 	if (!ctx)
 		return (NULL);
 	while (ctx->current_token)
 	{
-		ret = process_token(ctx);
+		ret = process_token(ctx, msh);
 		if (ret != 0)
 			break ;
 	}

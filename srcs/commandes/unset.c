@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:21 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/16 11:34:16 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/16 14:41:32 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ int	unset_check_names(char **args)
 	return (status);
 }
 
-int	unset_check_errors(char **args)
+static int	unset_check_errors(char **args, t_msh *msh)
 {
 	int	i;
 
@@ -95,32 +95,32 @@ int	unset_check_errors(char **args)
 			ft_putstr_fd("minishell: ", STDOUT_FILENO);
 			ft_putstr_fd(args[i], STDOUT_FILENO);
 			ft_putstr_fd(": invalid option\n", STDOUT_FILENO);
-			g_exit_status = 2;
-			return (g_exit_status);
+			msh->ex_status = 2;
+			return (msh->ex_status);
 		}
 		if (strchr(args[i], '!'))
 		{
 			ft_putstr_fd("Minishell: unset: `", STDOUT_FILENO);
 			ft_putstr_fd(args[i], STDOUT_FILENO);
 			ft_putstr_fd("': event not found\n", STDOUT_FILENO);
-			g_exit_status = 1;
-			return (g_exit_status);
+			msh->ex_status = 1;
+			return (msh->ex_status);
 		}
 		i++;
 	}
 	return (0);
 }
 
-int	ft_unset(char **args, char ***envcp)
+int	ft_unset(char **args, t_msh *msh)
 {
 	int	exit_status;
 
 	if (!args[1])
 		return (0);
-	exit_status = unset_check_errors(args);
+	exit_status = unset_check_errors(args, msh);
 	if (exit_status != 0)
 		return (exit_status);
 	exit_status = unset_check_names(args);
-	unset_remove_vars(args, envcp);
+	unset_remove_vars(args, &(msh->envcp));
 	return (exit_status);
 }

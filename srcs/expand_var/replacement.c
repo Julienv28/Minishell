@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   replacement.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 15:35:55 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/11 16:48:10 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/16 14:24:00 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static char	*handle_double_quotes(char *str, char *res, t_expand *var)
 	}
 }
 
-char	*replace_var_or_spe(char *str, char *res, t_expand *var)
+char	*replace_var_or_spe(char *str, char *res, t_expand *var, t_msh *msh)
 {
 	char	next;
 
@@ -68,6 +68,6 @@ char	*replace_var_or_spe(char *str, char *res, t_expand *var)
 	if (ft_isalpha(next) || next == '_')
 		return (expand_env_variable(str, res, var));
 	if (ft_isdigit(next) || next == '?')
-		return (handle_special_cases(str, res, var));
+		return (handle_special_cases(str, res, var, msh));
 	return (append_char(res, '$'));
 }

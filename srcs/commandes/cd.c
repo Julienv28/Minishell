@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 16:21:13 by juvitry           #+#    #+#             */
 /*   Updated: 2025/06/16 13:51:12 by opique           ###   ########.fr       */
@@ -80,7 +80,7 @@ int	cd_get_path(char **args, char ***envcp, char **path)
 	return (0);
 }
 
-int	cd_check_args(char **args)
+static int	cd_check_args(char **args, t_msh *msh)
 {
 	if (args[1] && args[2])
 	{
@@ -93,13 +93,13 @@ int	cd_check_args(char **args)
 		ft_putstr_fd("minishell: cd: ", STDOUT_FILENO);
 		ft_putstr_fd(args[1], STDOUT_FILENO);
 		ft_putstr_fd(": invalid option\n", STDOUT_FILENO);
-		g_exit_status = 2;
-		return (g_exit_status);
+		msh->ex_status = 2;
+		return (msh->ex_status);
 	}
 	return (0);
 }
 
-int	ft_cd(char **args, char ***envcp)
+int	ft_cd(char **args, t_msh *msh)
 {
 	char	current_dir[1024];
 	char	new_dir[1024];
@@ -109,13 +109,13 @@ int	ft_cd(char **args, char ***envcp)
 	path = NULL;
 	if (!getcwd(current_dir, sizeof(current_dir)))
 		current_dir[0] = '\0';
-	ret = cd_check_args(args);
+	ret = cd_check_args(args, msh);
 	if (ret != 0)
 		return (ret);
-	ret = cd_get_path(args, envcp, &path);
+	ret = cd_get_path(args, &(msh->envcp), &path);
 	if (ret != 0)
 		return (ret);
-	ret = cd_change_dir(path, current_dir, new_dir, envcp);
+	ret = cd_change_dir(path, current_dir, new_dir, &(msh->envcp));
 	if (args[1] && args[1][0] == '~')
 		free(path);
 	return (ret);

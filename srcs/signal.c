@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 16:30:46 by opique            #+#    #+#             */
-/*   Updated: 2025/06/10 16:30:48 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/16 11:30:58 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	heredoc_sigint_handler(int sig)
 	write(1, "\n", 1);
 	rl_replace_line("", 0);
 	close(STDIN_FILENO);
-	g_exit_status = 130;
+	g_sig_status = 130;
 }
 
 void	handler_sigint(int sig)
@@ -34,7 +34,7 @@ void	handler_sigint(int sig)
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
-	g_exit_status = 130;
+	g_sig_status = 130;
 }
 
 void	handler_sigint_prompt(int sig)
@@ -42,5 +42,5 @@ void	handler_sigint_prompt(int sig)
 	(void)sig;
 	write(1, "\n", 1);
 	close(0);
-	g_exit_status = 130;
+	g_sig_status = 130;
 }

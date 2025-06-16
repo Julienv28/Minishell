@@ -3,21 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   dollard_2.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 15:25:47 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/11 16:48:34 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/16 14:20:26 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-char	*expand_exit_status(char *res)
+char	*expand_exit_status(char *res, t_msh *msh)
 {
 	char	*status;
 	char	*tmp;
 
-	status = ft_itoa(g_exit_status);
+	status = ft_itoa(msh->ex_status);
 	if (!status)
 		return (NULL);
 	tmp = ft_strjoin(res, status);
@@ -28,7 +28,7 @@ char	*expand_exit_status(char *res)
 	return (tmp);
 }
 
-char	*handle_special_cases(char *str, char *res, t_expand *var)
+char	*handle_special_cases(char *str, char *res, t_expand *var, t_msh *msh)
 {
 	if (str[*var->i] == '=')
 	{
@@ -40,7 +40,7 @@ char	*handle_special_cases(char *str, char *res, t_expand *var)
 		return (res);
 	}
 	if (str[*var->i] == '?')
-		return ((*var->i)++, expand_exit_status(res));
+		return ((*var->i)++, expand_exit_status(res, msh));
 	if (ft_isdigit(str[*var->i]))
 		return ((*var->i)++, res);
 	return (res);

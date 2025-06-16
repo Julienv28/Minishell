@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   handle_redirection.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 09:31:19 by opique            #+#    #+#             */
-/*   Updated: 2025/06/16 13:55:23 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/16 13:57:10 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	process_redir_value(int type, char *word, t_tkn **tokens, char **envcp)
+static int	process_redir_val(int type, char *word, t_tkn **tokens, t_msh *msh)
 {
 	char	*final;
 	int		is_quoted;
@@ -33,7 +33,7 @@ int	process_redir_value(int type, char *word, t_tkn **tokens, char **envcp)
 			return (free(cleaned_limiter), free(word), -1);
 		return (free(instru), free(cleaned_limiter), 1);
 	}
-	final = expand_clean_word(word, envcp);
+	final = expand_clean_word(word, msh);
 	if (!final)
 		return (free(word), -1);
 	free(word);
@@ -90,7 +90,7 @@ int	parse_redirection(char *str, int *i)
 	return (0);
 }
 
-int	handle_redir(char *s, int *i, t_tkn **tokens, char **envcp)
+int	handle_redir(char *s, int *i, t_tkn **tokens, t_msh *msh)
 {
 	int		type;
 	char	*symbol;
@@ -102,11 +102,11 @@ int	handle_redir(char *s, int *i, t_tkn **tokens, char **envcp)
 	if (!type)
 		return (0);
 	if (check_redirection(s, i) == -1)
-		return (g_exit_status = 2, -1);
+		return (msh->ex_status = 2, -1);
 	word = extract_redir_word(s, i);
 	if (!word)
 	{
-		g_exit_status = 1;
+		msh->ex_status = 1;
 		ft_putstr_fd("minishell: syntax error near \
 redirection\n", STDERR_FILENO);
 		return (-1);
@@ -116,5 +116,5 @@ redirection\n", STDERR_FILENO);
 		return (free(word), -1);
 	add_token(tokens, symbol, type, 0);
 	free(symbol);
-	return (process_redir_value(type, word, tokens, envcp));
+	return (process_redir_val(type, word, tokens, msh));
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_pipes.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 16:07:39 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/11 16:57:38 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/16 13:15:16 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	set_signals_parent(void)
 	signal(SIGQUIT, SIG_IGN);
 }
 
-void	handle_pipes(char **args, t_com *cmds, char ***envcp)
+void	handle_pipes(char **args, t_com *cmds, t_msh *msh)
 {
 	if (!args || !args[0] || args[0][0] == '\0')
 	{
@@ -42,18 +42,18 @@ void	handle_pipes(char **args, t_com *cmds, char ***envcp)
 			ft_putstr_fd("", STDERR_FILENO);
 		ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
 		rl_clear_history();
-		ft_freeenvp(*envcp);
+		ft_freeenvp(msh->envcp);
 		cleanup_and_exit(127, cmds);
 	}
 	if (is_builting(args[0]) && ft_strcmp(args[0], "exit") == 0)
 	{
-		ft_freeenvp(*envcp);
+		ft_freeenvp(msh->envcp);
 		fake_exit_builtin(args, cmds);
 	}
 	else if (is_builting(args[0]))
-		g_exit_status = exec_builting(args, envcp, cmds);
+		msh->ex_status = exec_builting(args, msh, cmds);
 	else
-		exec_cmd(args, envcp);
+		exec_cmd(args, msh);
 }
 
 void	wait_children(pid_t last_pid)
@@ -67,9 +67,9 @@ void	wait_children(pid_t last_pid)
 		if (pid == last_pid)
 		{
 			if (WIFEXITED(status))
-				g_exit_status = WEXITSTATUS(status);
+				g_sig_status = WEXITSTATUS(status);
 			else if (WIFSIGNALED(status))
-				g_exit_status = 128 + WTERMSIG(status);
+				g_sig_status = 128 + WTERMSIG(status);
 		}
 		pid = wait(&status);
 	}

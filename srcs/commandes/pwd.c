@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 16:04:31 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/16 11:44:23 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/16 13:26:04 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ char	*get_env_value(char *name, char **envp)
 	return (NULL);
 }
 
-int	ft_pwd(char **args, char ***envcp)
+int	ft_pwd(char **args, t_msh *msh)
 {
 	char	path[1024];
 
@@ -44,8 +44,8 @@ int	ft_pwd(char **args, char ***envcp)
 		ft_putstr_fd("minishell: pwd: -", STDERR_FILENO);
 		ft_putchar_fd(args[1][1], STDERR_FILENO);
 		ft_putstr_fd(": invalid option\n", STDERR_FILENO);
-		g_exit_status = 2;
-		return (g_exit_status);
+    msh->ex_status = 2;
+		return (msh->ex_status);
 	}
 	if (getcwd(path, sizeof(path)) != NULL)
 	{
@@ -60,3 +60,7 @@ int	ft_pwd(char **args, char ***envcp)
 		return (1);
 	}
 }
+
+// pwd = get_env_value("PWD", msh->envcp);
+// 		if (pwd)
+// 			return (printf("%s\n", pwd), 0);

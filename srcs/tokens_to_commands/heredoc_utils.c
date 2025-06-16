@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 12:00:38 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/11 16:43:43 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/16 12:00:46 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ char	*hdclean(char *filename, char *limiter, int fd, int status)
 	free(limiter);
 	free(filename);
 	if (status == 130)
-		g_exit_status = 130;
+		g_sig_status = 130;
 	return (NULL);
 }
 
@@ -72,7 +72,7 @@ int	handle_heredoc_interrupt(char *line, int eof)
 {
 	if (line)
 		free(line);
-	if (g_exit_status == 130)
+	if (g_sig_status == 130)
 		return (1);
 	if (eof)
 		return (print_heredoc_eof_error());

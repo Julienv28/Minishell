@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 13:45:38 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/12 15:18:09 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/16 14:49:16 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ static int	create_and_assign_cmd(t_parser_context *ctx, char *expanded)
 	return (0);
 }
 
-int	handle_cmd_token(t_parser_context *ctx)
+int	handle_cmd_token(t_parser_context *ctx, t_msh *msh)
 {
 	char	*expanded;
 
@@ -79,13 +79,13 @@ int	handle_cmd_token(t_parser_context *ctx)
 		return (0);
 	}
 	expanded = replace_var(ctx->current_token->value,
-			ctx->envcp, 0, 1);
+			msh, 0, 1);
 	if (!expanded)
 		return (-1);
 	if (expanded[0] == '\0')
 	{
 		if (is_empty_quoted(ctx->current_token->value))
-			g_exit_status = 127;
+			msh->ex_status = 127;
 		free(expanded);
 		ctx->current_token = ctx->current_token->next;
 		return (0);

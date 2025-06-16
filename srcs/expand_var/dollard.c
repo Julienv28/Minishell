@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   dollard.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 15:25:11 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/16 11:40:00 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/16 15:00:13 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,45 +60,50 @@ char	*expand_env_variable(char *str, char *res, t_expand *var)
 	return (tmp);
 }
 
-char	*expand_loop(char *str, char *res, t_expand *var)
+static char	*expand_loop(char *str, char *res, t_msh *msh)
 {
 	int	quotes[2];
 
 	quotes[0] = 0;
 	quotes[1] = 0;
-	while (str[*var->i])
+	while (str[*msh->var->i])
 	{
-		if (str[*var->i] == '\\' && str[*var->i + 1] == '$')
+		if (str[*msh->var->i] == '\\' && str[*msh->var->i + 1] == '$')
 		{
 			res = append_char(res, '$');
 			if (!res)
 				return (NULL);
-			(*var->i) += 2;
+			(*msh->var->i) += 2;
 			continue ;
 		}
-		res = quote_dol(str, res, var, quotes);
+		res = quote_dol(str, res, msh, quotes);
 		if (!res)
 			return (NULL);
 	}
 	return (res);
 }
 
-char	*replace_var(char *s, char **envcp, int is_hd, int expand)
+char	*replace_var(char *s, t_msh *msh, int is_hd, int expand)
 {
-	t_expand	var;
 	int			i;
 	char		*res;
 
+	if (!msh->var)
+	{
+    	msh->var = malloc(sizeof(t_expand));
+    	if (!msh->var)
+        	return (NULL);
+	}
 	i = 0;
-	var.envcp = envcp;
-	var.i = &i;
-	var.is_heredoc = is_hd;
-	var.quoted = 0;
-	var.expand_vars = expand;
+	msh->var->envcp = msh->envcp;
+	msh->var->i = &i;
+	msh->var->is_heredoc = is_hd;
+	msh->var->quoted = 0;
+	msh->var->expand_vars = expand;
 	if (!s)
 		return (NULL);
 	res = ft_strdup("");
 	if (!res)
 		return (NULL);
-	return (expand_loop(s, res, &var));
+	return (expand_loop(s, res, msh));
 }

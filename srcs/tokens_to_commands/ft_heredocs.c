@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_heredocs.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:57:10 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/11 16:45:06 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/16 14:46:59 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,14 @@ int	assign_hd_ctx(t_parser_context *ctx, char *heredoc_name)
 	return (0);
 }
 
-static int	wr_heredoc_line(int fd, char *line, char **envcp, int expand_var)
+static int	wr_heredoc_line(int fd, char *line, t_msh *msh, int expand_var)
 {
 	char	*processed;
 
 	processed = line;
 	if (expand_var)
 	{
-		processed = replace_var(line, envcp, 1, expand_var);
+		processed = replace_var(line, msh, 1, expand_var);
 		if (!processed)
 			return (-1);
 	}
@@ -48,7 +48,7 @@ static int	wr_heredoc_line(int fd, char *line, char **envcp, int expand_var)
 	return (0);
 }
 
-static int	heredoc_loop(int fd, char *limiter, char **envcp, int expand_var)
+static int	heredoc_loop(int fd, char *limiter, t_msh *msh, int expand_var)
 {
 	char	*line;
 	int		status;
@@ -58,7 +58,7 @@ static int	heredoc_loop(int fd, char *limiter, char **envcp, int expand_var)
 	while (1)
 	{
 		line = readline("heredoc> ");
-		if (!line || g_exit_status == 130)
+		if (!line || g_sig_status == 130)
 		{
 			status = handle_heredoc_interrupt(line, !line);
 			if (status != 0)
@@ -67,13 +67,13 @@ static int	heredoc_loop(int fd, char *limiter, char **envcp, int expand_var)
 		}
 		if (ft_strcmp(line, limiter) == 0)
 			return (free(line), signal(SIGINT, handler_sigint), 0);
-		if (wr_heredoc_line(fd, line, envcp, expand_var) < 0)
+		if (wr_heredoc_line(fd, line, msh, expand_var) < 0)
 			return (free(line), -1);
 		free(line);
 	}
 }
 
-char	*handle_hd(char *limiter, char **envcp, int expand_var)
+char	*handle_hd(char *limiter, t_msh *msh, int expand_var)
 {
 	char	*filename;
 	int		heredoc_fd;
@@ -87,7 +87,7 @@ char	*handle_hd(char *limiter, char **envcp, int expand_var)
 	if (heredoc_fd == -1)
 		return (free(filename), free(limiter), NULL);
 	saved_stdin = dup(STDIN_FILENO);
-	loop_ret = heredoc_loop(heredoc_fd, limiter, envcp, expand_var);
+	loop_ret = heredoc_loop(heredoc_fd, limiter, msh, expand_var);
 	dup2(saved_stdin, STDIN_FILENO);
 	close(saved_stdin);
 	if (loop_ret == 1)

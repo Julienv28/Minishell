@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   arguments.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:06:51 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/11 17:12:09 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/16 12:16:47 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,7 @@ static int	handle_quotes(char **str)
 	{
 		status = prompt_for_quotes(str);
 		if (status == -1)
-		{
-			g_exit_status = 1;
-			return (-1);
-		}
+			return (-2);
 		else if (status == 1)
 			return (1);
 	}
