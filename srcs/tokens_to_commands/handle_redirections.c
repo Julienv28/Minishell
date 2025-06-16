@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_redirections.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 13:46:30 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/12 09:07:59 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/16 12:04:45 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static int	handle_heredoc_redir(t_parser_context *ctx, char *filename)
 	heredoc_name = handle_hd(cleaned_limiter, ctx->envcp, expand_var);
 	if (!heredoc_name)
 	{
-		if (g_exit_status == 130)
+		if (g_sig_status == 130)
 			return (1);
 		return (-1);
 	}
@@ -104,7 +104,7 @@ static int	exec_redir(t_parser_context *ctx, int type, char *filename)
 	return (0);
 }
 
-int	handle_redir_token(t_parser_context *ctx)
+int	handle_redir_token(t_parser_context *ctx, t_msh *msh)
 {
 	int		redir_type;
 	char	*filename;
@@ -114,7 +114,7 @@ int	handle_redir_token(t_parser_context *ctx)
 	redir_type = ctx->current_token->type;
 	ctx->current_token = ctx->current_token->next;
 	if (!ctx->current_token || ctx->current_token->type != ARG)
-		return (syntax_error(), -1);
+		return (syntax_error(msh), -1);
 	filename = ft_strdup(ctx->current_token->value);
 	if (!filename)
 		return (-1);

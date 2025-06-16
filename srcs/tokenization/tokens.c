@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 16:46:03 by opique            #+#    #+#             */
-/*   Updated: 2025/06/12 19:19:37 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/16 11:21:15 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int	skip_spaces(char *str, int *i)
 	return (0);
 }
 
-t_tkn	*process_token_loop(char *str, char **envcp)
+static t_tkn	*process_token_loop(char *str, t_msh *msh)
 {
 	int		i;
 	int		tab[2];
@@ -61,22 +61,22 @@ t_tkn	*process_token_loop(char *str, char **envcp)
 			return (free_tokens(tokens), NULL);
 		if (tab[1] == 1)
 			continue ;
-		tab[1] = process_redir(str, &i, &tokens, envcp);
+		tab[1] = process_redir(str, &i, &tokens, msh);
 		if (tab[1] == -1)
 			return (free_tokens(tokens), NULL);
 		if (tab[1] == 1)
 			continue ;
-		tab[1] = process_word(&str, &i, &tokens, &tab[0]);
+		tab[1] = process_word(&str, &i, &tokens, &tab[0]); // trouver ou ajouter msh
 		if (tab[1] == -1 || tab[1] == 1)
 			return (free_tokens(tokens), NULL);
 	}
 	return (tokens);
 }
 
-t_tkn	*create_tokens(char **str, char **envcp)
+t_tkn	*create_tokens(char **str, t_msh *msh)
 {
 	t_tkn	*tokens;
 
-	tokens = process_token_loop(*str, envcp);
+	tokens = process_token_loop(*str, *msh);
 	return (tokens);
 }

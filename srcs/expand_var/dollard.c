@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   dollard.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 15:25:11 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/11 17:08:08 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/16 11:37:33 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ char	*expand_env_variable(char *str, char *res, t_expand *var)
 	return (tmp);
 }
 
-char	*expand_loop(char *str, char *res, t_expand *var)
+static char	*expand_loop(char *str, char *res, t_expand *var)
 {
 	int	quotes[2];
 

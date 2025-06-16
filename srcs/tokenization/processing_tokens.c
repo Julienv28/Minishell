@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   processing_tokens.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:56:26 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/11 17:12:26 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/16 10:07:00 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,11 @@ int	process_special_chars(char *str, int i)
 	return (0);
 }
 
-int	process_redir(char *str, int *i, t_tkn **tkn, char **envcp)
+int	process_redir(char *str, int *i, t_tkn **tkn, t_msh *msh)
 {
 	int	redirection_status;
 
-	redirection_status = handle_redir(str, i, tkn, envcp);
+	redirection_status = handle_redir(str, i, tkn, msh);
 	if (redirection_status == -1)
 		return (-1);
 	return (redirection_status);

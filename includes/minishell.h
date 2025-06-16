@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/12 19:28:58 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/16 11:45:18 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@
 # define ARG 7
 # define ERR_REDIR 8
 
-extern int	g_exit_status;
+extern int	g_sig_status;
 
 // Structures
 typedef struct s_file_list
@@ -139,6 +139,15 @@ typedef struct s_redirs
 	int	err;
 }	t_redirs;
 
+typedef struct s_msh
+{
+	int		ex_status;
+	char	**envcp;
+	t_tkn	*tkn;
+	t_com	*com;
+}	t_msh;
+
+
 // INITIALISATION
 void				init_redirs(t_redirs *fds);
 void				init_redirs(t_redirs *fds);
@@ -156,7 +165,7 @@ void				reset_signals(void);
 
 // Tokens
 t_tkn				*add_token(t_tkn **head, char *s, int type, int is_quote);
-t_tkn				*create_tokens(char **str, char **envcp);
+t_tkn				*create_tokens(char **str, t_msh *msh);
 char				*concat_command(char *current_command, char *new_part);
 int					parse_redirection(char *str, int *i);
 char				*add_symbol(int type);
@@ -170,27 +179,27 @@ int					extract_word(char **str, int *i, char **word, int *start);
 int					update_str_with_input(char **str, char *input);
 int					process_pipe(char *str, int *i, t_tkn **tkn, int *is_cmd);
 int					process_special_chars(char *str, int i);
-int					process_redir(char *str, int *i, t_tkn **tkn, char **envcp);
+int					process_redir(char *str, int *i, t_tkn **tkn, t_msh *msh);
 int					process_word(char **str, int *i, t_tkn **tkn, int *is_cmd);
 t_com				*fill_values(char **commands);
 void				add_bottom(t_com **list, t_com *new);
 t_com				*list_new(char *command);
-int					handle_redir(char *s, int *i, t_tkn **tokens, char **envcp);
+int					handle_redir(char *s, int *i, t_tkn **tokens, t_msh *msh);
 int					prompt_for_quotes(char **str);
 int					is_directory(char *path);
 
 // Tokens To Commands
-t_com				*tokens_to_cmds(t_tkn *tokens, char **envcp);
+t_com				*tokens_to_cmds(t_msh *msh);
 void				handle_pipe_token(t_parser_context *ctx);
-int					handle_arg_token(t_parser_context *ctx);
-int					handle_redir_token(t_parser_context *ctx);
-int					handle_cmd_token(t_parser_context *ctx);
+int					handle_arg_token(t_parser_context *ctx, t_msh *msh);
+int					handle_redir_token(t_parser_context *ctx, t_msh *msh);
+int					handle_cmd_token(t_parser_context *ctx, t_msh *msh);
 t_com				*finalize_pending_redirs(t_parser_context *ctx);
 
 // EXPAND VARIABLES
 char				*replace_var_or_spe(char *str, char *res, t_expand *var);
 char				*handle_special_cases(char *str, char *res, t_expand *var);
-char				*replace_var(char *s, char **envcp, int is_hd, int expand);
+char				*replace_var(char *s, t_msh *msh, int is_hd, int expand);
 char				*expand_env_variable(char *str, char *res, t_expand *var);
 char				*handle_quote(char *str, char *res, t_expand *var);
 char				*variable_name(char *str, t_expand *var, char *var_name);
@@ -251,9 +260,9 @@ int					execute(t_com *cmds, char ***envcp);
 void				execute_commands(t_com *cmd, char ***envcp);
 int					handle_empty_command(t_com *cmd, t_redirs *fds);
 int					handle_execution(t_com *cmd, char ***envcp, t_redirs *fds);
-void				minishell_loop(char ***envcp);
-int					handle_null_tokens(t_tkn *tokens, char *input);
-void				exit_shell(char **envcp);
+void				minishell_loop(t_msh *msh);
+int					handle_null_tokens(t_msh *msh, char *input);
+void				exit_shell(t_msh *msh);
 int					handle_initial_errors(char **args);
 void				fake_exit_builtin(char **args, t_com *cmds);
 void				process_valid(char **args, char ***envcp, int *status);
@@ -288,7 +297,7 @@ int					count_ags(char **args);
 int					check_events(char *arg);
 char				*clean_spaces(char *str);
 void				add_outfile(t_file_list **list, char *filename, int flag);
-int					syntax_error(void);
+int					syntax_error(t_msh *msh);
 char				*expand_clean_word(char *word, char **envcp);
 char				*export_s(char *arg, char **envp, char **key, char **value);
 int					skip_spaces(char *str, int *i);
@@ -298,4 +307,5 @@ void				restore_and_close_fd(int *fd, int std_fd);
 
 // Utils
 unsigned long long	ft_atoull(const char *str);
+
 #endif

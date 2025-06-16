@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   arguments_2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 16:13:44 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 15:41:34 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/16 11:57:21 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,12 +29,12 @@ static int	handle_quote_input(char **str, int stdin_copy)
 	char	*input;
 	int		status;
 
-	g_exit_status = 0;
+	g_sig_status = 0;
 	signal(SIGINT, handler_sigint_prompt);
 	input = readline("> ");
 	dup2(stdin_copy, STDIN_FILENO);
 	signal(SIGINT, handler_sigint);
-	if (g_exit_status == 130)
+	if (g_sig_status == 130)
 		return (free(input), 1);
 	if (!input)
 	{

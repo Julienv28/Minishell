@@ -6,13 +6,13 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 16:27:55 by opique            #+#    #+#             */
-/*   Updated: 2025/06/12 14:39:08 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/16 09:25:38 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	g_exit_status = 0;
+int	g_sig_status = 0;
 
 int	has_redirection(t_com *cmd)
 {
@@ -80,18 +80,18 @@ void	execute_commands(t_com *cmd, char ***envcp)
 
 int	main(int ac, char **av, char **envp)
 {
-	char	**envcp;
+	t_msh	*msh;
 
 	(void)ac;
 	(void)av;
 	if (!check_isatty())
 		return (0);
-	envcp = ft_env_dup(envp);
-	if (!envcp)
+	msh->envcp = ft_env_dup(envp);
+	if (!msh->envcp)
 		return (1);
 	init_signals();
-	minishell_loop(&envcp);
-	ft_freeenvp(envcp);
+	minishell_loop(msh);
+	ft_freeenvp(msh->envcp);
 	rl_clear_history();
-	return (g_exit_status);
+	return (msh->ex_status);
 }

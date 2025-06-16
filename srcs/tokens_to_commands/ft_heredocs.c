@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_heredocs.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:57:10 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/11 16:45:06 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/16 12:02:28 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ static int	heredoc_loop(int fd, char *limiter, char **envcp, int expand_var)
 	while (1)
 	{
 		line = readline("heredoc> ");
-		if (!line || g_exit_status == 130)
+		if (!line || g_sig_status == 130)
 		{
 			status = handle_heredoc_interrupt(line, !line);
 			if (status != 0)
