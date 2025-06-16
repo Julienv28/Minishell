@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/16 17:52:17 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/16 19:34:12 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,6 +148,15 @@ typedef struct s_msh
 	t_expand	*var;
 }	t_msh;
 
+typedef struct s_parse_ctx
+{
+	int     i;
+	int     is_cmd;
+	t_tkn   *tokens;
+	t_msh   *msh;
+	char    *str;
+}	t_parse_ctx;
+
 // INITIALISATION
 void				init_redirs(t_redirs *fds);
 void				init_redirs(t_redirs *fds);
@@ -169,7 +178,7 @@ t_tkn				*create_tokens(char **str, t_msh *msh);
 char				*concat_command(char *current_command, char *new_part);
 int					parse_redirection(char *str, int *i);
 char				*add_symbol(int type);
-int					handle_word(char **str, int *i, t_tkn **tkn, int *is_cmd);
+int					handle_word(t_parse_ctx *ctx);
 void				restor_redir(int mem_fd_in, int mem_fd_out, int mem_fd_err);
 int					ft_redir(t_com *cmd, int *fd_in, int *fd_out, int *fd_err);
 int					open_file_cmd(char *infile);
@@ -177,14 +186,14 @@ int					open_outfile(char *outfile, int append);
 int					open_errfile(char *errfile);
 int					extract_word(char **str, int *i, char **word, int *start);
 int					update_str_with_input(char **str, char *input);
-int					process_pipe(char *str, int *i, t_tkn **tkn, int *is_cmd, t_msh *msh);
+int					process_pipe(t_parse_ctx *ctx);
 int					process_special_chars(char *str, int i);
-int					process_redir(char *str, int *i, t_tkn **tkn, t_msh *msh);
-int					process_word(char **str, int *i, t_tkn **tkn, int *is_cmd);
+int					process_redir(t_parse_ctx *ctx);
+int					process_word(t_parse_ctx *ctx);
 t_com				*fill_values(char **commands);
 void				add_bottom(t_com **list, t_com *new);
 t_com				*list_new(char *command);
-int					handle_redir(char *s, int *i, t_tkn **tokens, t_msh *msh);
+int					handle_redir(t_parse_ctx *ctx);
 int					prompt_for_quotes(char **str);
 int					is_directory(char *path);
 

@@ -6,7 +6,7 @@
 /*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:42:18 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/16 19:01:10 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/16 19:46:52 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,22 +42,13 @@ static int	handle_line(char *input, t_msh *msh)
 	return (1);
 }
 
-// void	handle_input_error(char *input)
-// {
-// 	free(input);
-// 	g_sig_status = 0;
-// }
-
 static int	process_input(char *input, t_msh *msh)
 {
 	int	ret;
 
 	ret = handle_line(input, msh);
 	if (ret == 1 && msh->ex_status == 130)
-	{
-		//handle_input_error(input);
 		return (1);
-	}
 	if (!ret)
 	{
 		free(input);
@@ -76,16 +67,7 @@ void	minishell_loop(t_msh *msh)
 	{
 		input = get_input(msh);
 		if (!input)
-		{
-			// if (msh->ex_status == 130)
-			// {
-			// 	handle_input_error(input);
-			// 	g_sig_status = 0;
-			// 	continue ;
-			// }
-            //write(1, "exit\n", 5);
 			exit_shell(msh);
-		}
         if (input[0] == '\0' && msh->ex_status == 130)
 		{
 			free(input);

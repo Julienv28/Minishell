@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokens.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 16:46:03 by opique            #+#    #+#             */
-/*   Updated: 2025/06/16 16:12:57 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/16 19:46:26 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,33 +47,35 @@ int	skip_spaces(char *str, int *i)
 
 static t_tkn	*process_token_loop(char *str, t_msh *msh)
 {
-	int		i;
-	int		tab[2];
-	t_tkn	*tokens;
+	t_parse_ctx ctx;
+	int         ret;
 
-	i = 0;
-	tab[0] = 1;
-	tokens = NULL;
-	while (str[i] && skip_spaces(str, &i) != -1)
+	ctx.i = 0;
+	ctx.is_cmd = 1;
+	ctx.tokens = NULL;
+	ctx.msh = msh;
+	ctx.str = str;
+	while (ctx.str[ctx.i] && skip_spaces(ctx.str, &ctx.i) != -1)
 	{
-		tab[1] = process_pipe(str, &i, &tokens, &tab[0], msh);
-		if (tab[1] == -1 || process_special_chars(str, i) == -1)
-			return (free_tokens(tokens), NULL);
-		if (tab[1] == 1)
+		ret = process_pipe(&ctx);
+		if (ret == -1 || process_special_chars(ctx.str, ctx.i) == -1)
+			return (free_tokens(ctx.tokens), NULL);
+		if (ret == 1)
 			continue ;
-		tab[1] = process_redir(str, &i, &tokens, msh);
-		if (tab[1] == -1)
-			return (free_tokens(tokens), NULL);
-		if (tab[1] == 1)
+		ret = process_redir(&ctx);
+		if (ret == -1)
+			return (free_tokens(ctx.tokens), NULL);
+		if (ret == 1)
 			continue ;
-		tab[1] = process_word(&str, &i, &tokens, &tab[0]);
-		if (tab[1] == -1 || tab[1] == 1)
-			return (free_tokens(tokens), NULL);
-		else if (tab[1] == -2)
-			return (msh->ex_status = 1, free_tokens(tokens), NULL);
+		ret = process_word(&ctx);
+		if (ret == -1 || ret == 1)
+			return (free_tokens(ctx.tokens), NULL);
+		else if (ret == -2)
+			return (ctx.msh->ex_status = 1, free_tokens(ctx.tokens), NULL);
 	}
-	return (tokens);
+	return (ctx.tokens);
 }
+
 
 t_tkn	*create_tokens(char **str, t_msh *msh)
 {

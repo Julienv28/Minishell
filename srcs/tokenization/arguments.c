@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   arguments.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:06:51 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/16 17:02:10 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/16 19:46:08 by oceanepique      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ static int	init_and_extract_word(char **str, int *i, char **word,
 	return (0);
 }
 
-int	handle_word(char **str, int *i, t_tkn **tkn, int *is_cmd)
+int	handle_word(t_parse_ctx *ctx)
 {
 	int		type;
 	char	*word;
@@ -105,21 +105,23 @@ int	handle_word(char **str, int *i, t_tkn **tkn, int *is_cmd)
 	t_tkn	*new;
 	int		status;
 
-	status = init_and_extract_word(str, i, &word, &is_quoted);
+	status = init_and_extract_word(&ctx->str, &ctx->i, &word, &is_quoted);
 	if (status != 0)
 		return (status);
-	if (*is_cmd)
+	if (ctx->is_cmd)
 		type = CMD;
 	else
 		type = ARG;
-	*is_cmd = 0;
-	new = add_token(tkn, word, type, is_quoted);
+	ctx->is_cmd = 0;
+	new = add_token(&ctx->tokens, word, type, is_quoted);
 	free(word);
 	if (!new)
 		return (-1);
+
 	if (type == ARG && ft_strchr(new->value, '='))
-		if (concat_arg_following(str, i, new) == -1)
+		if (concat_arg_following(&ctx->str, &ctx->i, new) == -1)
 			return (-1);
+
 	return (0);
 }
 
