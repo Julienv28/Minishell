@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_pipes.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 16:07:39 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/16 13:15:16 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/16 16:21:45 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	handle_pipes(char **args, t_com *cmds, t_msh *msh)
 		exec_cmd(args, msh);
 }
 
-void	wait_children(pid_t last_pid)
+void	wait_children(pid_t last_pid, t_msh *msh)
 {
 	int		status;
 	pid_t	pid;
@@ -67,9 +67,9 @@ void	wait_children(pid_t last_pid)
 		if (pid == last_pid)
 		{
 			if (WIFEXITED(status))
-				g_sig_status = WEXITSTATUS(status);
+				msh->ex_status = WEXITSTATUS(status);
 			else if (WIFSIGNALED(status))
-				g_sig_status = 128 + WTERMSIG(status);
+				msh->ex_status = 128 + WTERMSIG(status);
 		}
 		pid = wait(&status);
 	}

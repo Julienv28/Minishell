@@ -3,21 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   processing_tokens.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:56:26 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/16 10:07:00 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/16 16:11:18 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	process_pipe(char *str, int *i, t_tkn **tkn, int *is_cmd)
+int	process_pipe(char *str, int *i, t_tkn **tkn, int *is_cmd, t_msh *msh)
 {
 	if (str[*i] == '|')
 	{
 		if (check_pipe(str, *i) == -1)
-			return (-1);
+			return (msh->ex_status = 2, -1);
 		add_token(tkn, "|", PIPE, 0);
 		(*i)++;
 		*is_cmd = 1;

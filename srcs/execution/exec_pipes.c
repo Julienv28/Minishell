@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_pipes.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 16:03:35 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/16 14:43:57 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/16 16:22:28 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	exec_pipes(t_com *cmds, t_msh *msh)
 			return (-1);
 		curr = curr->next;
 	}
-	wait_children(last_pid);
+	wait_children(last_pid, msh);
 	reset_signals();
 	return (msh->ex_status);
 }

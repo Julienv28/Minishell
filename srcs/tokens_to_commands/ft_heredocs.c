@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_heredocs.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:57:10 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/16 14:46:59 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/16 17:37:56 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,10 @@ static int	heredoc_loop(int fd, char *limiter, t_msh *msh, int expand_var)
 		{
 			status = handle_heredoc_interrupt(line, !line);
 			if (status != 0)
+			{
+				msh->ex_status = g_sig_status;
 				return (status);
+			}
 			continue ;
 		}
 		if (ft_strcmp(line, limiter) == 0)

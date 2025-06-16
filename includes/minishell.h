@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/16 14:48:08 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/16 17:52:17 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,7 +148,6 @@ typedef struct s_msh
 	t_expand	*var;
 }	t_msh;
 
-
 // INITIALISATION
 void				init_redirs(t_redirs *fds);
 void				init_redirs(t_redirs *fds);
@@ -178,7 +177,7 @@ int					open_outfile(char *outfile, int append);
 int					open_errfile(char *errfile);
 int					extract_word(char **str, int *i, char **word, int *start);
 int					update_str_with_input(char **str, char *input);
-int					process_pipe(char *str, int *i, t_tkn **tkn, int *is_cmd);
+int					process_pipe(char *str, int *i, t_tkn **tkn, int *is_cmd, t_msh *msh);
 int					process_special_chars(char *str, int i);
 int					process_redir(char *str, int *i, t_tkn **tkn, t_msh *msh);
 int					process_word(char **str, int *i, t_tkn **tkn, int *is_cmd);
@@ -271,7 +270,7 @@ void				fake_exit_builtin(char **args, t_com *cmds);
 void				process_valid(char **args, int *status, t_msh *msh);
 
 //Pipes
-void				wait_children(pid_t last_pid);
+void				wait_children(pid_t last_pid, t_msh *msh);
 void				handle_pipes(char **args, t_com *cmds, t_msh *msh);
 void				child(t_com *curr, int prev, int pipefd[2], t_msh *msh);
 void				parent_pro(t_execinfo *ex);
@@ -311,6 +310,7 @@ void				print_error_token_fd(char *msg, int fd);
 void				print_fd(char *msg, char c, int repeat, int fd);
 void				print_cmd_error(char *cmd, char *msg, int fd);
 void				print_exit_error(char *arg, char *msg, int fd);
+char				*get_input(t_msh *msh);
 
 // Utils
 unsigned long long	ft_atoull(const char *str);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   dollard.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 15:25:11 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/16 15:00:13 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/16 15:17:41 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,9 +90,9 @@ char	*replace_var(char *s, t_msh *msh, int is_hd, int expand)
 
 	if (!msh->var)
 	{
-    	msh->var = malloc(sizeof(t_expand));
-    	if (!msh->var)
-        	return (NULL);
+		msh->var = malloc(sizeof(t_expand));
+		if (!msh->var)
+			return (NULL);
 	}
 	i = 0;
 	msh->var->envcp = msh->envcp;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 09:00:40 by opique            #+#    #+#             */
-/*   Updated: 2025/06/16 14:38:16 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/16 15:52:14 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ char	*get_path(char *cmd, t_msh *msh)
 		return ((path_error_message(cmd, msh)));
 	line = find_line(msh->envcp, "PATH");
 	if (line == -1 || !msh->envcp[line])
-		return (ft_putstr_fd("minishell: No such file or directory\n", \
+		return (ft_putstr_fd("minishell: No such fiyyle or directory\n", \
 			STDERR_FILENO), NULL);
 	paths = ft_split(msh->envcp[line] + 5, ':');
 	path = search_path(paths, cmd);

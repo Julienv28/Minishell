@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   arguments.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:06:51 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/16 12:16:47 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/16 17:02:10 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,36 +123,3 @@ int	handle_word(char **str, int *i, t_tkn **tkn, int *is_cmd)
 	return (0);
 }
 
-/*
-int	handle_word(char **str, int *i, t_tkn **tokens, int *expect_cmd)
-{
-	int		start;
-	int		type;
-	char	*word;
-	int		is_quoted;
-	t_tkn *new;
-	int		quote_status;
-
-	start = *i;
-	quote_status = handle_quotes(str);
-	if (quote_status == -1)
-		return (-1);
-	if (quote_status == 1)
-		return (1);
-	is_quoted = extract_word(str, i, &word, &start);
-	if (!word)
-		return (-1);
-	if (*expect_cmd)
-		type = CMD;
-	else
-		type = ARG;
-	*expect_cmd = 0;
-	new = add_token(tokens, word, type, is_quoted);
-	free(word);
-	if (!new)
-		return (-1);
-	if (type == ARG && ft_strchr(new->value, '='))
-		if (concat_arg_following(str, i, new) == -1)
-			return (-1);
-	return (0);
-}*/
