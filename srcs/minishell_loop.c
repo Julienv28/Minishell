@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:42:18 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/16 11:31:20 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/16 13:53:19 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,11 @@ static int	handle_line(char *input, t_msh *msh)
 	free_tokens(msh->tkn);
 	if (!msh->com)
 	{
-		if (msh->ex_status == 130)
+		if (g_sig_status == 130)
 			return (1);
 		return (0);
 	}
-	execute_commands(commands, envcp);
+	execute_commands(msh);
 	free_cmd(msh->com);
 	return (1);
 }
@@ -45,15 +45,15 @@ static int	handle_line(char *input, t_msh *msh)
 void	handle_input_error(char *input)
 {
 	free(input);
-	g_exit_status = 0;
+	g_sig_status = 0;
 }
 
 static int	process_input(char *input, t_msh *msh)
 {
 	int	ret;
 
-	ret = handle_line(input, msh->envcp);
-	if (ret == 1 && g_exit_status == 130)
+	ret = handle_line(input, msh);
+	if (ret == 1 && g_sig_status == 130)
 	{
 		handle_input_error(input);
 		return (1);

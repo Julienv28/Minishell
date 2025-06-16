@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 13:45:22 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/16 11:37:47 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/16 14:48:51 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int	handle_arg_token(t_parser_context *ctx, t_msh *msh)
 	else
 	{
 		expanded = replace_var(ctx->current_token->value,
-				msh->envcp, 0, 1);
+				msh, 0, 1);
 	}
 	if (!expanded)
 		return (-1);

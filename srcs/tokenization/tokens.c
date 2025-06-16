@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 16:46:03 by opique            #+#    #+#             */
-/*   Updated: 2025/06/16 11:21:15 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/16 13:53:52 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,9 +66,14 @@ static t_tkn	*process_token_loop(char *str, t_msh *msh)
 			return (free_tokens(tokens), NULL);
 		if (tab[1] == 1)
 			continue ;
-		tab[1] = process_word(&str, &i, &tokens, &tab[0]); // trouver ou ajouter msh
+		tab[1] = process_word(&str, &i, &tokens, &tab[0]);
 		if (tab[1] == -1 || tab[1] == 1)
 			return (free_tokens(tokens), NULL);
+		else if (tab[1] == -2)
+		{
+			msh->ex_status = 1;
+			return (free_tokens(tokens), NULL);
+		}
 	}
 	return (tokens);
 }
@@ -77,6 +82,6 @@ t_tkn	*create_tokens(char **str, t_msh *msh)
 {
 	t_tkn	*tokens;
 
-	tokens = process_token_loop(*str, *msh);
+	tokens = process_token_loop(*str, msh);
 	return (tokens);
 }

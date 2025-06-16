@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 16:04:31 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 15:40:03 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/16 13:26:04 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ char	*get_env_value(char *name, char **envp)
 	return (NULL);
 }
 
-int	ft_pwd(char **args, char ***envcp)
+int	ft_pwd(char **args, t_msh *msh)
 {
 	char	path[1024];
 	char	*pwd;
@@ -42,14 +42,14 @@ int	ft_pwd(char **args, char ***envcp)
 	if (args[1] && args[1][0] == '-' && args[1][1] != '\0')
 	{
 		printf("minishell: pwd: -%c: invalid option\n", args[1][1]);
-		g_exit_status = 2;
-		return (g_exit_status);
+		msh->ex_status = 2;
+		return (msh->ex_status);
 	}
 	if (getcwd(path, sizeof(path)) != NULL)
 		return (printf("%s\n", path), 0);
 	else
 	{
-		pwd = get_env_value("PWD", *envcp);
+		pwd = get_env_value("PWD", msh->envcp);
 		if (pwd)
 			return (printf("%s\n", pwd), 0);
 		ft_putstr_fd("minishell: pwd: error retrieving current directory: \

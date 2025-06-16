@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 16:33:16 by opique            #+#    #+#             */
-/*   Updated: 2025/06/11 17:08:48 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/16 14:35:27 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int	handle_initial_errors(char **args)
 	return (status);
 }
 
-void	process_valid(char **args, char ***envcp, int *status)
+void	process_valid(char **args, int *status, t_msh *msh)
 {
 	int		i;
 	char	*expanded;
@@ -60,7 +60,7 @@ void	process_valid(char **args, char ***envcp, int *status)
 	{
 		is_empty_literal = (args[i][0] == '"'
 				&& args[i][1] == '"' && args[i][2] == '\0');
-		expanded = replace_var(args[i], *envcp, 0, 1);
+		expanded = replace_var(args[i], msh, 0, 1);
 		if (is_empty_literal || (expanded && expanded[0] == '\0'
 				&& args[i][0] != '$'))
 		{
@@ -68,9 +68,9 @@ void	process_valid(char **args, char ***envcp, int *status)
 			*status = 1;
 		}
 		else if (args[i][0] == '$' && (!expanded || expanded[0] == '\0'))
-			export_no_args(*envcp);
+			export_no_args(msh->envcp);
 		else
-			process_export(expanded, envcp, status);
+			process_export(expanded, status, msh);
 		free(expanded);
 		i++;
 	}

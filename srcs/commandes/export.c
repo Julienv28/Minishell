@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:36:36 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/11 17:20:50 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/16 14:31:28 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	check_and_export(char *arg, char *key, char *value, char ***envcp)
 	return (0);
 }
 
-int	process_export(char *arg, char ***envcp, int *exit_status)
+int	process_export(char *arg, int *exit_status, t_msh *msh)
 {
 	char	*key;
 	char	*value;
@@ -62,7 +62,7 @@ int	process_export(char *arg, char ***envcp, int *exit_status)
 
 	key = NULL;
 	value = NULL;
-	replaced = export_s(arg, *envcp, &key, &value);
+	replaced = export_s(arg, msh, &key, &value);
 	err = handle_export_error(replaced, arg);
 	if (err)
 	{
@@ -72,7 +72,7 @@ int	process_export(char *arg, char ***envcp, int *exit_status)
 			*exit_status = 1;
 		return (1);
 	}
-	err = check_and_export(arg, key, value, envcp);
+	err = check_and_export(arg, key, value, &(msh->envcp));
 	if (err)
 		*exit_status = 1;
 	free_export_vars(key, value, replaced);

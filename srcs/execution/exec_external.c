@@ -6,16 +6,16 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 10:53:38 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/05 11:30:43 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/16 13:42:51 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static void	child_exec(char **args, char ***envcp)
+static void	child_exec(char **args, t_msh *msh)
 {
-	exec_cmd(args, envcp);
-	exit(g_exit_status);
+	exec_cmd(args, msh);
+	exit(msh->ex_status);
 }
 
 static void	parent_wait(pid_t pid, int *status)
@@ -42,7 +42,7 @@ static int	handle_exit_status(int status)
 	return (-1);
 }
 
-int	exec_external(char **args, char ***envcp)
+int	exec_external(char **args, t_msh *msh)
 {
 	pid_t	pid;
 	int		status;
@@ -54,7 +54,7 @@ int	exec_external(char **args, char ***envcp)
 		return (-1);
 	}
 	if (pid == 0)
-		child_exec(args, envcp);
+		child_exec(args, msh);
 	parent_wait(pid, &status);
 	return (handle_exit_status(status));
 }

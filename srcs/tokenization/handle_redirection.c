@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 09:31:19 by opique            #+#    #+#             */
-/*   Updated: 2025/06/16 11:01:14 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/16 13:57:10 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static int	process_redir_val(int type, char *word, t_tkn **tokens, t_msh *msh)
 			return (free(cleaned_limiter), free(word), -1);
 		return (free(instru), free(cleaned_limiter), 1);
 	}
-	final = expand_clean_word(word, msh->envcp);
+	final = expand_clean_word(word, msh);
 	if (!final)
 		return (free(word), -1);
 	free(word);

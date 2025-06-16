@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 16:13:44 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/16 11:57:21 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/16 13:57:56 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ int	prompt_for_quotes(char **str)
 		}
 	}
 	close(stdin_copy);
-	return (g_exit_status);
+	return (g_sig_status);
 }
 
 int	check_mismatched_quotes(char *str)
