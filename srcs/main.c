@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 16:27:55 by opique            #+#    #+#             */
-/*   Updated: 2025/06/16 13:52:04 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/16 15:54:21 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,6 @@ int	main(int ac, char **av, char **envp)
 		return (0);
 	if (!check_isatty())
 		return (0);
-	msh->ex_status = 0;
 	msh->envcp = ft_env_dup(envp);
 	if (!msh->envcp)
 		return (1);
