@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 16:04:31 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 15:40:03 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/16 10:59:34 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,9 @@ char	*get_env_value(char *name, char **envp)
 int	ft_pwd(char **args, char ***envcp)
 {
 	char	path[1024];
-	char	*pwd;
 
 	(void)args;
+	(void)envcp;
 	if (args[1] && args[1][0] == '-' && args[1][1] != '\0')
 	{
 		printf("minishell: pwd: -%c: invalid option\n", args[1][1]);
@@ -49,11 +49,8 @@ int	ft_pwd(char **args, char ***envcp)
 		return (printf("%s\n", path), 0);
 	else
 	{
-		pwd = get_env_value("PWD", *envcp);
-		if (pwd)
-			return (printf("%s\n", pwd), 0);
 		ft_putstr_fd("minishell: pwd: error retrieving current directory: \
-			getcwd: cannot access parent directories: ", STDERR_FILENO);
+			getcwd: cannot access parent directories: \n", STDERR_FILENO);
 		return (1);
 	}
 }
