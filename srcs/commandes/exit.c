@@ -82,26 +82,23 @@ int	is_valid_numeric_argument(char *str)
 	return (1);
 }
 
-int	ft_exit(char **args, int in_child, t_com *cmd, t_msh *msh)
+int	ft_exit(char **args, t_com *cmd, t_msh *msh)
 {
 	int	i;
 
 	i = 0;
 	while (args[i])
 		i++;
-	if (in_child)
-		printf("exit\n");
+	ft_putstr_fd("exit\n", STDOUT_FILENO);
 	if (i == 1)
 		cleanup_and_exit(0, cmd);
 	else if (!is_valid_numeric_argument(args[1]))
 	{
-		printf("exit\n");
-		printf("minishell: exit: %s: numeric argument required\n", args[1]);
+		print_exit_error(args[1], ": numeric argument required", STDERR_FILENO);
 		exit(255);
 	}
 	else if (i > 2)
 	{
-		printf("exit\n");
 		ft_putstr_fd("minishell: exit: too many arguments\n", STDERR_FILENO);
 		msh->ex_status = 1;
 		return (msh->ex_status);

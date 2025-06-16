@@ -36,24 +36,31 @@ char	*get_env_value(char *name, char **envp)
 int	ft_pwd(char **args, t_msh *msh)
 {
 	char	path[1024];
-	char	*pwd;
 
 	(void)args;
+	(void)envcp;
 	if (args[1] && args[1][0] == '-' && args[1][1] != '\0')
 	{
-		printf("minishell: pwd: -%c: invalid option\n", args[1][1]);
-		msh->ex_status = 2;
+		ft_putstr_fd("minishell: pwd: -", STDERR_FILENO);
+		ft_putchar_fd(args[1][1], STDERR_FILENO);
+		ft_putstr_fd(": invalid option\n", STDERR_FILENO);
+    msh->ex_status = 2;
 		return (msh->ex_status);
 	}
 	if (getcwd(path, sizeof(path)) != NULL)
-		return (printf("%s\n", path), 0);
+	{
+		ft_putstr_fd(path, STDOUT_FILENO);
+		ft_putstr_fd("\n", STDOUT_FILENO);
+		return (0);
+	}
 	else
 	{
-		pwd = get_env_value("PWD", msh->envcp);
-		if (pwd)
-			return (printf("%s\n", pwd), 0);
 		ft_putstr_fd("minishell: pwd: error retrieving current directory: \
-			getcwd: cannot access parent directories: ", STDERR_FILENO);
+			getcwd: cannot access parent directories: \n", STDERR_FILENO);
 		return (1);
 	}
 }
+
+// pwd = get_env_value("PWD", msh->envcp);
+// 		if (pwd)
+// 			return (printf("%s\n", pwd), 0);

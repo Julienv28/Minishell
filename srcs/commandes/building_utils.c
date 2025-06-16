@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   building_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 16:32:08 by opique            #+#    #+#             */
-/*   Updated: 2025/06/11 16:56:50 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/16 11:45:01 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,9 @@ int	check_events(char *arg)
 	if (index >= 0)
 	{
 		res = ft_substr(arg, index, ft_strlen(arg) - index);
-		printf("Minishell: %s: event not found\n", res);
+		ft_putstr_fd("Minishell: ", STDERR_FILENO);
+		ft_putstr_fd(res, STDERR_FILENO);
+		ft_putstr_fd(": event not found\n", STDERR_FILENO);
 		free(res);
 		return (1);
 	}

@@ -45,7 +45,11 @@ int	check_and_export(char *arg, char *key, char *value, char ***envcp)
 	if (!is_valid_name(key))
 	{
 		if (ft_strchr(arg, '=') || !ft_isalpha(arg[0]))
-			printf("bash: export: `%s': not a valid identifier\n", arg);
+		{
+			ft_putstr_fd("bash: export: `", STDERR_FILENO);
+			ft_putstr_fd(arg, STDERR_FILENO);
+			ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
+		}
 		return (1);
 	}
 	if (ft_strchr(arg, '='))
@@ -81,20 +85,26 @@ int	process_export(char *arg, int *exit_status, t_msh *msh)
 
 int	export_no_args(char **envp)
 {
-	int	i;
-	int	j;
+	int		i;
+	char	*equal_sign;
 
 	i = 0;
 	while (envp[i])
 	{
-		printf("declare -x ");
-		j = 0;
-		while (envp[i][j] && envp[i][j] != '=')
-			putchar(envp[i][j++]);
-		if (envp[i][j] == '=')
-			printf("=\"%s\"\n", envp[i] + j + 1);
+		ft_putstr_fd("declare -x ", STDOUT_FILENO);
+		equal_sign = ft_strchr(envp[i], '=');
+		if (equal_sign)
+		{
+			write(STDOUT_FILENO, envp[i], equal_sign - envp[i]);
+			ft_putstr_fd("=\"", STDOUT_FILENO);
+			ft_putstr_fd(equal_sign + 1, STDOUT_FILENO);
+			ft_putstr_fd("\"\n", STDOUT_FILENO);
+		}
 		else
-			printf("\n");
+		{
+			ft_putstr_fd(envp[i], STDOUT_FILENO);
+			ft_putchar_fd('\n', STDOUT_FILENO);
+		}
 		i++;
 	}
 	return (0);

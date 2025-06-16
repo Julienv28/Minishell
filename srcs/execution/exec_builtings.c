@@ -15,7 +15,7 @@
 static int	handle_exit_builtin(char **args, t_msh *msh, t_com *cmd)
 {
 	ft_freeenvp(msh->envcp);
-	ft_exit(args, 1, cmd, msh);
+	ft_exit(args, cmd, msh);
 	return (0);
 }
 
@@ -36,8 +36,10 @@ static int	handle_env(char **args, t_msh *msh)
 {
 	if (args[1] && args[1][0] == '-')
 	{
-		printf("minishell: env: -%c: invalid option\n", args[1][1]);
-		msh->ex_status = 2;
+		ft_putstr_fd("minishell: env -", STDERR_FILENO);
+		ft_putchar_fd(args[1][1], STDERR_FILENO);
+		ft_putstr_fd(": invalid option\n", STDERR_FILENO);
+	  msh->ex_status = 2;
 		return (msh->ex_status);
 	}
 	return (ft_env(msh->envcp), 0);

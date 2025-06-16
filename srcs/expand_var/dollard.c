@@ -50,7 +50,10 @@ char	*expand_env_variable(char *str, char *res, t_expand *var)
 		return (NULL);
 	tmp = ft_strjoin(res, env_value);
 	if (!tmp)
-		return (printf("[ERROR] ft_strjoin failed\n"), NULL);
+	{
+		ft_putstr_fd("[ERROR] ft_strjoin failed\n", STDERR_FILENO);
+		return (NULL);
+	}
 	free(res);
 	if (need_free)
 		free(env_value);

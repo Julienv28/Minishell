@@ -64,7 +64,8 @@ void	process_valid(char **args, int *status, t_msh *msh)
 		if (is_empty_literal || (expanded && expanded[0] == '\0'
 				&& args[i][0] != '$'))
 		{
-			printf("bash: export: `': not a valid identifier\n");
+			ft_putstr_fd("bash: export: `': not a valid \
+identifier\n", STDERR_FILENO);
 			*status = 1;
 		}
 		else if (args[i][0] == '$' && (!expanded || expanded[0] == '\0'))

@@ -107,7 +107,9 @@ int	handle_redir(char *s, int *i, t_tkn **tokens, t_msh *msh)
 	if (!word)
 	{
 		msh->ex_status = 1;
-		return (printf("minishell: syntax error near redirection\n"), -1);
+		ft_putstr_fd("minishell: syntax error near \
+redirection\n", STDERR_FILENO);
+		return (-1);
 	}
 	symbol = add_symbol(type);
 	if (!symbol)

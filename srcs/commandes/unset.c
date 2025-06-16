@@ -73,7 +73,9 @@ int	unset_check_names(char **args)
 	{
 		if (!is_valid_name(args[i]))
 		{
-			printf("minishell: unset: `%s': not a valid identifier\n", args[i]);
+			ft_putstr_fd("minishell: unset: `", STDOUT_FILENO);
+			ft_putstr_fd(args[i], STDOUT_FILENO);
+			ft_putstr_fd("': not a valid identifier\n", STDOUT_FILENO);
 			status = 1;
 		}
 		i++;
@@ -90,13 +92,17 @@ static int	unset_check_errors(char **args, t_msh *msh)
 	{
 		if (args[i][0] == '-' && args[i][1] != '\0')
 		{
-			printf("minishell: %s: invalid option\n", args[i]);
+			ft_putstr_fd("minishell: ", STDOUT_FILENO);
+			ft_putstr_fd(args[i], STDOUT_FILENO);
+			ft_putstr_fd(": invalid option\n", STDOUT_FILENO);
 			msh->ex_status = 2;
 			return (msh->ex_status);
 		}
 		if (strchr(args[i], '!'))
 		{
-			printf("minishell: unset: `%s': event not found\n", args[i]);
+			ft_putstr_fd("Minishell: unset: `", STDOUT_FILENO);
+			ft_putstr_fd(args[i], STDOUT_FILENO);
+			ft_putstr_fd("': event not found\n", STDOUT_FILENO);
 			msh->ex_status = 1;
 			return (msh->ex_status);
 		}

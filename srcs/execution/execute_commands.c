@@ -34,7 +34,7 @@ static void	handle_exit(char **args, t_com *cmds, t_msh *msh)
 {
 	ft_freeenvp(msh->envcp);
 	rl_clear_history();
-	ft_exit(args, 0, cmds, msh);
+	ft_exit(args, cmds, msh);
 }
 
 static int	handle_empty(void)
