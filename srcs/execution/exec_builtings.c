@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_builtings.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:29:59 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/16 14:45:24 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/16 15:17:14 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static int	handle_env(char **args, t_msh *msh)
 		ft_putstr_fd("minishell: env -", STDERR_FILENO);
 		ft_putchar_fd(args[1][1], STDERR_FILENO);
 		ft_putstr_fd(": invalid option\n", STDERR_FILENO);
-	  msh->ex_status = 2;
+		msh->ex_status = 2;
 		return (msh->ex_status);
 	}
 	return (ft_env(msh->envcp), 0);

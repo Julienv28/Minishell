@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokens.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 16:46:03 by opique            #+#    #+#             */
-/*   Updated: 2025/06/16 13:53:52 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/16 16:12:57 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ static t_tkn	*process_token_loop(char *str, t_msh *msh)
 	tokens = NULL;
 	while (str[i] && skip_spaces(str, &i) != -1)
 	{
-		tab[1] = process_pipe(str, &i, &tokens, &tab[0]);
+		tab[1] = process_pipe(str, &i, &tokens, &tab[0], msh);
 		if (tab[1] == -1 || process_special_chars(str, i) == -1)
 			return (free_tokens(tokens), NULL);
 		if (tab[1] == 1)
@@ -70,10 +70,7 @@ static t_tkn	*process_token_loop(char *str, t_msh *msh)
 		if (tab[1] == -1 || tab[1] == 1)
 			return (free_tokens(tokens), NULL);
 		else if (tab[1] == -2)
-		{
-			msh->ex_status = 1;
-			return (free_tokens(tokens), NULL);
-		}
+			return (msh->ex_status = 1, free_tokens(tokens), NULL);
 	}
 	return (tokens);
 }

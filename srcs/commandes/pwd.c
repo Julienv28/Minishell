@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 16:04:31 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/16 15:52:58 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/16 15:20:17 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ int	ft_pwd(char **args, t_msh *msh)
 	char	path[1024];
 
 	(void)args;
-
 	if (args[1] && args[1][0] == '-' && args[1][1] != '\0')
 	{
 		ft_putstr_fd("minishell: pwd: -", STDERR_FILENO);

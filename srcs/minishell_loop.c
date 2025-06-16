@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell_loop.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:42:18 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/16 13:53:19 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/16 17:54:20 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ static int	process_input(char *input, t_msh *msh)
 	int	ret;
 
 	ret = handle_line(input, msh);
-	if (ret == 1 && g_sig_status == 130)
+	if (ret == 1 && msh->ex_status == 130)
 	{
 		handle_input_error(input);
 		return (1);
@@ -74,13 +74,13 @@ void	minishell_loop(t_msh *msh)
 
 	while (1)
 	{
-		set_signal_action();
-		input = readline(GREEN "minishell$ " RESET);
+		input = get_input(msh);
 		if (!input)
 		{
-			if (g_sig_status == 130)
+			if (msh->ex_status == 130)
 			{
 				handle_input_error(input);
+				g_sig_status = 0;
 				continue ;
 			}
 			exit_shell(msh);
@@ -91,3 +91,4 @@ void	minishell_loop(t_msh *msh)
 			continue ;
 	}
 }
+
