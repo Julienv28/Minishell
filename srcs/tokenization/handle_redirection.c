@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 09:31:19 by opique            #+#    #+#             */
-/*   Updated: 2025/06/12 09:00:51 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/16 13:55:23 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,9 @@ int	handle_redir(char *s, int *i, t_tkn **tokens, char **envcp)
 	if (!word)
 	{
 		g_exit_status = 1;
-		return (printf("minishell: syntax error near redirection\n"), -1);
+		ft_putstr_fd("minishell: syntax error near \
+redirection\n", STDERR_FILENO);
+		return (-1);
 	}
 	symbol = add_symbol(type);
 	if (!symbol)

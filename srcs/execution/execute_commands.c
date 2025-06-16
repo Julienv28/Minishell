@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 10:45:02 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/12 10:42:38 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/16 13:38:35 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static void	handle_exit(char **args, t_com *cmds, char ***envcp)
 {
 	ft_freeenvp(*envcp);
 	rl_clear_history();
-	ft_exit(args, 0, cmds);
+	ft_exit(args, cmds);
 }
 
 static int	handle_empty(void)

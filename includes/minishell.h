@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/12 19:28:58 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/16 14:07:56 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,7 +212,7 @@ void				ft_echo(char **args, char ***envcp);
 char				*add_space_if_needed(char *arg, char **envcp);
 int					ft_cd(char **args, char ***envcp);
 int					ft_pwd(char **args, char ***envcp);
-int					ft_exit(char **args, int in_child, t_com *cmd);
+int					ft_exit(char **args, t_com *cmd);
 void				cleanup_and_exit(int code, t_com *cmd);
 int					handle_export(char **args, char ***envcp);
 void				free_export_vars(char *key, char *value, char *replaced);
@@ -295,6 +295,10 @@ int					skip_spaces(char *str, int *i);
 int					is_blank_line(const char *str);
 int					is_valid_numeric_argument(char *str);
 void				restore_and_close_fd(int *fd, int std_fd);
+void				print_error_token_fd(char *msg, int fd);
+void				print_fd(char *msg, char c, int repeat, int fd);
+void				print_cmd_error(char *cmd, char *msg, int fd);
+void				print_exit_error(char *arg, char *msg, int fd);
 
 // Utils
 unsigned long long	ft_atoull(const char *str);

@@ -6,7 +6,7 @@
 /*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 16:21:13 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/10 16:32:38 by opique           ###   ########.fr       */
+/*   Updated: 2025/06/16 13:51:12 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,9 @@ int	cd_change_dir(char *path, char *current_dir, char *new_dir, char ***envcp)
 {
 	if (chdir(path) == -1)
 	{
-		printf("minishell: cd: %s : No such file or directory\n", path);
+		ft_putstr_fd("Minishell: cd: ", STDOUT_FILENO);
+		ft_putstr_fd(path, STDOUT_FILENO);
+		ft_putstr_fd(" : No such file or directory\n", STDOUT_FILENO);
 		return (1);
 	}
 	if (!getcwd(new_dir, 1024))
@@ -68,7 +70,8 @@ int	cd_get_path(char **args, char ***envcp, char **path)
 		*path = get_env_value("OLDPWD", *envcp);
 		if (!*path)
 			return (ft_putstr_fd("cd: OLDPWD not set\n", STDERR_FILENO), 1);
-		printf("%s\n", *path);
+		ft_putstr_fd(*path, STDOUT_FILENO);
+		ft_putstr_fd("\n", STDOUT_FILENO);
 	}
 	else if (args[1][0] == '~')
 		return (cd_expand_home(args[1], path, home));
@@ -87,7 +90,9 @@ int	cd_check_args(char **args)
 	if (args[1] && args[1][0] == '-' && ft_strcmp(args[1], "-") != 0
 		&& ft_strcmp(args[1], "--") != 0)
 	{
-		printf("minishell: cd: %s: invalid option\n", args[1]);
+		ft_putstr_fd("minishell: cd: ", STDOUT_FILENO);
+		ft_putstr_fd(args[1], STDOUT_FILENO);
+		ft_putstr_fd(": invalid option\n", STDOUT_FILENO);
 		g_exit_status = 2;
 		return (g_exit_status);
 	}

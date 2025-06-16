@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_cmd.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 15:19:26 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/11 10:02:57 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/16 14:10:42 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ int	check_redirection(char *str, int *i)
 		(*i)++;
 	if (!str[*i])
 	{
-		printf("Erreur : syntax error near unexpected token `newline'\n");
+		print_error_token_fd("Erreur : syntax error near unexpected token \
+`newline'", STDERR_FILENO);
 		return (-1);
 	}
 	if (str[*i] == '<' || str[*i] == '>' || str[*i] == '|')
@@ -28,13 +29,13 @@ int	check_redirection(char *str, int *i)
 		if (((str[*i] == '>' && str[*i + 1] == '>')
 				|| (str[*i] == '<' && str[*i + 1] == '<'))
 			&& str[*i + 1])
-			printf("Erreur : syntax error near unexpected token `%c%c'\n", \
-					str[*i], str[*i]);
+			print_fd("Erreur : syntax error near unexpected token \
+`", str[*i], 2, STDERR_FILENO);
 		else if (str[*i] == '>' && *i > 0 && str[*i - 1] == '<')
-			printf("Erreur : syntax error near unexpected token `newline'\n");
+			print_error_token_fd("Erreur : syntax error near unexpected token \
+`newline'", STDERR_FILENO);
 		else
-			printf("Erreur : syntax error near unexpected token `%c'\n", \
-				str[*i]);
+			print_fd("Erreur : error token `", str[*i], 1, STDERR_FILENO);
 		return (-1);
 	}
 	return (0);
@@ -47,25 +48,25 @@ int	check_pipe(char *str, int i)
 	if (!str)
 		return (-1);
 	if (str[i] == '|' && str[i + 1] == '|' && str[i + 1])
-	{
-		return (printf("Erreur : unexpected syntax near token `||'\n"), -1);
-	}
+		return (print_error_token_fd("Erreur : unexpected syntax near \
+token `||'", STDERR_FILENO), -1);
 	if (i == 0)
 	{
-		printf("Erreur : syntax error near unexpected token `%c'\n", str[i]);
-		return (-1);
+		return (print_fd("Erreur : syntax error near unexpected token \
+`", str[i], 1, STDERR_FILENO), -1);
 	}
 	j = i + 1;
 	while (str[j] && str[j] == ' ')
 		j++;
 	if (str[j] == '\0')
+		return (print_error_token_fd("Erreur : syntax error near unexpected \
+token `newline'", STDERR_FILENO), -1);
+	if (str[j] == '|')
 	{
-		printf("Erreur : syntax error near unexpected token `newline'\n");
+		print_fd("Erreur : syntax error near unexpected token \
+`", str[j], 1, STDERR_FILENO);
 		return (-1);
 	}
-	if (str[j] == '|')
-		return (printf("Erreur : syntax error near unexpected token `%c'\n", \
-			str[j]), -1);
 	return (0);
 }
 
@@ -76,15 +77,21 @@ int	check_input(char *str, int i)
 	if ((str[i] == '&' && str[i + 1] == '&')
 		|| (str[i] == ';' && str[i + 1] == ';'))
 	{
-		printf("Erreur : syntax error near unexpected token `%c%c'\n", \
-				str[i], str[i + 1]);
+		ft_putstr_fd("Erreur : syntax error near unexpected \
+token `", STDERR_FILENO);
+		ft_putchar_fd(str[i], STDERR_FILENO);
+		ft_putchar_fd(str[i + 1], STDERR_FILENO);
+		ft_putstr_fd("'\n", STDERR_FILENO);
 		return (-1);
 	}
 	else if (str[i] == ':' || str[i] == '!' || str[i] == '#')
 		return (-1);
 	else
 	{
-		printf("Erreur : syntax error near unexpected token `%c'\n", str[i]);
+		ft_putstr_fd("Erreur : syntax error near unexpected \
+token `", STDERR_FILENO);
+		ft_putchar_fd(str[i], STDERR_FILENO);
+		ft_putstr_fd("'\n", STDERR_FILENO);
 		return (-1);
 	}
 	return (0);

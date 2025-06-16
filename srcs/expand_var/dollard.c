@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   dollard.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 15:25:11 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/11 17:08:08 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/16 11:40:00 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,10 @@ char	*expand_env_variable(char *str, char *res, t_expand *var)
 		return (NULL);
 	tmp = ft_strjoin(res, env_value);
 	if (!tmp)
-		return (printf("[ERROR] ft_strjoin failed\n"), NULL);
+	{
+		ft_putstr_fd("[ERROR] ft_strjoin failed\n", STDERR_FILENO);
+		return (NULL);
+	}
 	free(res);
 	if (need_free)
 		free(env_value);

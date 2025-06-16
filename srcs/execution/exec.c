@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 09:00:40 by opique            #+#    #+#             */
-/*   Updated: 2025/06/13 09:54:43 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/16 13:40:04 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,25 @@ char	*path_error_message(char *cmd)
 {
 	if (access(cmd, F_OK) != 0)
 	{
-		printf("minishell: %s : No such file or directory\n", cmd);
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		ft_putstr_fd(cmd, STDERR_FILENO);
+		ft_putstr_fd(" No such file or directory\n", STDERR_FILENO);
 		g_exit_status = 127;
 		return (NULL);
 	}
 	if (is_directory(cmd))
 	{
-		printf("minishell: %s : is a directory\n", cmd);
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		ft_putstr_fd(cmd, STDERR_FILENO);
+		ft_putstr_fd(": is a directory\n", STDERR_FILENO);
 		g_exit_status = 126;
 		return (NULL);
 	}
 	if (access(cmd, X_OK) != 0)
 	{
-		printf("minishell: %s : Permission denied\n", cmd);
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		ft_putstr_fd(cmd, STDERR_FILENO);
+		ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
 		g_exit_status = 126;
 		return (NULL);
 	}
@@ -51,12 +57,12 @@ char	*get_path(char *cmd, char **envp)
 	path = search_path(paths, cmd);
 	if (path == NULL)
 	{
-		printf("minishell: %s : command not found\n", cmd);
+		print_cmd_error(cmd, "command not found", STDERR_FILENO);
 		g_exit_status = 127;
 	}
 	else if (access(path, X_OK) != 0)
 	{
-		printf("minishell: %s : Permission denied\n", cmd);
+		print_cmd_error(cmd, "Permission denied", STDERR_FILENO);
 		g_exit_status = 126;
 		free(path);
 		path = NULL;
@@ -77,7 +83,9 @@ void	exec_cmd(char **args, char ***envcp)
 	{
 		if (errno == EISDIR)
 		{
-			printf("minishell: %s : Is a directory\n", path);
+			ft_putstr_fd("minishell: ", STDERR_FILENO);
+			ft_putstr_fd(path, STDERR_FILENO);
+			ft_putstr_fd(": is a directory\n", STDERR_FILENO);
 			g_exit_status = 126;
 		}
 		else

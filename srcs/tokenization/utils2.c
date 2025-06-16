@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
+/*   By: opique <opique@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 16:03:54 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/12 19:28:44 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/16 14:18:22 by opique           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,4 +30,11 @@ void	restore_and_close_fd(int *fd, int std_fd)
 		close(*fd);
 		*fd = -1;
 	}
+}
+
+void	restor_redir(int mem_fd_in, int mem_fd_out, int mem_fd_err)
+{
+	restore_and_close_fd(&mem_fd_in, STDIN_FILENO);
+	restore_and_close_fd(&mem_fd_out, STDOUT_FILENO);
+	restore_and_close_fd(&mem_fd_err, STDERR_FILENO);
 }
