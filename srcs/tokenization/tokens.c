@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokens.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 16:46:03 by opique            #+#    #+#             */
-/*   Updated: 2025/06/16 19:46:26 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/17 11:16:27 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,16 +45,21 @@ int	skip_spaces(char *str, int *i)
 	return (0);
 }
 
+static void	reinit_ctx(t_parse_ctx *ctx, t_msh *msh, char *str)
+{
+	ctx->i = 0;
+	ctx->is_cmd = 1;
+	ctx->tokens = NULL;
+	ctx->msh = msh;
+	ctx->str = str;
+}
+
 static t_tkn	*process_token_loop(char *str, t_msh *msh)
 {
-	t_parse_ctx ctx;
-	int         ret;
+	t_parse_ctx	ctx;
+	int			ret;
 
-	ctx.i = 0;
-	ctx.is_cmd = 1;
-	ctx.tokens = NULL;
-	ctx.msh = msh;
-	ctx.str = str;
+	reinit_ctx(&ctx, msh, str);
 	while (ctx.str[ctx.i] && skip_spaces(ctx.str, &ctx.i) != -1)
 	{
 		ret = process_pipe(&ctx);
@@ -75,7 +80,6 @@ static t_tkn	*process_token_loop(char *str, t_msh *msh)
 	}
 	return (ctx.tokens);
 }
-
 
 t_tkn	*create_tokens(char **str, t_msh *msh)
 {

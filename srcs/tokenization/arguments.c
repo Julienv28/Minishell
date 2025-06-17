@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   arguments.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:06:51 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/16 19:46:08 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/17 11:10:45 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,11 +117,8 @@ int	handle_word(t_parse_ctx *ctx)
 	free(word);
 	if (!new)
 		return (-1);
-
 	if (type == ARG && ft_strchr(new->value, '='))
 		if (concat_arg_following(&ctx->str, &ctx->i, new) == -1)
 			return (-1);
-
 	return (0);
 }
-

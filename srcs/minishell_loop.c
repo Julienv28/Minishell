@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell_loop.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:42:18 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/16 19:46:52 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/17 11:10:18 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void	minishell_loop(t_msh *msh)
 		input = get_input(msh);
 		if (!input)
 			exit_shell(msh);
-        if (input[0] == '\0' && msh->ex_status == 130)
+		if (input[0] == '\0' && msh->ex_status == 130)
 		{
 			free(input);
 			continue ;
@@ -79,4 +79,3 @@ void	minishell_loop(t_msh *msh)
 			continue ;
 	}
 }
-

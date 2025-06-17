@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_redirection.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 09:31:19 by opique            #+#    #+#             */
-/*   Updated: 2025/06/16 19:45:35 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/17 10:06:49 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static int	process_redir_val(int type, char *word, t_parse_ctx *ctx)
 	final = NULL;
 	is_quoted = limiter_is_quoted(word);
 	if (type == HEREDOC && is_quoted)
-        return (add_token(&ctx->tokens, word, ARG, 1), free(word), 1);
+		return (add_token(&ctx->tokens, word, ARG, 1), free(word), 1);
 	else if (type == HEREDOC)
 	{
 		cleaned_limiter = remove_quotes_or_slash(word);
@@ -31,7 +31,7 @@ static int	process_redir_val(int type, char *word, t_parse_ctx *ctx)
 		instru = ft_strdup(cleaned_limiter);
 		if (!add_token(&ctx->tokens, instru, ARG, 0))
 			return (free(cleaned_limiter), free(word), -1);
-        return (free(instru), free(cleaned_limiter), 1);
+		return (free(instru), free(cleaned_limiter), 1);
 	}
 	final = expand_clean_word(word, ctx->msh);
 	if (!final)
@@ -107,7 +107,8 @@ int	handle_redir(t_parse_ctx *ctx)
 	if (!word)
 	{
 		ctx->msh->ex_status = 1;
-		ft_putstr_fd("minishell: syntax error near redirection\n", STDERR_FILENO);
+		ft_putstr_fd("minishell: syntax error near redirection\n", \
+			STDERR_FILENO);
 		return (-1);
 	}
 	symbol = add_symbol(type);

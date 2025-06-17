@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:28:58 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/16 19:34:12 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/17 11:11:18 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,11 +150,11 @@ typedef struct s_msh
 
 typedef struct s_parse_ctx
 {
-	int     i;
-	int     is_cmd;
-	t_tkn   *tokens;
-	t_msh   *msh;
-	char    *str;
+	int		i;
+	int		is_cmd;
+	t_tkn	*tokens;
+	t_msh	*msh;
+	char	*str;
 }	t_parse_ctx;
 
 // INITIALISATION

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oceanepique <oceanepique@student.42.fr>    +#+  +:+       +#+        */
+/*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 16:27:55 by opique            #+#    #+#             */
-/*   Updated: 2025/06/16 19:11:14 by oceanepique      ###   ########.fr       */
+/*   Updated: 2025/06/17 11:03:45 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,13 @@ int	handle_execution(t_com *cmd, t_msh *msh, t_redirs *fds)
 	if (has_redirection(cmd))
 		error = ft_redir(cmd, &fds->in, &fds->out, &fds->err);
 	if (error)
-    {
-        msh->ex_status = 1;
+	{
+		msh->ex_status = 1;
+		if (has_redirection(cmd))
+			restor_redir(fds->in, fds->out, fds->err);
+		init_redirs(fds);
 		return (0);
-    }
+	}
 	if (has_pipe(cmd))
 	{
 		exec_pipes(cmd, msh);

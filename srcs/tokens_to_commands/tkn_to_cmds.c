@@ -6,7 +6,7 @@
 /*   By: juvitry <juvitry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 13:09:09 by juvitry           #+#    #+#             */
-/*   Updated: 2025/06/16 17:07:31 by juvitry          ###   ########.fr       */
+/*   Updated: 2025/06/17 10:29:15 by juvitry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ t_com	*tokens_to_cmds(t_msh *msh)
 		finalize_pending_redirs(ctx);
 	if (ret != 0)
 	{
+		msh->ex_status = 1;
 		free_cmd(ctx->cmd_list);
 		free(ctx);
 		return (NULL);
