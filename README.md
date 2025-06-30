@@ -12,3 +12,8 @@ Some advices for surviving the examination :
 - Run this to check every leaks valgrind --leak-check=full --trace-children=yes --track-fds=yes --suppressions=readline.supp (optionnal if you have a .supp file) -q (only shows when there are big leaks) ./minishell
 
 Good Luck !
+
+__Splitting of work :__
+- Parsing, signals, debug and error handling : Oceane
+- Execution, Pipes, environment varaiables and leaks : Julien
+The implementation of the different functions (cd, env, export, unset, echo and pwd) was splitted among the two of us. Even Though the splitting was quite fixed, we improved each other's code when it was necessary so we both know how the entire code works.
