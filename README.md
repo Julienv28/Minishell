@@ -1,6 +1,18 @@
 # Minishell
 Project at 42 - Replica of a Shell terminal (not a full one, the goal is to learn the basic elements about Shell terminal)
 
+## Methodology (How We did it)
+
+### Readline()
+
+### Parsing
+
+### Execution
+
+### Signals Handling
+
+### Files Descriptors and HereDocs
+
 ## Evaluation
 This project is far from being perfect, for instance there wee still some small "still reachables" within ou code, some redirections were misfunctionning and trimming was not perfect. However regarding the level of detail and precision required by Shell, it is already a satisfyingly functionnal project that is enoughh to validate.
 
