@@ -1,5 +1,5 @@
 # Minishell
-Project at 42 - Replica of a Shell terminal (not a full one, the goal is to learn the basic elements about Shell terminal)
+Project at 42 - Replica of a Shell terminal (not a full one, the goal is to learn the basic elements about Shell terminal). It has the reputation to be one of the toughest project of the common core. Not that it is but it has one of the most rigid criterias for the evaluation process explaining why it is one of the toughest projects to vaidate. Nevertheless, considering the hard times doing it, the most important here is that it has a lot of potential for learning in general how a Shell terminal works and then feel more confident about using a terminal.
 
 ## Methodology (How We did it)
 
