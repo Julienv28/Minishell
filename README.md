@@ -4,7 +4,8 @@ Project at 42 - Replica of a Shell terminal (not a full one, the goal is to lear
 ## Methodology (How We did it)
 
 ### Readline()
-
+The readline functions belongs to the <readline> package (which is quite obvious). This functions allows the program to display a prompt in the shell terminal and read it and then store it as a string. This is the basis of our work. From that standpoint we can have the ground of the parameters which will then be passed to our algorithm to make the magic happen.
+**Warning**: This function does have leaks (still reachable) you need to either design a prompt for running the valgrind or just read carefully the the --leak-check=full to make sure that it's ONLY the readline leaks. Other leaks are not allowed, even still reachable !
 ### Parsing
 
 ### Execution
