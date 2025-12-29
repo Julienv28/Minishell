@@ -1,23 +1,152 @@
 # Minishell
-Project done for the Common Core at 42 Paris by juvitry and opique.
+Projet realise dans le cadre du Common Core a 42 Paris par juvitry and opique.
 
-Project at 42 - Replica of a Shell terminal (not a full one, the goal is to learn the basic elements about Shell terminal). It has the reputation to be one of the toughest project of the common core. Not that it is but it has one of the most rigid criterias for the evaluation process explaining why it is one of the toughest projects to vaidate. Nevertheless, considering the hard times doing it, the most important here is that it has a lot of potential for learning in general how a Shell terminal works and then feel more confident about using a terminal.
+> **Minishell** est une réplique simplifiée d’un terminal shell (inspirée de Bash), créée dans le cadre du cursus **42 Paris**.  
+> L’objectif est d’implémenter et comprendre les mécanismes de base d’un *shell* : lecture de ligne, parsing, exécution de commandes, redirections, pipes, gestion des signaux et variables d’environnement.
 
-## Methodology (How We did it)
+---
 
-### Readline()
-The readline functions belongs to the <readline> package (which is quite obvious). This functions allows the program to display a prompt in the shell terminal and read it and then store it as a string. This is the basis of our work. From that standpoint we can have the ground of the parameters which will then be passed to our algorithm to make the magic happen.
-**Warning**: This function does have leaks (still reachable) you need to either design a prompt for running the valgrind or just read carefully the the --leak-check=full to make sure that it's ONLY the readline leaks. Other leaks are not allowed, even still reachable !
-### Parsing
 
-### Execution
+## 📌 Table des matières
 
-### Signals Handling
+- [🧠 Objectif](#🧠-objectif)  
+- [🚀 Fonctionnalités](#🚀-fonctionnalités)  
+- [🛠️ Installation & Utilisation](#🛠️-installation--utilisation)  
+- [🧩 Architecture du projet](#🧩-architecture-du-projet)  
+- [📌 Limitations & Comportement attendu](#📌-limitations--comportement-attendu)  
+- [📊 Évaluation & Résultats](#📊-évaluation--résultats)  
+- [✨ À améliorer](#✨-à-ameliorer)  
+- [📄 Licence](#📄-licence)
 
-### Files Descriptors and HereDocs
+---
 
-## Evaluation
-This project is far from being perfect, for instance there wee still some small "still reachables" within ou code, some redirections were misfunctionning and trimming was not perfect. However regarding the level of detail and precision required by Shell, it is already a satisfyingly functionnal project that is enoughh to validate.
+## 🧠 Objectif
+
+Ce projet a pour but de :
+
+- Comprendre comment fonctionne un *shell* Unix.
+- Implémenter les éléments essentiels tels que : lecture interactive, parsing, exécution de commandes, piping, redirection, gestion d’environnements.
+- Passer l’évaluation du sujet **Minishell** du cursus 42.
+
+Ce n’est **pas** un clone complet de Bash mais une version **fonctionnelle et éducative**.
+
+---
+
+## 🚀 Fonctionnalités
+
+Minishell supporte :
+
+### 📌 Commandes
+
+- Exécution de commandes externes (`ls`, `grep`, `cat`, etc.)
+- Chemins relatifs ou absolus
+
+### 📌 Builtin
+
+- `echo`
+- `cd`
+- `pwd`
+- `export`
+- `unset`
+- `env`
+- `exit`
+
+### 📌 Redirections
+
+- `>` : redirection de sortie  
+- `>>` : ajout en sortie  
+- `<` : redirection d’entrée  
+- `<< DELIM` : *here-document*
+
+### 📌 Pipes
+
+- `|` : relie la sortie d’une commande à l’entrée d’une autre
+
+### 📌 Signaux
+
+- `Ctrl-C` : nouvelle ligne de prompt  
+- `Ctrl-D` : quitte le shell  
+- `Ctrl-\` : ignoré au prompt
+
+---
+
+## 🛠️ Installation & Utilisation
+
+### 📦 Cloner le dépôt
+
+```bash
+git clone https://github.com/Julienv28/Minishell.git
+cd Minishell
+```
+
+### 🛠️ Compilation
+```bash
+make
+```
+### ▶️ Exécution
+```bash
+./minishell
+```
+---
+#🧩 Architecture du projet
+
+includes/ : headers
+
+srcs/ : code source
+
+libft/ : libft (bibliothèque utilitaire)
+
+Makefile : compilation
+
+Chaque phase du shell est gérée par une étape claire :
+
+Lecture interactive (readline)
+
+Parsing lexical et syntaxique
+
+Expansion des variables & traitement des quotes
+
+Exécution des commandes
+---
+
+#📌 Limitations & Comportement attendu
+
+Dans sa forme actuelle, Minishell ne supporte pas :
+
+Opérateurs logiques (&&, ||)
+
+Points-virgules (;)
+
+Wildcards (*)
+
+Substitutions complexes avancées
+---
+
+#📊 Évaluation & Résultats
+
+Ce projet a été réalisé dans le cadre du cursus 42 Paris :
+✔️ Objectifs fonctionnels atteints ✔️
+📌 Quelques fuites still reachable ont été observées avec Valgrind et sont à corriger pour une version plus robuste.
+
+##✨ À améliorer
+
+Suggestions d’amélioration :
+
+Ajouter des tests unitaires / CI (GitHub Actions)
+
+Support des opérateurs (&&, ||)
+
+Gestion avancée des erreurs et des retours d’état
+
+Support des jokers (*) et globbing
+
+---
+
+#📄 Licence
+
+Ce projet est sous licence GPL-3.0.
+
+---
 
 Some advices for surviving the examination :
 - Stay aware that the readline package and external commands may cause leaks ad still reachables. In tht case, think about adding a .supp file that clean these errors on Valgrind so that you can get away easily.
