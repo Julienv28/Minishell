@@ -88,7 +88,7 @@ make
 ./minishell
 ```
 ---
-#🧩 Architecture du projet
+## 🧩 Architecture du projet
 
 includes/ : headers
 
@@ -109,7 +109,7 @@ Expansion des variables & traitement des quotes
 Exécution des commandes
 ---
 
-#📌 Limitations & Comportement attendu
+## 📌 Limitations & Comportement attendu
 
 Dans sa forme actuelle, Minishell ne supporte pas :
 
@@ -122,13 +122,13 @@ Wildcards (*)
 Substitutions complexes avancées
 ---
 
-#📊 Évaluation & Résultats
+## 📊 Évaluation & Résultats
 
 Ce projet a été réalisé dans le cadre du cursus 42 Paris :
 ✔️ Objectifs fonctionnels atteints ✔️
 📌 Quelques fuites still reachable ont été observées avec Valgrind et sont à corriger pour une version plus robuste.
 
-##✨ À améliorer
+### ✨ À améliorer
 
 Suggestions d’amélioration :
 
@@ -142,7 +142,7 @@ Support des jokers (*) et globbing
 
 ---
 
-#📄 Licence
+## 📄 Licence
 
 Ce projet est sous licence GPL-3.0.
 
