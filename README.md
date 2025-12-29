@@ -120,19 +120,16 @@ Substitutions complexes avancées
 
 Ce projet a été réalisé dans le cadre du cursus 42 Paris :
 ✔️ Objectifs fonctionnels atteints ✔️
-📌 Quelques fuites still reachable ont été observées avec Valgrind et sont à corriger pour une version plus robuste.
+
+📌 Quelques fuites _still reachable_ ont été observées avec Valgrind et sont à corriger pour une version plus robuste.
 
 ### ✨ À améliorer
 
 Suggestions d’amélioration :
-
-Ajouter des tests unitaires / CI (GitHub Actions)
-
-Support des opérateurs (&&, ||)
-
-Gestion avancée des erreurs et des retours d’état
-
-Support des jokers (*) et globbing
+- Ajouter des tests unitaires / CI (GitHub Actions);
+- Support des opérateurs (`&&`, `||`);
+- Gestion avancée des erreurs et des retours d’état;
+- Support des jokers (`*`) et globbing.
 
 ---
 
