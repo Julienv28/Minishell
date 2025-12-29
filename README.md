@@ -109,12 +109,9 @@ Chaque phase du shell est gérée par une étape claire :
 ## 📌 Limitations & Comportement attendu
 
 Dans sa forme actuelle, Minishell ne supporte pas :
-
-Opérateurs logiques (&&, ||)
-
-Points-virgules (;)
-
-Wildcards (*)
+- Opérateurs logiques (&&, ||)
+- Points-virgules (;)
+- Wildcards (*)
 
 Substitutions complexes avancées
 ---
