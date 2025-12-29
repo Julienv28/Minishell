@@ -99,14 +99,11 @@ libft/ : libft (bibliothèque utilitaire)
 Makefile : compilation
 
 Chaque phase du shell est gérée par une étape claire :
+1. Lecture interactive (readline)
+2. Parsing lexical et syntaxique
+3. Expansion des variables & traitement des quotes
+4. Exécution des commandes
 
-Lecture interactive (readline)
-
-Parsing lexical et syntaxique
-
-Expansion des variables & traitement des quotes
-
-Exécution des commandes
 ---
 
 ## 📌 Limitations & Comportement attendu
